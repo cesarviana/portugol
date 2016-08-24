@@ -1,0 +1,92 @@
+#Options
+GenerateScanner = true
+GenerateParser = false
+Language = Java
+ScannerName = Lexico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+#RegularDefinitions
+
+#Tokens
+:[\ \n\t\r\s]+
+
+// comentários
+COMENTARIO_UMA_LINHA:[/][/].*
+COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
+// delimitadores
+"{":\{
+"}":\}
+"(":\(
+")":\)
+"[":\[
+"]":\]
+",":,
+
+// operações matemáticas
+"+": \+
+"-":\-
+"*":\*
+"/": /
+"%": "%"
+
+// atribuição
+"=":=
+"-->":"-->"
+
+// reservadas
+PROGRAMA: programa
+FUNCAO: funcao
+CONST: const
+RETORNE: retorne
+INCLUA: inclua
+BIBLIOTECA: biblioteca
+
+// nome variavel
+NOME_VARIAVEL: [a-zA-Z][a-zA-Z0-9_]*
+
+// operações lógicas
+E: e
+OU: ou
+NAO: nao
+
+// operações bitwise
+AND: &
+OR: \|
+NOT: ~
+XOR: \^
+SHIFT_ESQUERDA: "<<"
+SHIFT_DIREITA: ">>"
+
+// operações relacionais
+"<=":<=
+"<":<
+">=":>=
+">":>
+"==":==
+"!=":!=
+
+// desvios condicionais
+SE: "se"
+SENAO: "senao"
+ESCOLHA: "escolha"
+CASO: "caso"
+
+// laços de repetição
+ENQUANTO: "enquanto"
+FACA: "faca"
+PARA: "para"
+
+// tipos
+VALOR_INTEIRO: [0-9]+
+VALOR_REAL: [0-9]+\.[0-9]+
+VALOR_CARACTER: '[^']'
+VALOR_CADEIA:\"([^\"](\\\")*)*\"
+VALOR_LOGICO: verdadeiro|falso
+
+// declarações
+TIPO_INTEIRO: inteiro
+TIPO_REAL: real
+TIPO_CARACTER: caracter
+TIPO_CADEIA: cadeia
+LOGICO: logico
