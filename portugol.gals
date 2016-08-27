@@ -1,16 +1,19 @@
 #Options
 GenerateScanner = true
-GenerateParser = false
+GenerateParser = true
 Language = Java
 ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Full
 Input = Stream
+Parser = SLR
 #RegularDefinitions
-
+  
 #Tokens
 :[\ \n\t\r\s]+
-
+"":\s
 // comentários
 COMENTARIO_UMA_LINHA:[/][/].*
 COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
@@ -43,7 +46,7 @@ INCLUA: inclua
 BIBLIOTECA: biblioteca
 
 // nome variavel
-NOME_VARIAVEL: [a-zA-Z][a-zA-Z0-9_]*
+ID: [a-zA-Z][a-zA-Z0-9_]*
 
 // operações lógicas
 E: e
@@ -90,3 +93,21 @@ TIPO_REAL: real
 TIPO_CARACTER: caracter
 TIPO_CADEIA: cadeia
 LOGICO: logico
+#NonTerminals
+<PROGRAMA>
+<PROGRAMA_SEM_BIBLIOTECA>
+<PROGRAMA_COM_BIBLIOTECA>
+<INCLUSAO_BIBLIOTECAS>
+<INCLUSAO_UMA_BIBLIOTECA>
+<INCLUSAO_BIBLIOTECA_SEM_ALIAS>
+<INCLUSAO_BIBLIOTECA_COM_ALIAS>
+<LISTA_COMANDOS>
+#Grammar
+<PROGRAMA> ::= <PROGRAMA_SEM_BIBLIOTECA> | <PROGRAMA_COM_BIBLIOTECA>;
+<PROGRAMA_COM_BIBLIOTECA> ::= PROGRAMA "{" <INCLUSAO_BIBLIOTECAS><LISTA_COMANDOS> "}";
+<PROGRAMA_SEM_BIBLIOTECA> ::= PROGRAMA "{" <LISTA_COMANDOS> "}";
+<INCLUSAO_BIBLIOTECAS> ::= <INCLUSAO_BIBLIOTECAS><INCLUSAO_UMA_BIBLIOTECA> | <INCLUSAO_UMA_BIBLIOTECA>;
+<INCLUSAO_UMA_BIBLIOTECA> ::= <INCLUSAO_BIBLIOTECA_COM_ALIAS> | <INCLUSAO_BIBLIOTECA_SEM_ALIAS>;
+<INCLUSAO_BIBLIOTECA_COM_ALIAS> ::= INCLUA BIBLIOTECA ID "-->" ID;
+<INCLUSAO_BIBLIOTECA_SEM_ALIAS> ::= INCLUA BIBLIOTECA ID;
+<LISTA_COMANDOS> ::= î;
