@@ -178,9 +178,8 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 
 <ESTRUTURA_CONTROLE> ::= <SE> | <PARA> | <ENQUANTO>;
 
-<SE> ::= <SE_SIMPLES> | <SE><SENAO>;
+<SE> ::= <SE_SIMPLES> | <SENAO>;
 <SE_SIMPLES> ::= SE "(" <EXPRESSAO> ")" <ELEMENTO_FUNCAO> | SE "(" <EXPRESSAO> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" | SE "(" <EXPRESSAO> ")" "{" "}";
-<SE_SENAO> ::= SE "(" <EXPRESSAO> ")" <ELEMENTO_FUNCAO> SENAO | SE "(" <EXPRESSAO> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" SENAO | SE "(" <EXPRESSAO> ")" "{" "}" SENAO;
 <SENAO> ::= SENAO <ELEMENTO_FUNCAO> |  SENAO "{" <LISTA_ELEMENTOS_FUNCAO> "}" |  SENAO "{" "}";
 
 <PARA> ::= "+";
