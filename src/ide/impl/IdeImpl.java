@@ -36,9 +36,9 @@ public class IdeImpl implements Ide {
 		view.setLoadFileAction(new LoadFileAction(view, this));
 		view.setSaveFileAction(new SaveFileAction(view, this));
 		view.addListener(new ChangeCodeListener());
-		fileLoader = FileLoader.instance(view);
 		portugolFiles = PortugolFiles.instance();
 		portugolFiles.addListener(new FileDisplayer());
+		fileLoader = FileLoader.instance(view);
 		fileSaver = FileSaver.instance(view);
 	}
 
