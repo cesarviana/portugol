@@ -1,0 +1,7 @@
+programa {
+	const inteiro a = 1
+	inteiro b = 2
+	funcao inicio(){
+		chamadaFuncao()
+	}
+}

@@ -35,10 +35,16 @@ COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
 "*":\*
 "/": /
 "%": "%"
-
 // atribuição
 "=":=
 "-->":"-->"
+"+=":"+="
+"*=":"*="
+"/=":"/="
+"-=":"-="
+// unitarios
+"++":"++"
+"--":"--"
 
 // reservadas
 PROGRAMA: programa
@@ -47,6 +53,8 @@ CONST: const
 RETORNE: retorne
 INCLUA: inclua
 BIBLIOTECA: biblioteca
+LEIA: leia
+ESCREVA: escreva
 
 // declarações
 TIPO_INTEIRO: "inteiro"
@@ -117,6 +125,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <VARIAVEL>
 <VARIAVEL_SEM_ATRIBUICAO>
 <VARIAVEL_COM_ATRIBUICAO>
+<ATRIBUIDOR>
 <VARIAVEL_VETOR>
 <VARIAVEL_VETOR_COM_TAMANHO>
 <VARIAVEL_VETOR_SEM_TAMANHO>
@@ -152,6 +161,9 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <PARA_PARTE_2>
 <PARA_PARTE_3>
 
+<LISTA_ARGUMENTOS>
+<ARGUMENTO>
+
 <exp>
 <exp1>
 <exp2>
@@ -163,13 +175,13 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <exp8>
 <exp9>
 <exp10>
+
 <op_rel>
 <op_neg>
 <op_bitwise>
 <op_arit_baixa>
 <op_arit_alta>
 <op_arit_mais_alta>
-
 
 #Grammar
 <PROGRAMA> ::= <PROGRAMA_SEM_BIBLIOTECA> | <PROGRAMA_COM_BIBLIOTECA>;
@@ -188,7 +200,8 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <VARIAVEL> ::= <VARIAVEL_COM_ATRIBUICAO> | <VARIAVEL_SEM_ATRIBUICAO>;
 <LISTA_VARIAVEIS_COM_ATRIBUICAO> ::= <VARIAVEL_COM_ATRIBUICAO> "," <LISTA_VARIAVEIS_COM_ATRIBUICAO> | <VARIAVEL_COM_ATRIBUICAO>;
 <VARIAVEL_SEM_ATRIBUICAO> ::= ID | <VARIAVEL_VETOR>;
-<VARIAVEL_COM_ATRIBUICAO> ::=  ID "=" <exp> | <VARIAVEL_VETOR> "=" <INICIALIZACAO_VETOR> | ID "=" <VARIAVEL_VETOR_COM_TAMANHO>;
+<VARIAVEL_COM_ATRIBUICAO> ::=  ID <ATRIBUIDOR> <exp> | <VARIAVEL_VETOR> "=" <INICIALIZACAO_VETOR>;
+<ATRIBUIDOR> ::= "=" | "+=" | "-=" | "*=" | "/=";
 <VARIAVEL_VETOR>::= <VARIAVEL_VETOR_COM_TAMANHO> | <VARIAVEL_VETOR_SEM_TAMANHO>;
 <VARIAVEL_VETOR_COM_TAMANHO> ::= ID "[" VALOR_INTEIRO "]" | ID "[" VALOR_INTEIRO "]" "[" VALOR_INTEIRO "]";
 <VARIAVEL_VETOR_SEM_TAMANHO> ::= ID "[" "]" | ID "[" "]" "[" "]";
@@ -211,7 +224,12 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <PARAMETRO_POR_VALOR> ::= <TIPO> ID | <TIPO><VARIAVEL_VETOR_SEM_TAMANHO>;
 <PARAMETRO_POR_REFERENCIA> ::= <TIPO> "&" ID | <TIPO> "&" <VARIAVEL_VETOR_SEM_TAMANHO>;
 <LISTA_ELEMENTOS_FUNCAO> ::= <ELEMENTO_FUNCAO><LISTA_ELEMENTOS_FUNCAO> | <ELEMENTO_FUNCAO>;
-<ELEMENTO_FUNCAO> ::= <DECLARACAO_VARIAVEL> | <USO_VARIAVEL> | <ESTRUTURA_CONTROLE> | <CHAMADA_FUNCAO>;
+<ELEMENTO_FUNCAO> ::= <DECLARACAO_VARIAVEL> 
+	| <USO_VARIAVEL> 
+	| <ESTRUTURA_CONTROLE> 
+	| <CHAMADA_FUNCAO> 
+	| RETORNE <exp> 
+	| RETORNE <CHAMADA_FUNCAO>;
 <USO_VARIAVEL> ::= <VARIAVEL>;
 <ESTRUTURA_CONTROLE> ::= <SE> | <ESCOLHA_CASO> | <ENQUANTO> | <FACA_ENQUANTO> | <PARA>;
 <SE> ::= <SE_SIMPLES> | <SENAO>;
@@ -224,10 +242,12 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <PARAMETRO_ESCOLHA_CASO> ::= ID | <VARIAVEL_VETOR_COM_TAMANHO> | VALOR_INTEIRO | VALOR_CARACTER | <CHAMADA_FUNCAO>;
 <LISTA_CASOS> ::= <CASO><LISTA_CASOS> | <CASO>;
 <CASO> ::= CASO <PARAMETRO_ESCOLHA_CASO> ":" PARE | CASO <PARAMETRO_ESCOLHA_CASO> ":" <LISTA_ELEMENTOS_FUNCAO> PARE; 
+
 <ENQUANTO> ::= 
 	   ENQUANTO "(" <exp> ")" <ELEMENTO_FUNCAO> 
 	|  ENQUANTO "(" <exp> ")" "{" "}" 
 	|  ENQUANTO "(" <exp> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}";
+
 <FACA_ENQUANTO> ::=
 	  FACA "{" "}" ENQUANTO "(" <exp> ")"
 	| FACA <ELEMENTO_FUNCAO> ENQUANTO "(" <exp> ")" 
@@ -240,17 +260,22 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <PARA_PARTE_2> ::= <exp>;
 <PARA_PARTE_3> ::= <exp> | <VARIAVEL_COM_ATRIBUICAO> | î;
 
-<CHAMADA_FUNCAO> ::= "*";
+<CHAMADA_FUNCAO> ::= ID"("<LISTA_ARGUMENTOS>")" | LEIA"("ID")" | ESCREVA"("<LISTA_ARGUMENTOS>")";
+<LISTA_ARGUMENTOS> ::= <ARGUMENTO> "," <LISTA_ARGUMENTOS> | <ARGUMENTO> | î;
+<ARGUMENTO> ::= <VARIAVEL> | <exp>;
 
 <exp>  ::= <exp> OU <exp1> | <exp1>;
 <exp1> ::= <exp1> E <exp2> | <exp2>;
-<exp2> ::= <exp2> "|" <exp3> | <exp3>;
-<exp3> ::= <exp3> "^" <exp4> | <exp4>;
-<exp4> ::= <exp4> "&" <exp5> | <exp5>;
-<exp5> ::= <exp5> <op_rel> <exp6> | <exp6>;
-<exp6> ::= <exp6> <op_bitwise> <exp7> | <exp7>;
-<exp7> ::= <exp7> <op_arit_baixa> <exp8> | <exp8>;
-<exp8> ::= <exp8> <op_arit_alta> <exp9> | <exp9> ;
+<exp5> ::= <exp2> <op_rel> <exp3> | <exp3>;
+<exp6> ::= <exp3> <op_bitwise> <exp4> | <exp5>;
+<exp7> ::= <exp5> <op_arit_baixa> <exp6> | <exp6>;
+<exp8> ::= <exp6> <op_arit_alta> <exp7> | <exp7> ;
 <exp9> ::= <op_neg> <exp10> | <exp10>;
-<exp10> ::= VALOR_INTEIRO | VALOR_REAL  | ID | <exp> "++" |   "(" <exp> ")";
+<exp10> ::= VALOR_INTEIRO | VALOR_REAL | VALOR_CADEIA | VALOR_CARACTER | "(" <exp> ")";
+
+<op_rel> ::= ">" | "<" | ">=" | "<=" | "=" | "!="; 
+<op_neg> ::= "-" | NAO;
+<op_bitwise> ::= "<<" | ">>" | "|" | "&" | "^" | "~";
+<op_arit_baixa> ::= "+" | "-";
+<op_arit_alta> ::= "*" | "/" | "%";
 
