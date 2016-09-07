@@ -3,7 +3,7 @@ package view;
 import javax.swing.Action;
 import javax.swing.JComponent;
 
-import ide.impl.PortugolFile;
+import ide.impl.files.PortugolFile;
 import view.impl.ViewImpl;
 
 public interface View {
@@ -17,6 +17,8 @@ public interface View {
 	public void setLoadFileAction(Action loadFileAction);
 
 	public void setSaveFileAction(Action saveFileAction);
+	
+	public void setCompileAction(Action compileAction);
 	
 	public void error(Throwable e);
 

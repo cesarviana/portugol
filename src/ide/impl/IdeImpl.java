@@ -1,8 +1,13 @@
 package ide.impl;
 
 import ide.Ide;
+import ide.impl.actions.CompileAction;
 import ide.impl.actions.LoadFileAction;
 import ide.impl.actions.SaveFileAction;
+import ide.impl.compiler.Compiler;
+import ide.impl.files.PortugolFile;
+import ide.impl.files.PortugolFiles;
+import ide.impl.files.PortugolFilesListenerAdapter;
 import view.View;
 import view.ViewListenerAdapter;
 
@@ -30,16 +35,19 @@ public class IdeImpl implements Ide {
 	private final PortugolFiles portugolFiles;
 	private final FileLoader fileLoader;
 	private final FileSaver fileSaver;
+	private final Compiler compiler;
 
 	public IdeImpl() {
 		view = View.instance();
 		view.setLoadFileAction(new LoadFileAction(view, this));
 		view.setSaveFileAction(new SaveFileAction(view, this));
+		view.setCompileAction(new CompileAction(view, this));
 		view.addListener(new ChangeCodeListener());
 		fileLoader = FileLoader.instance(view);
 		portugolFiles = PortugolFiles.instance();
 		portugolFiles.addListener(new FileDisplayer());
 		fileSaver = FileSaver.instance(view);
+		compiler = Compiler.instance();
 	}
 
 	@Override
@@ -55,6 +63,11 @@ public class IdeImpl implements Ide {
 	@Override
 	public void saveFile() {
 		fileSaver.save(portugolFiles.getSelectedFile());
+	}
+	
+	@Override
+	public void compile() {
+		compiler.compile(portugolFiles.getSelectedFile());
 	}
 
 }

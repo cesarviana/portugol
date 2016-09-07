@@ -18,11 +18,14 @@ import javax.swing.border.EmptyBorder;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import ide.impl.PortugolFile;
+import ide.impl.compiler.CompilerException;
+import ide.impl.files.PortugolFile;
 import view.View;
 import view.ViewListener;
 
 public class ViewImpl extends JFrame implements View {
+
+	private static final String DEFAULT_ERROR_MESSAGE = "Erro";
 
 	private final class ChangeCodeListener extends KeyAdapter {
 		@Override
@@ -41,6 +44,8 @@ public class ViewImpl extends JFrame implements View {
 	private JTextArea txtCode;
 	private JButton btnSalvar;
 	private Collection<ViewListener> listeners;
+	private JButton btnCompilar;
+	private JTextArea textArea;
 
 	/**
 	 * Launch the application.
@@ -85,8 +90,16 @@ public class ViewImpl extends JFrame implements View {
 		btnSalvar = new JButton("Salvar");
 		panelTop.add(btnSalvar);
 
+		btnCompilar = new JButton("Compilar");
+		panelTop.add(btnCompilar);
+
 		JPanel panelFooter = new JPanel();
 		contentPane.add(panelFooter, BorderLayout.SOUTH);
+		panelFooter.setLayout(new BorderLayout(0, 0));
+
+		textArea = new JTextArea();
+		textArea.setEditable(false);
+		panelFooter.add(textArea);
 
 		txtCode = new RSyntaxTextArea();
 		txtCode.setText("Code");
@@ -111,12 +124,30 @@ public class ViewImpl extends JFrame implements View {
 	}
 
 	@Override
+	public void setCompileAction(Action compileAction) {
+		btnCompilar.setAction(compileAction);
+	}
+
+	@Override
 	public void error(Throwable e) {
+		String errMessage = createErrorMessage(e);
+		showErrorMessage(e, errMessage);
+	}
+
+	private String createErrorMessage(Throwable e) {
 		String errMessage = e.getMessage();
 		boolean noMessage = errMessage == null || errMessage.isEmpty();
-		String message = noMessage ? "Erro" : errMessage;
-		JOptionPane.showMessageDialog(this, message, "Erro",
-				JOptionPane.ERROR_MESSAGE);
+		errMessage = noMessage ? DEFAULT_ERROR_MESSAGE : errMessage;
+		return errMessage;
+	}
+
+	private void showErrorMessage(Throwable e, String errMessage) {
+		if (e instanceof CompilerException) {
+			textArea.setText(errMessage);
+		} else {
+			JOptionPane.showMessageDialog(this, errMessage, DEFAULT_ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	@Override
