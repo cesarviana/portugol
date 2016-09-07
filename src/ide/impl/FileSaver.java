@@ -3,6 +3,7 @@ package ide.impl;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import ide.impl.files.PortugolFile;
 import view.View;
 
 public class FileSaver extends FileIO {

@@ -1,4 +1,4 @@
-package ide.impl;
+package ide.impl.files;
 
 public interface PortugolFilesListener {
 

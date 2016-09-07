@@ -1,4 +1,4 @@
-package ide.impl;
+package ide.impl.files;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,9 +7,13 @@ import java.util.List;
 
 public class PortugolFile {
 
-	private final File file;
+	private File file;
 	private String text = "";
+	public static final PortugolFile NULL = new PortugolFileNull();
 
+	protected PortugolFile(){
+	}
+	
 	private PortugolFile(File file) {
 		this.file = file;
 		this.text = extractFileText();
@@ -19,6 +23,10 @@ public class PortugolFile {
 		if(file==null)
 			throw new NullPointerException("Informe o arquivo.");
 		return new PortugolFile(file);
+	}
+	
+	public static PortugolFile newInstance(){
+		return new PortugolFile();
 	}
 	
 	private String extractFileText() {
