@@ -1,7 +1,32 @@
-programa {
-	const inteiro a = 1
-	inteiro b = 2
-	funcao inicio(){
-		chamadaFuncao()
+programa
+{
+	const inteiro vetor[5] = {3,3,3,3,3}
+	inteiro vetorb[]
+	funcao inicio()
+	{
+		inteiro i = 0
+		se(i<10){
+			i++
+		}senao {
+			i--
+		}
+		para(inteiro j = 0; j < 4; j++){			
+			enquanto(verdadeiro){
+				i--
+			}
+			faca{
+				
+			}enquanto(chamarFuncao(1==1))
+		}
+		inteiro a = 1
+		chamarFuncao(verdadeiro)
+	}
+
+	funcao logico chamarFuncao(logico valor){
+		retorne verdadeiro
+	}
+
+	funcao logico chamarFuncao2(logico valor){
+		retorne verdadeiro
 	}
 }

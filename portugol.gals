@@ -14,6 +14,7 @@ Parser = SLR
 #Tokens
 :[\ \n\t\r\s]+ | [/][/].* | "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
 "":\s
+
 // comentários
 COMENTARIO_UMA_LINHA:[/][/].*
 COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
@@ -30,7 +31,6 @@ COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
 
 // operações matemáticas
 "+": \+
-"++": \++
 "-":\-
 "*":\*
 "/": /
@@ -107,6 +107,7 @@ VALOR_INTEIRO: [0-9]+
 VALOR_REAL: [0-9]+\.[0-9]+
 VALOR_CARACTER: '[^']'
 VALOR_CADEIA:\"([^\"](\\\")*)*\"
+
 #NonTerminals
 <PROGRAMA>
 <PROGRAMA_SEM_BIBLIOTECA>

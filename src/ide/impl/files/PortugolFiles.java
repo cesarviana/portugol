@@ -1,4 +1,4 @@
-package ide.impl;
+package ide.impl.files;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ public class PortugolFiles {
 	private static PortugolFiles instance;
 	private final List<PortugolFilesListener> listeners;
 	private final List<PortugolFile> files;
-	private PortugolFile selectedFile;
+	private PortugolFile selectedFile = PortugolFile.newInstance();
 
 	public static PortugolFiles instance() {
 		if (instance == null)

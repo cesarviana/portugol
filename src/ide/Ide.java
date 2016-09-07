@@ -9,4 +9,5 @@ public interface Ide {
 	void start();
 	void loadFile();
 	void saveFile();
+	void compile();
 }
