@@ -133,6 +133,11 @@ public class ViewImpl extends JFrame implements View {
 		String errMessage = createErrorMessage(e);
 		showErrorMessage(e, errMessage);
 	}
+	
+	@Override
+	public void message(String string) {
+		textArea.setText(string);
+	}
 
 	private String createErrorMessage(Throwable e) {
 		String errMessage = e.getMessage();
@@ -143,7 +148,7 @@ public class ViewImpl extends JFrame implements View {
 
 	private void showErrorMessage(Throwable e, String errMessage) {
 		if (e instanceof CompilerException) {
-			textArea.setText(errMessage);
+			message(errMessage);
 		} else {
 			JOptionPane.showMessageDialog(this, errMessage, DEFAULT_ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);

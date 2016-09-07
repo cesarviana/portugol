@@ -68,6 +68,7 @@ public class IdeImpl implements Ide {
 	@Override
 	public void compile() {
 		compiler.compile(portugolFiles.getSelectedFile());
+		view.message("Compilado com sucesso!");
 	}
 
 }

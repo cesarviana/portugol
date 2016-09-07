@@ -28,4 +28,6 @@ public interface View {
 
 	public void addListener(ViewListener viewListener);
 
+	public void message(String string);
+
 }
