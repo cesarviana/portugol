@@ -1,32 +1,73 @@
 programa
 {
-	const inteiro vetor[5] = {3,3,3,3,3}
-	inteiro vetorb[]
+	// DECLARAÇÃO DE VARIÁVEIS E VETORES
+	
+	cadeia cadeia1
+	cadeia cadeia2 = "cadeia2"
+	const cadeia vetorCadeia1[3] = {"a","a","a"}
+	cadeia vetorCadeia2[]       
+	caracter caracter1
+	caracter caracter2 = 'a'
+	logico logico1
+	logico logico2 = falso
+	const logico vetorLogico[2] = {falso, verdadeiro}
+	
 	funcao inicio()
 	{
+		// BLOCOS DE INSTRUÇÃO COM INÍCIO E FIM		
+		estruturaSe()
+		estruturaEscolhaCaso()
+		estruturaPara()
+		estruturaEnquanto()
+
+		escreva("finalizado")
+
+	}
+
+	funcao estruturaSe(){
 		inteiro i = 0
-		se(i<10){
+		se(i < 10) i++ senao i++
+		se(i < 10){ i++ } senao { i++ }
+	}
+
+	funcao estruturaEscolhaCaso(){
+		caracter a = 'a'
+		escolha(a){
+			caso 'a':
+				escreva("b")
+			pare
+			caso 'b':
+				escreva("b")
+			caso 'c':
+		}
+	}
+
+	funcao estruturaPara(){
+		inteiro i = 0
+		cadeia cadeia3 = "a"
+		para(inteiro j = 0; chamarFuncao(verdadeiro, 2, cadeia3); j++){		
 			i++
-		}senao {
-			i--
 		}
 		para(inteiro j = 0; j < 4; j++){			
-			enquanto(verdadeiro){
-				i--
-			}
-			faca{
-				
-			}enquanto(chamarFuncao(1==1))
+			i++
 		}
-		inteiro a = 1
-		chamarFuncao(verdadeiro)
+		para(; i < 4;){			
+			i++
+			pare
+			pare
+		}
 	}
 
-	funcao logico chamarFuncao(logico valor){
-		retorne verdadeiro
+	funcao estruturaEnquanto(){
+		inteiro i = 0
+		cadeia cadeia3 = "cadeia3"
+		cadeia vetorCadeia[1] = {"cadeia3"}
+		enquanto(chamarFuncao(1==1, 2, cadeia3)){ i-- }
+		faca{ i++	}enquanto(chamarFuncao(1==1, 2, cadeia3))
 	}
 
-	funcao logico chamarFuncao2(logico valor){
-		retorne verdadeiro
+	funcao logico chamarFuncao(logico valor, inteiro valor2, cadeia &valor3){
+		retorne falso
 	}
+
 }
