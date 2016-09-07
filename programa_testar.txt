@@ -1,7 +1,5 @@
 programa
 {
-	// DECLARAÇÃO DE VARIÁVEIS E VETORES
-	
 	cadeia cadeia1
 	cadeia cadeia2 = "cadeia2"
 	const cadeia vetorCadeia1[3] = {"a","a","a"}
@@ -14,20 +12,23 @@ programa
 	
 	funcao inicio()
 	{
-		// BLOCOS DE INSTRUÇÃO COM INÍCIO E FIM		
 		estruturaSe()
 		estruturaEscolhaCaso()
 		estruturaPara()
 		estruturaEnquanto()
+		
+		entradaESaida()
 
-		escreva("finalizado")
+		funcaoComParametros()
 
+		expressoesAritmeticasELogicas()
 	}
 
 	funcao estruturaSe(){
 		inteiro i = 0
 		se(i < 10) i++ senao i++
 		se(i < 10){ i++ } senao { i++ }
+		se(i < 10){ i++ } senao se(i < 10) { i++ }
 	}
 
 	funcao estruturaEscolhaCaso(){
@@ -70,4 +71,59 @@ programa
 		retorne falso
 	}
 
+	funcao funcaoComParametros(){
+		logico paramLogico = verdadeiro
+		inteiro paramInteiro = 0
+		real paramReal = 0.0
+		cadeia paramCadeiaReferencia = "cadeiaReferencia"
+		caracter paramVetorCaracterReferencia[] = {'a','a','a','a'}
+		chamarFuncaoComParametros(paramLogico, paramInteiro, paramReal, paramCadeiaReferencia, paramVetorCaracterReferencia)
+	}
+
+	
+	funcao logico chamarFuncaoComParametros(logico paramLogico, inteiro paramInteiro, real paramReal, cadeia &paramCadeiaRef, caracter &paramVetCaracterRef[]){
+		paramLogico = verdadeiro
+		paramLogico += verdadeiro
+		
+		paramInteiro += 1
+		paramInteiro ++
+		paramInteiro --
+
+		paramReal ++
+		paramReal += 0
+
+		paramCadeiaRef += "teste"
+		paramCadeiaRef = "teste"
+		paramCadeiaRef++
+
+		paramVetCaracterRef[0] = '0'
+		
+		retorne falso
+	}
+
+	funcao entradaESaida(){
+		inteiro variavel = 0
+		leia(variavel)
+		escreva("Variavel escrita")
+
+		inteiro vetor[] = {0}
+		leia(vetor[0] == 2)
+		escreva(vetor[0])
+
+		logico a = {"a"} == {"b"}
+
+		cadeia vetorCadeia[][] = {{"a","a"},{"a","a"},{"a","a"}}
+	}
+
+	funcao expressoesAritmeticasELogicas(){
+		inteiro a = 0
+		inteiro b = 1
+
+		logico c = a == b + a
+		inteiro d = (a + b) + (a + b * a * a / (a + b * a))
+
+		logico comparacaovetores = {"a"} == {"a"}
+		inteiro vetInt[] = {2,2,3}
+		inteiro resultExpVet = vetInt[0] + vetInt[1] / vetInt[2]
+	}
 }
