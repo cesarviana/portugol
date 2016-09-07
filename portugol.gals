@@ -12,7 +12,7 @@ Parser = SLR
 #RegularDefinitions
   
 #Tokens
-:[\ \n\t\r\s]+
+:[\ \n\t\r\s]+ | [/][/].* | "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
 "":\s
 // comentários
 COMENTARIO_UMA_LINHA:[/][/].*
@@ -155,6 +155,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <LISTA_CASOS>
 <CASO>
 <ENQUANTO>
+<PARAMETRO_ENQUANTO>
 <FACA_ENQUANTO>
 <PARA>
 <PARA_PARTE_1>
@@ -232,7 +233,8 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 	| <ESTRUTURA_CONTROLE> 
 	| <CHAMADA_FUNCAO> 
 	| RETORNE <exp> 
-	| RETORNE <CHAMADA_FUNCAO>;
+	| RETORNE <CHAMADA_FUNCAO>
+	| PARE;
 <USO_VARIAVEL> ::= <VARIAVEL>;
 <ESTRUTURA_CONTROLE> ::= <SE> | <ESCOLHA_CASO> | <ENQUANTO> | <FACA_ENQUANTO> | <PARA>;
 <SE> ::= <SE_SIMPLES> | <SENAO>;
@@ -247,20 +249,22 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <CASO> ::= CASO <PARAMETRO_ESCOLHA_CASO> ":" PARE | CASO <PARAMETRO_ESCOLHA_CASO> ":" <LISTA_ELEMENTOS_FUNCAO> PARE; 
 
 <ENQUANTO> ::= 
-	   ENQUANTO "(" <exp> ")" <ELEMENTO_FUNCAO> 
-	|  ENQUANTO "(" <exp> ")" "{" "}" 
-	|  ENQUANTO "(" <exp> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}";
+	   ENQUANTO "(" <PARAMETRO_ENQUANTO> ")" <ELEMENTO_FUNCAO> 
+	|  ENQUANTO "(" <PARAMETRO_ENQUANTO> ")" "{" "}" 
+	|  ENQUANTO "(" <PARAMETRO_ENQUANTO> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}";
+
+<PARAMETRO_ENQUANTO> ::= <exp> | <CHAMADA_FUNCAO>;
 
 <FACA_ENQUANTO> ::=
-	  FACA "{" "}" ENQUANTO "(" <exp> ")"
-	| FACA <ELEMENTO_FUNCAO> ENQUANTO "(" <exp> ")" 
-	| FACA "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO "(" <exp> ")";
+	  FACA "{" "}" ENQUANTO "(" <PARAMETRO_ENQUANTO> ")"
+	| FACA <ELEMENTO_FUNCAO> ENQUANTO "(" <PARAMETRO_ENQUANTO> ")" 
+	| FACA "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO "(" <PARAMETRO_ENQUANTO> ")";
 <PARA> ::=
 	  PARA "(" <PARA_PARTE_1> ";" <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{" "}"
 	| PARA "(" <PARA_PARTE_1> ";" <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" <ELEMENTO_FUNCAO>
 	| PARA "(" <PARA_PARTE_1> ";" <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{"  <LISTA_ELEMENTOS_FUNCAO> "}";
 <PARA_PARTE_1> ::= <TIPO><VARIAVEL> | <VARIAVEL> | î;
-<PARA_PARTE_2> ::= <exp>;
+<PARA_PARTE_2> ::= <exp> | <CHAMADA_FUNCAO>;
 <PARA_PARTE_3> ::= <exp> | <VARIAVEL_COM_ATRIBUICAO> | î;
 
 <CHAMADA_FUNCAO> ::= ID"("<LISTA_ARGUMENTOS>")" | LEIA"("ID")" | ESCREVA"("<LISTA_ARGUMENTOS>")";
