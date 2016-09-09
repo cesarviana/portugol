@@ -6,8 +6,8 @@ ScannerName = Lexico
 ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
-ScannerTable = Full
-Input = Stream
+ScannerTable = Compact
+Input = String
 Parser = SLR
 #RegularDefinitions
   
@@ -110,6 +110,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 
 #NonTerminals
 <PROGRAMA>
+<PROGRAMA_VAZIO>
 <PROGRAMA_SEM_BIBLIOTECA>
 <PROGRAMA_COM_BIBLIOTECA>
 <LISTA_BIBLIOTECAS>
@@ -182,7 +183,8 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <op_arit_mais_alta>
 
 #Grammar
-<PROGRAMA> ::= <PROGRAMA_SEM_BIBLIOTECA> | <PROGRAMA_COM_BIBLIOTECA>;
+<PROGRAMA> ::= <PROGRAMA_SEM_BIBLIOTECA> | <PROGRAMA_COM_BIBLIOTECA> | <PROGRAMA_VAZIO>;
+<PROGRAMA_VAZIO> ::= PROGRAMA "{"  "}";
 <PROGRAMA_COM_BIBLIOTECA> ::= PROGRAMA "{" <LISTA_BIBLIOTECAS><LISTA_DECLARACOES> "}";
 <PROGRAMA_SEM_BIBLIOTECA> ::= PROGRAMA "{" <LISTA_DECLARACOES> "}";
 <LISTA_BIBLIOTECAS> ::= <BIBLIOTECA><LISTA_BIBLIOTECAS> | <BIBLIOTECA>;
