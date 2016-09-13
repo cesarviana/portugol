@@ -17,7 +17,7 @@ public class FileSaver extends FileIO {
 	}
 
 	public void save(PortugolFile selectedFile) {
-		try (PrintWriter writer = new PrintWriter(selectFile())){
+		try (PrintWriter writer = new PrintWriter(saveFile())){
 			writer.write(selectedFile.getText());
 			writer.close();
 		} catch (FileNotFoundException e) {
