@@ -1,5 +1,4 @@
 package gals;
-
 import br.univali.Douglas_Daniel.Leitor;
 
 public interface ScannerConstants
