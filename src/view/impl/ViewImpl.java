@@ -1,6 +1,7 @@
 package view.impl;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -17,6 +18,8 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import ide.impl.compiler.CompilerException;
 import ide.impl.files.PortugolFile;
@@ -41,7 +44,7 @@ public class ViewImpl extends JFrame implements View {
 	private JPanel contentPane;
 	private static View instance;
 	private JButton btnCarregarArquivo;
-	private JTextArea txtCode;
+	private RSyntaxTextArea txtCode;
 	private JButton btnSalvar;
 	private Collection<ViewListener> listeners;
 	private JButton btnCompilar;
@@ -103,9 +106,12 @@ public class ViewImpl extends JFrame implements View {
 		panelFooter.add(textArea);
 
 		txtCode = new RSyntaxTextArea();
+		txtCode.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		txtCode.setAutoIndentEnabled(true);
+		
 		txtCode.setText("Code");
 		txtCode.addKeyListener(new ChangeCodeListener());
-		contentPane.add(txtCode, BorderLayout.CENTER);
+		contentPane.add(new RTextScrollPane(txtCode), BorderLayout.CENTER);
 		txtCode.setColumns(10);
 	}
 
