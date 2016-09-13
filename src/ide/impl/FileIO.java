@@ -19,7 +19,7 @@ public abstract class FileIO {
 		}
 		@Override
 		public boolean accept(File f) {
-			return f.getName().endsWith(".por");
+			return f.isDirectory() || f.getName().endsWith(".por");
 		}
 	}
 	
@@ -38,11 +38,21 @@ public abstract class FileIO {
 		return chooser;
 	}
 
+	public JComponent getParent() {
+		return parent;
+	}
+	
 	public File selectFile() {
-		int r = getChooser().showOpenDialog(parent);
+		int r = getChooser().showOpenDialog(getParent());
 		if(r == JFileChooser.APPROVE_OPTION)
 			return getChooser().getSelectedFile();
-		throw new CancellationException("Seleção de arquivo cancelada.");
+		throw new CancellationException("Salvamento de arquivo cancelado.");
 	}
-
+	
+	public File saveFile() {
+		int r = getChooser().showSaveDialog(getParent());
+		if(r == JFileChooser.APPROVE_OPTION)
+			return getChooser().getSelectedFile();
+		throw new CancellationException("Salvamento de arquivo cancelado.");
+	}
 }
