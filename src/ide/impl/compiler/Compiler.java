@@ -27,11 +27,11 @@ public class Compiler {
 		try {
 			sintatico.parse(lexico, semantico);
 		} catch (LexicalError e) {
-			throw new CompilerException("Erro léxico: " + e.getMessage(), e);
+			throw new CompilerException("Erro léxico: " + e.getMessage() + " Posição:" + e.getPosition(), e);
 		} catch (SyntaticError e) {
-			throw new CompilerException("Erro sintático: " + e.getMessage(), e);
+			throw new CompilerException("Erro sintático: " + e.getMessage() + " Posição:" + e.getPosition(), e);
 		} catch (SemanticError e) {
-			throw new CompilerException("Erro semantico: "+ e.getMessage(), e);
+			throw new CompilerException("Erro semantico: "+ e.getMessage() + " Posição:" + e.getPosition(), e);
 		} catch (Exception e) {
 			throw new CompilerException("Erro durante a compilação: " + e.getMessage(), e);
 		}

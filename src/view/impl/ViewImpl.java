@@ -78,7 +78,7 @@ public class ViewImpl extends JFrame implements View {
 	public ViewImpl() {
 		this.listeners = new ArrayList<>();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 643, 449);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -109,7 +109,6 @@ public class ViewImpl extends JFrame implements View {
 		txtCode.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		txtCode.setAutoIndentEnabled(true);
 		
-		txtCode.setText("Code");
 		txtCode.addKeyListener(new ChangeCodeListener());
 		contentPane.add(new RTextScrollPane(txtCode), BorderLayout.CENTER);
 		txtCode.setColumns(10);
