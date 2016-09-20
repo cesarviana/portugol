@@ -1,4 +1,5 @@
 package gals;
+
 public class Token
 {
     private int id;

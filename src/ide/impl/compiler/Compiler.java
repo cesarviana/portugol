@@ -12,8 +12,6 @@ public class Compiler {
 
 	private static Compiler instance;
 
-	private final Semantico semantico = new SemanticoPortugol();
-
 	public static Compiler instance() {
 
 		if (instance == null)
@@ -24,6 +22,7 @@ public class Compiler {
 	public void compile(PortugolFile selectedFile) {
 		Lexico lexico = new Lexico(selectedFile.getText());
 		Sintatico sintatico = new Sintatico();
+		Semantico semantico = new SemanticoPortugol();
 		try {
 			sintatico.parse(lexico, semantico);
 		} catch (LexicalError e) {

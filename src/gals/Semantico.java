@@ -1,4 +1,6 @@
 package gals;
+
+
 public class Semantico implements Constants
 {
     public void executeAction(int action, Token token)	throws SemanticError

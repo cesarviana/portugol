@@ -4,11 +4,19 @@ public class Var {
 
 	private final String scope, type, id;
 
-	public Var(String scope, String type, String id) {
+	private Var(String scope, String type, String id) {
 		super();
 		this.scope = scope;
 		this.type = type;
 		this.id = id;
+	}
+	
+	public static Var instance(String scope, String type, String id){
+		return new Var(scope, type, id);
+	}
+	
+	public String getScope() {
+		return scope;
 	}
 
 	@Override
@@ -46,6 +54,11 @@ public class Var {
 		} else if (!type.equals(other.type))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return id;
 	}
 	
 }

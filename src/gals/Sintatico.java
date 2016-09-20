@@ -1,9 +1,10 @@
 package gals;
+
 import java.util.Stack;
 
 public class Sintatico implements Constants
 {
-    private Stack stack = new Stack();
+    private Stack<Integer> stack = new Stack<Integer>();
     private Token currentToken;
     private Token previousToken;
     private Lexico scanner;
@@ -35,7 +36,7 @@ public class Sintatico implements Constants
         }
 
         int token = currentToken.getId();
-        int state = ((Integer)stack.peek()).intValue();
+        int state = stack.peek().intValue();
 
         int[] cmd = PARSER_TABLE[state][token-1];
 
@@ -53,7 +54,7 @@ public class Sintatico implements Constants
                 for (int i=0; i<prod[1]; i++)
                     stack.pop();
 
-                int oldState = ((Integer)stack.peek()).intValue();
+                int oldState = stack.peek().intValue();
                 stack.push(new Integer(PARSER_TABLE[oldState][prod[0]-1][1]));
                 return false;
 
