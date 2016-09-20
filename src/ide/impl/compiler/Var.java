@@ -3,7 +3,8 @@ package ide.impl.compiler;
 public class Var {
 
 	private final String scope, type, id;
-
+	private String value;
+	
 	private Var(String scope, String type, String id) {
 		super();
 		this.scope = scope;
@@ -17,6 +18,14 @@ public class Var {
 	
 	public String getScope() {
 		return scope;
+	}
+
+	public String getId() {
+		return id;
+	}
+	
+	public String getValue() {
+		return value;
 	}
 
 	@Override
@@ -60,5 +69,14 @@ public class Var {
 	public String toString() {
 		return id;
 	}
+	
+	public static final Var NULL = new Var("", "", ""){
+		@Override
+		public String getScope() { return ""; }
+		@Override
+		public String getId() { return ""; }
+		@Override
+		public String getValue() { return ""; }
+	};
 	
 }

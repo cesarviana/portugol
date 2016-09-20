@@ -11,8 +11,8 @@ public class SemanticoPortugol extends Semantico {
 	private String type = "";
 	private String id = "";
 
-	public SemanticoPortugol() {
-		table = SimbolTable.instance();
+	public SemanticoPortugol(SimbolTable simbolTable) {
+		table = simbolTable;
 	}
 
 	@Override
