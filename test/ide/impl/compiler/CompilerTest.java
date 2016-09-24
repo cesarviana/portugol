@@ -33,7 +33,12 @@ public class CompilerTest {
 
 	private void compile(String code) {
 		PortugolFile pf = TestUtil.createPortugolFile(code);
-		compiler.compile(pf);
+		try{
+			compiler.compile(pf);
+		} catch (Exception e){
+			e.printStackTrace();;
+			throw e;
+		}
 	}
 	
 	@Test(expected=CompilerException.class)
@@ -55,6 +60,17 @@ public class CompilerTest {
 					  "}";
 		compile(code);
 		assertFalse(simbolTable.getVar("i").equals(Var.NULL));
+	}
+
+	@Test(expected=CompilerException.class)
+	public void testAtribuicaoAConstante() {
+		String code = "programa {"+ 
+						"const inteiro a = 10"+
+						"funcao inicio(){"+
+							"a=20"+
+					   "}"	+
+					  "}";
+		compile(code);
 	}
 	
 	@Test

@@ -10,6 +10,7 @@ public class SemanticoPortugol extends Semantico {
 	private String scope = "";
 	private String type = "";
 	private String id = "";
+	private boolean constant = false;
 
 	public SemanticoPortugol(SimbolTable simbolTable) {
 		table = simbolTable;
@@ -35,7 +36,7 @@ public class SemanticoPortugol extends Semantico {
 		case 2:
 			id = token.getLexeme();
 			if(type!=""){
-				table.addVar(Var.instance(scope, type, id));
+				table.addVar(Var.instance(scope, type, id, constant));
 			} else {
 				System.out.println("USAR VARIAVEL");
 			}
@@ -43,14 +44,19 @@ public class SemanticoPortugol extends Semantico {
 		case 3:
 			type = "";
 			break;
+		case 4:
+			constant = true;
+			break;
 		case 41:
 			id = token.getLexeme();
 			break;
 		case 42:
 			onAtribuitionInitializeVarAndClearType();
+			table.validadeAtribuition(id);
 			break;
 		case 43:
 			table.validateVarUse(token);
+			table.getVar(id).setValue(token.getLexeme());
 		default:
 			break;
 		}

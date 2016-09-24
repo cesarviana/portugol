@@ -5,16 +5,23 @@ public class Var {
 	private final String scope, type, id;
 	private String value;
 	private boolean initilized = false;
+	private boolean constant = false;
 
-	private Var(String scope, String type, String id) {
+	private Var(String scope, String type, String id, boolean constant) {
 		super();
 		this.scope = scope;
 		this.type = type;
 		this.id = id;
+		this.constant = constant;
 	}
 
 	public static Var instance(String scope, String type, String id) {
-		return new Var(scope, type, id);
+		return instance(scope, type, id, false);
+	}
+	
+	public static Var instance(String scope, String type, String id,
+			boolean constant) {
+		return new Var(scope, type, id, constant);
 	}
 
 	public String getScope() {
@@ -28,7 +35,15 @@ public class Var {
 	public String getValue() {
 		return value;
 	}
+	
+	public void setValue(String value) {
+		this.value = value;
+	}
 
+	public boolean isConstant() {
+		return constant;
+	}
+	
 	public void initialize() {
 		this.initilized = true;
 	}
@@ -79,7 +94,7 @@ public class Var {
 		return id;
 	}
 
-	public static final Var NULL = new Var("", "", "") {
+	public static final Var NULL = new Var("", "", "",false) {
 		@Override
 		public String getScope() {
 			return "";

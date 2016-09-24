@@ -9,7 +9,7 @@ import gals.Token;
 
 public class SimbolTable {
 
-	private static SimbolTable instance;
+	//private static SimbolTable instance;
 
 	private Map<String,Var> vars;
 	private Set<Function> functions;
@@ -65,6 +65,13 @@ public class SimbolTable {
 	private boolean matchVarRegexAndHasntVar(String lexeme) {
 		boolean matchIdRegex = lexeme.matches("[a-zA-Z][a-zA-Z0-9_]*");
 		return matchIdRegex && getVar(lexeme).equals(Var.NULL);
+	}
+
+	public void validadeAtribuition(String id) {
+		Var var = getVar(id);
+		if( var.isConstant() && var.getValue() != null){
+			throw new CompilerException("Não é permitida atribuição à constante " + var);
+		}
 	}
 
 }

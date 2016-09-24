@@ -10,7 +10,7 @@ import ide.impl.files.PortugolFile;
 
 public class Compiler {
 
-	private static Compiler instance;
+	//private static Compiler instance;
 	private final SimbolTable simbolTable;
 	
 	public static Compiler instance(){
@@ -39,7 +39,7 @@ public class Compiler {
 		} catch (SyntaticError e) {
 			throw new CompilerException("Erro sintático: " + e.getMessage() + " Posição:" + e.getPosition(), e);
 		} catch (SemanticError e) {
-			throw new CompilerException("Erro semantico: "+ e.getMessage() + " Posição:" + e.getPosition(), e);
+			throw new CompilerException("Erro semântico: "+ e.getMessage() + " Posição:" + e.getPosition(), e);
 		} catch (Exception e) {
 			throw new CompilerException("Erro durante a compilação: " + e.getMessage(), e);
 		}
