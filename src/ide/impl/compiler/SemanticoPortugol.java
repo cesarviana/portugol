@@ -21,7 +21,7 @@ public class SemanticoPortugol extends Semantico {
 		try {
 			tryExecute(action, token);
 		} catch (Exception e) {
-			handleException(e,action,token);
+			handleException(e, action, token);
 		}
 	}
 
@@ -35,7 +35,7 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 2:
 			id = token.getLexeme();
-			if(type!=""){
+			if (type != "") {
 				table.addVar(Var.instance(scope, type, id, constant));
 			} else {
 				System.out.println("USAR VARIAVEL");
@@ -56,7 +56,11 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 43:
 			table.validateVarUse(token);
-			table.getVar(id).setValue(token.getLexeme());
+			table.setValue(id, token.getLexeme());
+			break;
+		case 5:
+			table.addFunction(Function.instance(token.getLexeme()));
+			break;
 		default:
 			break;
 		}
@@ -66,8 +70,9 @@ public class SemanticoPortugol extends Semantico {
 		table.initialize(id);
 		type = "";
 	}
-	
-	private void handleException(Exception e, int action, Token token) throws SemanticError {
+
+	private void handleException(Exception e, int action, Token token)
+			throws SemanticError {
 		throw new SemanticError(e.getMessage(), token.getPosition());
 	}
 }

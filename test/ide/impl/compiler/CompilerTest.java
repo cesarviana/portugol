@@ -31,16 +31,6 @@ public class CompilerTest {
 		assertFalse(simbolTable.getVar("b").isInitialized());
 	}
 
-	private void compile(String code) {
-		PortugolFile pf = TestUtil.createPortugolFile(code);
-		try{
-			compiler.compile(pf);
-		} catch (Exception e){
-			e.printStackTrace();;
-			throw e;
-		}
-	}
-	
 	@Test(expected=CompilerException.class)
 	public void testUsaAntesDeDeclarar(){
 		String code = "programa {"+
@@ -73,9 +63,23 @@ public class CompilerTest {
 		compile(code);
 	}
 	
-	@Test
-	public void variavel() throws Exception {
-		assertTrue("b".matches("[a-zA-Z][a-zA-Z0-9_]*"));
+	@Test(expected=CompilerException.class)
+	public void testDeclaracaoDuasFuncoesComMesmoNome() {
+		String code = "programa {"+
+						"funcao inicio(){}"	+
+					    "funcao inicio(){}"	+
+					  "}";
+		compile(code);
 	}
 
+	private void compile(String code) {
+		PortugolFile pf = TestUtil.createPortugolFile(code);
+		try{
+			compiler.compile(pf);
+		} catch (Exception e){
+			e.printStackTrace();;
+			throw e;
+		}
+	}
+	
 }

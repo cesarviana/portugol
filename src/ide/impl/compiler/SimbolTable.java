@@ -74,4 +74,12 @@ public class SimbolTable {
 		}
 	}
 
+	public void setValue(String id, String value) {
+		getVar(id).setValue(value);
+	}
+
+	public void validadeNewFunction(String scope) {
+		
+	}
+
 }
