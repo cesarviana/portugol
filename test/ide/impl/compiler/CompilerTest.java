@@ -20,16 +20,30 @@ public class CompilerTest {
 	}
 	
 	@Test
-	public void testDeclaracao() {
+	public void testDeclaracaoComInicializacao() {
 		String code = "programa {"+
 							"funcao inicio(){"+
-								"inteiro a=0, b=0"+
+								"inteiro a=0, b"+
 						   "}"	+
 					  "}";
+		compile(code);
+		assertTrue(simbolTable.getVar("a").isInitialized());
+		assertFalse(simbolTable.getVar("b").isInitialized());
+	}
+
+	private void compile(String code) {
 		PortugolFile pf = TestUtil.createPortugolFile(code);
 		compiler.compile(pf);
-		assertTrue(simbolTable.getVar("a").getValue().equals("0"));
-		assertTrue(simbolTable.getVar("b").getValue().equals("0"));
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testUsaAntesDeDeclarar(){
+		String code = "programa {"+
+						"funcao inicio(){"+
+							"inteiro a = b"+	
+						"}"
+					+ "}";
+		compile(code);
 	}
 	
 	@Test
@@ -39,8 +53,13 @@ public class CompilerTest {
 								"para (inteiro i = 0; i<10; i++){}"+
 						   "}"	+
 					  "}";
-		PortugolFile pf = TestUtil.createPortugolFile(code);
-		compiler.compile(pf);
+		compile(code);
+		assertFalse(simbolTable.getVar("i").equals(Var.NULL));
+	}
+	
+	@Test
+	public void variavel() throws Exception {
+		assertTrue("b".matches("[a-zA-Z][a-zA-Z0-9_]*"));
 	}
 
 }

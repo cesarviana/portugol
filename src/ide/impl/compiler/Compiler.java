@@ -18,9 +18,10 @@ public class Compiler {
 	}
 	
 	public static Compiler instance(SimbolTable simbolTable) {
-		if (instance == null)
-			instance = new Compiler(simbolTable);
-		return instance;
+//		if (instance == null)
+//			instance = new Compiler(simbolTable);
+//		return instance;
+		return new Compiler(simbolTable);
 	}
 	
 	private Compiler(SimbolTable simbolTable) {

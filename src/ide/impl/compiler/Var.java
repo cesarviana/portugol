@@ -4,18 +4,19 @@ public class Var {
 
 	private final String scope, type, id;
 	private String value;
-	
+	private boolean initilized = false;
+
 	private Var(String scope, String type, String id) {
 		super();
 		this.scope = scope;
 		this.type = type;
 		this.id = id;
 	}
-	
-	public static Var instance(String scope, String type, String id){
+
+	public static Var instance(String scope, String type, String id) {
 		return new Var(scope, type, id);
 	}
-	
+
 	public String getScope() {
 		return scope;
 	}
@@ -23,9 +24,17 @@ public class Var {
 	public String getId() {
 		return id;
 	}
-	
+
 	public String getValue() {
 		return value;
+	}
+
+	public void initialize() {
+		this.initilized = true;
+	}
+	
+	public boolean isInitialized() {
+		return initilized;
 	}
 
 	@Override
@@ -69,14 +78,27 @@ public class Var {
 	public String toString() {
 		return id;
 	}
-	
-	public static final Var NULL = new Var("", "", ""){
+
+	public static final Var NULL = new Var("", "", "") {
 		@Override
-		public String getScope() { return ""; }
+		public String getScope() {
+			return "";
+		}
+
 		@Override
-		public String getId() { return ""; }
+		public String getId() {
+			return "";
+		}
+
 		@Override
-		public String getValue() { return ""; }
+		public String getValue() {
+			return "";
+		}
+		
+		@Override
+		public boolean isInitialized() {
+			return false;
+		}
 	};
-	
+
 }
