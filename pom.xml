@@ -30,5 +30,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
 	</dependencies>
 </project>
