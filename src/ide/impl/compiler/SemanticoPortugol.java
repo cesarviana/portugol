@@ -10,9 +10,10 @@ public class SemanticoPortugol extends Semantico {
 	private String scope = "";
 	private String type = "";
 	private String id = "";
+	private boolean constant = false;
 
-	public SemanticoPortugol() {
-		table = SimbolTable.instance();
+	public SemanticoPortugol(SimbolTable simbolTable) {
+		table = simbolTable;
 	}
 
 	@Override
@@ -20,11 +21,11 @@ public class SemanticoPortugol extends Semantico {
 		try {
 			tryExecute(action, token);
 		} catch (Exception e) {
-			handleException(e,action,token);
+			handleException(e, action, token);
 		}
 	}
 
-	private void tryExecute(int action, Token token) {
+	private void tryExecute(int action, Token token) throws SemanticError {
 		switch (action) {
 		case 0:
 			scope = token.getLexeme();
@@ -34,14 +35,44 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 2:
 			id = token.getLexeme();
-			table.addVar(Var.instance(scope, type, id));
+			if (type != "") {
+				table.addVar(Var.instance(scope, type, id, constant));
+			} else {
+				System.out.println("USAR VARIAVEL");
+			}
+			break;
+		case 3:
+			type = "";
+			break;
+		case 4:
+			constant = true;
+			break;
+		case 41:
+			id = token.getLexeme();
+			break;
+		case 42:
+			onAtribuitionInitializeVarAndClearType();
+			table.validadeAtribuition(id);
+			break;
+		case 43:
+			table.validateVarUse(token);
+			table.setValue(id, token.getLexeme());
+			break;
+		case 5:
+			table.addFunction(Function.instance(token.getLexeme()));
 			break;
 		default:
 			break;
 		}
 	}
-	
-	private void handleException(Exception e, int action, Token token) throws SemanticError {
+
+	private void onAtribuitionInitializeVarAndClearType() {
+		table.initialize(id);
+		type = "";
+	}
+
+	private void handleException(Exception e, int action, Token token)
+			throws SemanticError {
 		throw new SemanticError(e.getMessage(), token.getPosition());
 	}
 }

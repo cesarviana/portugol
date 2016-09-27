@@ -40,5 +40,10 @@ public class Function {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return id;
+	}
 
 }

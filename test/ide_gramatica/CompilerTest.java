@@ -1,5 +1,7 @@
 package ide_gramatica;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,10 +12,34 @@ import util.TestUtil;
 public class CompilerTest {
 
 	private Compiler compiler;
+	private SimbolTable simbolTable;
 	
 	@Before
 	public void setup() {
-		compiler = Compiler.instance();
+		simbolTable = SimbolTable.instance();
+		compiler = Compiler.instance(simbolTable);
+	}
+	
+	@Test
+	public void testDeclaracaoComInicializacao() {
+		String code = "programa {"+
+							"funcao inicio(){"+
+								"inteiro a=0, b"+
+						   "}"	+
+					  "}";
+		compile(code);
+		assertTrue(simbolTable.getVar("a").isInitialized());
+		assertFalse(simbolTable.getVar("b").isInitialized());
+	}
+
+	@Test(expected=CompilerException.class)
+	public void testUsaAntesDeDeclarar(){
+		String code = "programa {"+
+						"funcao inicio(){"+
+							"inteiro a = b"+	
+						"}"
+					+ "}";
+		compile(code);
 	}
 	
 	@Test
@@ -23,10 +49,38 @@ public class CompilerTest {
 								"para (inteiro i = 0; i<10; i++){}"+
 						   "}"	+
 					  "}";
-		PortugolFile pf = TestUtil.createPortugolFile(code);
-		compiler.compile(pf);
+		compile(code);
+		assertFalse(simbolTable.getVar("i").equals(Var.NULL));
 	}
 
+	@Test(expected=CompilerException.class)
+	public void testAtribuicaoAConstante() {
+		String code = "programa {"+ 
+						"const inteiro a = 10"+
+						"funcao inicio(){"+
+							"a=20"+
+					   "}"	+
+					  "}";
+		compile(code);
+	}
 	
+	@Test(expected=CompilerException.class)
+	public void testDeclaracaoDuasFuncoesComMesmoNome() {
+		String code = "programa {"+
+						"funcao inicio(){}"	+
+					    "funcao inicio(){}"	+
+					  "}";
+		compile(code);
+	}
 
+	private void compile(String code) {
+		PortugolFile pf = TestUtil.createPortugolFile(code);
+		try{
+			compiler.compile(pf);
+		} catch (Exception e){
+			e.printStackTrace();;
+			throw e;
+		}
+	}
+	
 }
