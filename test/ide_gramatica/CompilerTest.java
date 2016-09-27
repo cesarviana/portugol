@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ide.impl.compiler.Compiler;
+import ide.impl.compiler.CompilerException;
+import ide.impl.compiler.SimbolTable;
+import ide.impl.compiler.Var;
 import ide.impl.files.PortugolFile;
 import util.TestUtil;
 
@@ -18,6 +21,17 @@ public class CompilerTest {
 	public void setup() {
 		simbolTable = SimbolTable.instance();
 		compiler = Compiler.instance(simbolTable);
+	}
+	
+	@Test
+	public void testInsercaoInteiroNaTabelaDeSimbolos() {
+		String code = "programa {"+
+							"funcao inicio(){"+
+								"inteiro a=0, b"+
+						   "}"	+
+					  "}";
+		compile(code);
+		assertEquals("n=a|t=inteiro|i=t|u=f|p=f|pp=0|v=f|f=f", simbolTable.getRegistry("a"));
 	}
 	
 	@Test
@@ -82,5 +96,4 @@ public class CompilerTest {
 			throw e;
 		}
 	}
-	
 }

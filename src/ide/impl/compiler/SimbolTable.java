@@ -13,6 +13,7 @@ public class SimbolTable {
 
 	private Map<String,Var> vars;
 	private Set<Function> functions;
+	private Map<String, SimbolTableRegistry> registries;
 
 	public static SimbolTable instance() {
 //		if (instance == null)
@@ -34,6 +35,11 @@ public class SimbolTable {
 		if(functions.stream().anyMatch(f->f.getId().equals(var.toString())))
 			throw new CompilerException("Já há uma função com o nome " + var);
 		this.vars.put(var.getId(),var);
+		//putRegistry(var.getId(), var);
+	}
+
+	private void putRegistry(String id, SimbolTableRegistry registry) {
+		this.registries.put(id, registry);
 	}
 
 	public void addFunction(Function function) {
@@ -80,6 +86,10 @@ public class SimbolTable {
 
 	public void validadeNewFunction(String scope) {
 		
+	}
+
+	public SimbolTableRegistry getRegistry(String name) {
+		return registries.get(name);
 	}
 
 }
