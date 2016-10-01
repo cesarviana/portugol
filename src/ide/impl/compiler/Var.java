@@ -1,9 +1,11 @@
 package ide.impl.compiler;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(of={"id", "scope"})
 public class Var {
 	private final String scope, type, id;
@@ -30,6 +32,10 @@ public class Var {
 
 	public void initialize() {
 		this.initialized = true;
+	}	
+	
+	public void use(){
+		this.setUsed(true);
 	}
 
 	@Override
