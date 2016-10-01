@@ -8,7 +8,6 @@ import ide.impl.compiler.registryControl.VarRegistry;
 
 public class SimbolTable {
 
-	private final Map<String,Var> vars;
 	private final Map<String, Function> functions;
 	private final Map<String, Scope> scopes;
 	private final Map<Registry, Registry> registries;
@@ -18,7 +17,6 @@ public class SimbolTable {
 	}
 
 	private SimbolTable() {
-		vars = new HashMap<>();
 		functions = new HashMap<>();
 		registries = new HashMap<>();
 		scopes = new HashMap<>();
@@ -27,12 +25,17 @@ public class SimbolTable {
 	public void addVar(Var var) {
 		System.out.println("SimbolTable.addVar() = " + var);
 		validadeNameOfAFunction(var);
-		addVarToListAndToScope(var);
+		addVarToScope(var);
 	}
 
-	private void addVarToListAndToScope(Var var) {
+	private void validadeNameOfAFunction(Var var) {
+		if (functions.values().stream().anyMatch(f -> f.getId().equals(var.toString())))
+			throw new CompilerException("Já há uma função com o nome " + var);		
+		putRegistry(new VarRegistry(var));
+	}
+	
+	private void addVarToScope(Var var) {
 		getScope(var.getScope()).addVar(var);
-		this.vars.put(var.getId(), var);
 	}
 	
 	public void addParam(Var param) {
@@ -41,27 +44,23 @@ public class SimbolTable {
 		function.addVar(param);
 	}
 
-	
-	private void validadeNameOfAFunction(Var var) {
-		if (functions.values().stream().anyMatch(f -> f.getId().equals(var.toString())))
-			throw new CompilerException("Já há uma função com o nome " + var);
-		this.vars.put(var.getId(), var);		
-		putRegistry(new VarRegistry(var));
-	}
-
 	private void putRegistry(Registry registry) {
 		this.registries.put(registry, registry);
 	}
 
 	public void addFunction(Function function) {
 		validadeSameName(function);
-		validateNameOfAVar(function);
+		validateNameOfAGlobalVar(function);
 		this.functions.put(function.getId(),function);
-		this.scopes.put(function.getId(), function);
+		addScope(function);
+	}
+	
+	public void addScope(Scope scope) {
+		scopes.put(scope.getId(), scope);
 	}
 
-	private void validateNameOfAVar(Function function) {
-		if (vars.values().stream()
+	private void validateNameOfAGlobalVar(Function function) {
+		if (getScope("programa").getVars().values().stream()
 				.anyMatch(v -> v.toString().equals(function.getId())))
 			throw new CompilerException("Há uma variável chamada " + function);
 	}
@@ -117,7 +116,8 @@ public class SimbolTable {
 	}
 
 
-	public Registry getRegistry(Registry similar) {
-		return registries.get(similar);
+	public Registry getRegistry(Registry registry) {
+		return registries.get(registry);
 	}
+
 }
