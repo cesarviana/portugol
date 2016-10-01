@@ -1,13 +1,15 @@
 package ide.impl.compiler;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class Var //implements SimbolTableRegistry 
-{
+@EqualsAndHashCode(of={"id", "scope"})
+public class Var {
 	private final String scope, type, id;
 	private String value;
 	private boolean initialized = false;
+	private boolean used = false;
 	private boolean constant = false;
 
 	private Var(String scope, String type, String id, boolean constant) {
@@ -21,12 +23,11 @@ public class Var //implements SimbolTableRegistry
 	public static Var instance(String scope, String type, String id) {
 		return instance(scope, type, id, false);
 	}
-	
-	public static Var instance(String scope, String type, String id,
-			boolean constant) {
+
+	public static Var instance(String scope, String type, String id, boolean constant) {
 		return new Var(scope, type, id, constant);
 	}
-	
+
 	public void initialize() {
 		this.initialized = true;
 	}
@@ -36,7 +37,7 @@ public class Var //implements SimbolTableRegistry
 		return id;
 	}
 
-	public static final Var NULL = new Var("", "", "",false) {
+	public static final Var NULL = new Var("", "", "", false) {
 		@Override
 		public String getScope() {
 			return "";
@@ -51,11 +52,10 @@ public class Var //implements SimbolTableRegistry
 		public String getValue() {
 			return "";
 		}
-		
+
 		@Override
 		public boolean isInitialized() {
 			return false;
 		}
 	};
-
 }

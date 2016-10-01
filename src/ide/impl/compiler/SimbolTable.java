@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import gals.Token;
+import ide.impl.compiler.registryControl.SimbolTableRegistry;
+import ide.impl.compiler.registryControl.VarRegistry;
 
 public class SimbolTable {
 
@@ -25,6 +27,7 @@ public class SimbolTable {
 	private SimbolTable() {
 		vars = new HashMap<>();
 		functions = new HashSet<>();
+		registries = new HashMap<>();
 	}
 
 	public void addVar(Var var) {
@@ -35,7 +38,7 @@ public class SimbolTable {
 		if(functions.stream().anyMatch(f->f.getId().equals(var.toString())))
 			throw new CompilerException("Já há uma função com o nome " + var);
 		this.vars.put(var.getId(),var);
-		//putRegistry(var.getId(), var);
+		putRegistry(var.getId(), new VarRegistry(var));
 	}
 
 	private void putRegistry(String id, SimbolTableRegistry registry) {
@@ -90,6 +93,11 @@ public class SimbolTable {
 
 	public SimbolTableRegistry getRegistry(String name) {
 		return registries.get(name);
+	}
+
+	public void setUsed(String id) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

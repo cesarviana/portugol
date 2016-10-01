@@ -9,6 +9,7 @@ import ide.impl.compiler.Compiler;
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import ide.impl.compiler.registryControl.SimbolTableRegistry;
 import ide.impl.files.PortugolFile;
 import util.TestUtil;
 
@@ -27,11 +28,14 @@ public class CompilerTest {
 	public void testInsercaoInteiroNaTabelaDeSimbolos() {
 		String code = "programa {"+
 							"funcao inicio(){"+
-								"inteiro a=0, b"+
+								" inteiro a=0, b "+
+								" inteiro c=a, b "+
 						   "}"	+
 					  "}";
 		compile(code);
-		assertEquals("n=a|t=inteiro|i=t|u=f|p=f|pp=0|v=f|f=f", simbolTable.getRegistry("a"));
+		SimbolTableRegistry registrya = simbolTable.getRegistry("a");
+		String expected = "name=a |type=inteiro |initialized=true |used=true";
+		assertEquals(expected, registrya.toString());
 	}
 	
 	@Test
