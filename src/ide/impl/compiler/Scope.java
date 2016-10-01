@@ -1,6 +1,6 @@
 package ide.impl.compiler;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.EqualsAndHashCode;
@@ -17,7 +17,11 @@ public class Scope {
 	
 	public Scope(String id) {
 		this.id = id;
-		vars = new LinkedHashMap<>();
+		vars = new HashMap<>();
+	}
+	
+	public static Scope instance(String id){
+		return new Scope(id);
 	}
 	
 	public void addVar(Var var) {
@@ -41,5 +45,10 @@ public class Scope {
 			return Var.NULL;
 		}
 	};
+	
+	@Override
+	public String toString() {
+		return id;
+	}
 	
 }
