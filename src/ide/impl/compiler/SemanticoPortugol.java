@@ -61,6 +61,10 @@ public class SemanticoPortugol extends Semantico {
 		case 5:
 			table.addFunction(Function.instance(token.getLexeme()));
 			break;
+		case 7:
+			id = token.getLexeme();
+			Var param = Var.instance(scope, type, id);
+			table.addParam(param);
 		case 6: // variable use
 			String id = token.getLexeme();
 			table.setUsed(id, scope);

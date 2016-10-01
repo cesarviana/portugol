@@ -8,15 +8,17 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(of={"id", "scope"})
 public class Var {
-	private final String scope, type, id;
+	private final String scopeStr, type, id;
 	private String value;
 	private boolean initialized = false;
 	private boolean used = false;
 	private boolean constant = false;
+	private boolean param = false;
+	private Scope scope;
 
 	private Var(String scope, String type, String id, boolean constant) {
 		super();
-		this.scope = scope;
+		this.scopeStr = scope;
 		this.type = type;
 		this.id = id;
 		this.constant = constant;
@@ -25,10 +27,16 @@ public class Var {
 	public static Var instance(String scope, String type, String id) {
 		return instance(scope, type, id, false);
 	}
-
-	public static Var instance(String scope, String type, String id, boolean constant) {
+	
+	public static Var instance(String scope, String type, String id,
+			boolean constant) {
 		return new Var(scope, type, id, constant);
 	}
+
+	public String getScope() {
+		return scopeStr;
+	}
+
 
 	public void initialize() {
 		this.initialized = true;
@@ -63,5 +71,23 @@ public class Var {
 		public boolean isInitialized() {
 			return false;
 		}
+		
+		@Override
+		public boolean isParam() {
+			return false;
+		}
 	};
+
+	public int getParamPosition() {
+		if (scope instanceof Function) {
+			Function function = (Function) scope;
+			return function.getParamPosition(this);
+		}
+		return 0;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
+	}
+
 }

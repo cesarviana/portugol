@@ -1,6 +1,7 @@
 package ide_gramatica;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +75,39 @@ public class CompilerTest {
 		String code = "programa {"+
 						"funcao inicio(){}"	+
 					    "funcao inicio(){}"	+
+					  "}";
+		compile(code);
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testVariavelComMesmoIdPassadoPorParametro() throws Exception {
+		String code = "programa {"+
+						"funcao inicio(inteiro a) {"+
+						"   inteiro a = 1 "+
+						"}"+
+					  "}";
+		compile(code);
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testDoisParametrosComMesmoIdNome() throws Exception {
+		String code = "programa {"+
+						"funcao inicio(inteiro a, cadeia a) {"+
+						"}"+
+					  "}";
+		compile(code);
+	}
+	
+	@Test
+	public void testDeclaracaoDeVariavelComMesmoNomeEmOutroEscopo() throws Exception {
+		String code = "programa {"+
+						"funcao inicio(inteiro a) {"+
+						"}"+
+						"funcao dois(inteiro a) {"+
+						"}"+
+						"funcao tres() {"+
+							"inteiro a"+
+						"}"+
 					  "}";
 		compile(code);
 	}

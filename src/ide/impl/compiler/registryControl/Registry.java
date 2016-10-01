@@ -1,7 +1,5 @@
 package ide.impl.compiler.registryControl;
 
-import lombok.Data;
-
 public interface Registry {
 	String getName();
 	String getType();
@@ -13,6 +11,4 @@ public interface Registry {
 	//int getParameterPosition();
 	//boolean isVector();
 	//boolean isFunction();
-
-	
 }

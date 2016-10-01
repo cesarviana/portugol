@@ -1,25 +1,26 @@
 package ide.impl.compiler;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@Data
-@EqualsAndHashCode(of = "id")
-public class Function {
+import java.util.stream.Collectors;
 
-	private String id;
-
+public class Function extends Scope{
+	
 	public static Function instance(String id) {
 		return new Function(id);
 	}
 
 	private Function(String id) {
-		this.id = id;
+		super(id);
 	}
 
 	@Override
 	public String toString() {
-		return id;
+		return getId();
+	}
+
+	public int getParamPosition(Var var) {
+		return getVars().values().stream().filter(v -> v.isParam())
+				.collect(Collectors.toList()).indexOf(var) + 1;
 	}
 
 }
