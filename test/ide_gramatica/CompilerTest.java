@@ -1,10 +1,16 @@
-package ide.impl.compiler;
+package ide_gramatica;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import ide.impl.compiler.Compiler;
+import ide.impl.compiler.CompilerException;
+import ide.impl.compiler.SimbolTable;
+import ide.impl.compiler.Var;
+import ide.impl.compiler.registryControl.Registry;
+import ide.impl.compiler.registryControl.VarRegistry;
 import ide.impl.files.PortugolFile;
 import util.TestUtil;
 
@@ -27,8 +33,8 @@ public class CompilerTest {
 						   "}"	+
 					  "}";
 		compile(code);
-		assertTrue(simbolTable.getVar("a").isInitialized());
-		assertFalse(simbolTable.getVar("b").isInitialized());
+		assertTrue(simbolTable.getVar("a", "inicio").isInitialized());
+		assertFalse(simbolTable.getVar("b", "inicio").isInitialized());
 	}
 
 	@Test(expected=CompilerException.class)
@@ -49,7 +55,7 @@ public class CompilerTest {
 						   "}"	+
 					  "}";
 		compile(code);
-		assertFalse(simbolTable.getVar("i").equals(Var.NULL));
+		assertFalse(simbolTable.getVar("i", "inicio").equals(Var.NULL));
 	}
 
 	@Test(expected=CompilerException.class)
@@ -72,6 +78,7 @@ public class CompilerTest {
 		compile(code);
 	}
 	
+<<<<<<< HEAD:test/ide/impl/compiler/CompilerTest.java
 	@Test(expected=CompilerException.class)
 	public void testVariavelComMesmoIdPassadoPorParametro() throws Exception {
 		String code = "programa {"+
@@ -103,6 +110,37 @@ public class CompilerTest {
 						"}"+
 					  "}";
 		compile(code);
+=======
+	@Test
+	public void testUso() {
+		String code = "programa {"+
+							"funcao inicio(){"+
+								" inteiro a=0"+
+								" inteiro c=a"+
+						   "}"	+
+					  "}";
+		compile(code);
+		Var varA = simbolTable.getVar("a", "inicio");
+		Var varC = simbolTable.getVar("c", "inicio");
+		assertTrue(varA.isUsed());
+		assertFalse(varC.isUsed());
+	}
+	
+	@Test
+	public void testUsoVariavelIgualADoEscopoPai() {
+		String code = "programa {"+
+							" inteiro a = 0"+
+							" inteiro b = a " +
+							" funcao inicio(){"+
+								" inteiro a = 0"+
+						   "}"	+
+					  "}";
+		compile(code);
+		Registry registry_a_programa = simbolTable.getRegistry(VarRegistry.instance("programa","a"));
+		Registry registry_a_inicio = simbolTable.getRegistry(VarRegistry.instance("inicio","a"));
+		assertTrue(registry_a_programa.isUsed());
+		assertFalse(registry_a_inicio.isUsed());
+>>>>>>> 899a00f1f992ad8f4c0660697ecd72fa26b66196:test/ide_gramatica/CompilerTest.java
 	}
 
 	private void compile(String code) {
@@ -114,5 +152,4 @@ public class CompilerTest {
 			throw e;
 		}
 	}
-	
 }

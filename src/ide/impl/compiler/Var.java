@@ -1,10 +1,17 @@
 package ide.impl.compiler;
 
-public class Var {
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@EqualsAndHashCode(of={"id", "scope"})
+public class Var {
 	private final String scopeStr, type, id;
 	private String value;
-	private boolean initilized = false;
+	private boolean initialized = false;
+	private boolean used = false;
 	private boolean constant = false;
 	private boolean param = false;
 	private Scope scope;
@@ -30,73 +37,17 @@ public class Var {
 		return scopeStr;
 	}
 
-	public String getId() {
-		return id;
-	}
 
-	public String getValue() {
-		return value;
-	}
-	
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public boolean isConstant() {
-		return constant;
-	}
-
-	public void setParam(boolean param) {
-		this.param = param;
-	}
-	
-	public boolean isParam() {
-		return param;
-	}
-	
 	public void initialize() {
-		this.initilized = true;
+		this.initialized = true;
+	}	
+	
+	public void use(){
+		this.setUsed(true);
 	}
 	
-	public boolean isInitialized() {
-		return initilized;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((scopeStr == null) ? 0 : scopeStr.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Var other = (Var) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (scopeStr == null) {
-			if (other.scopeStr != null)
-				return false;
-		} else if (!scopeStr.equals(other.scopeStr))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
+	public void setUsed(boolean used){
+		this.used = used;
 	}
 
 	@Override
@@ -104,7 +55,7 @@ public class Var {
 		return id;
 	}
 
-	public static final Var NULL = new Var("", "", "",false) {
+	public static final Var NULL = new Var("", "", "", false) {
 		@Override
 		public String getScope() {
 			return "";
@@ -119,7 +70,7 @@ public class Var {
 		public String getValue() {
 			return "";
 		}
-		
+
 		@Override
 		public boolean isInitialized() {
 			return false;

@@ -2,8 +2,8 @@ package ide.impl.compiler;
 
 import java.util.stream.Collectors;
 
-public class Function extends Scope {
-
+public class Function extends Scope{
+	
 	public static Function instance(String id) {
 		return new Function(id);
 	}
@@ -16,7 +16,6 @@ public class Function extends Scope {
 		param.setParam(true);
 		addVar(param);
 	}
-
 	@Override
 	public String toString() {
 		return getId();

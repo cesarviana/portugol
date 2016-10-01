@@ -52,11 +52,11 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 42:
 			onAtribuitionInitializeVarAndClearType();
-			table.validadeAtribuition(id);
+			table.validadeAtribuition(id, scope);
 			break;
 		case 43:
-			table.validateVarUse(token);
-			table.setValue(id, token.getLexeme());
+			table.validateVarUse(token.getLexeme(), scope);
+			table.setValue(id, scope, token.getLexeme());
 			break;
 		case 5:
 			table.addFunction(Function.instance(token.getLexeme()));
@@ -65,6 +65,9 @@ public class SemanticoPortugol extends Semantico {
 			id = token.getLexeme();
 			Var param = Var.instance(scope, type, id);
 			table.addParam(param);
+		case 6: // variable use
+			String id = token.getLexeme();
+			table.setUsed(id, scope);
 			break;
 		default:
 			break;
@@ -72,7 +75,7 @@ public class SemanticoPortugol extends Semantico {
 	}
 
 	private void onAtribuitionInitializeVarAndClearType() {
-		table.initialize(id);
+		table.initialize(id, scope);
 		type = "";
 	}
 
