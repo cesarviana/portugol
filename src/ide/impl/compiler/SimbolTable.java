@@ -5,17 +5,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import gals.Token;
-import ide.impl.compiler.registryControl.SimbolTableRegistry;
+import ide.impl.compiler.registryControl.Registry;
 import ide.impl.compiler.registryControl.VarRegistry;
 
 public class SimbolTable {
 
 	//private static SimbolTable instance;
 
-	private Map<String,Var> vars;
+	private Map<Var,Var> vars;
 	private Set<Function> functions;
-	private Map<String, SimbolTableRegistry> registries;
+	private Map<Registry, Registry> registries;
 
 	public static SimbolTable instance() {
 //		if (instance == null)
@@ -37,12 +36,12 @@ public class SimbolTable {
 					+ " já foi declarada no escopo " + var.getScope());
 		if(functions.stream().anyMatch(f->f.getId().equals(var.toString())))
 			throw new CompilerException("Já há uma função com o nome " + var);
-		this.vars.put(var.getId(),var);
-		putRegistry(var.getId(), new VarRegistry(var));
+		this.vars.put(var, var);		
+		putRegistry(new VarRegistry(var));
 	}
 
-	private void putRegistry(String id, SimbolTableRegistry registry) {
-		this.registries.put(id, registry);
+	private void putRegistry(Registry registry) {
+		this.registries.put(registry, registry);
 	}
 
 	public void addFunction(Function function) {
@@ -54,50 +53,52 @@ public class SimbolTable {
 		this.functions.add(function);
 	}
 
-	public Var getVar(String id) {
-		return vars.getOrDefault(id, Var.NULL);
+	public Var getVar(String id, String scope) {
+		Var key = Var.instance(scope, null, id);
+		return vars.getOrDefault(key, Var.NULL);
 	}
 
-	public void initialize(String id) {
-		Var var = getVar(id);
+	public void initialize(String id, String scope) {
+		Var var = getVar(id, scope);
 		if(var==Var.NULL)
-			throw new CompilerException("Variável " + id + " não declarada");
+			throw new CompilerException("Variável \""+ id + "\" não declarada");
 		var.initialize();
 	}
+	
+	public void setUsed(String id, String scope) {
+		Var var = getVar(id, scope);
+		if(var==Var.NULL)
+			throw new CompilerException("Variável \""+ id + "\" não declarada");
+		var.use();
+	}
 
-	public void validateVarUse(Token token){
-		if(matchVarRegexAndHasntVar(token.getLexeme())){
-			throw new CompilerException("A variável "+ token.getLexeme()+ " não foi declarada.");
+	public void validateVarUse(String id, String scope){
+		if(matchVarRegexAndHasntVar(id, scope)){
+			throw new CompilerException("A variável \""+ id + "\" não foi declarada.");
 		}
 	}
 	
-	private boolean matchVarRegexAndHasntVar(String lexeme) {
-		boolean matchIdRegex = lexeme.matches("[a-zA-Z][a-zA-Z0-9_]*");
-		return matchIdRegex && getVar(lexeme).equals(Var.NULL);
+	private boolean matchVarRegexAndHasntVar(String id, String scope) {
+		boolean matchIdRegex = id.matches("[a-zA-Z][a-zA-Z0-9_]*");
+		return matchIdRegex && getVar(id, scope).equals(Var.NULL);
 	}
 
-	public void validadeAtribuition(String id) {
-		Var var = getVar(id);
+	public void validadeAtribuition(String id, String scope) {
+		Var var = getVar(id, scope);
 		if( var.isConstant() && var.getValue() != null){
 			throw new CompilerException("Não é permitida atribuição à constante " + var);
 		}
 	}
 
-	public void setValue(String id, String value) {
-		getVar(id).setValue(value);
+	public void setValue(String id, String scope, String value) {
+		getVar(id, scope).setValue(value);
 	}
 
 	public void validadeNewFunction(String scope) {
 		
 	}
 
-	public SimbolTableRegistry getRegistry(String name) {
-		return registries.get(name);
+	public Registry getRegistry(Registry similar) {
+		return registries.get(similar);
 	}
-
-	public void setUsed(String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
