@@ -1,49 +1,37 @@
 package ide.impl.compiler;
 
-public class Function {
+import java.util.stream.Collectors;
 
-	private String id;
-	
+public class Function extends Scope {
+
 	public static Function instance(String id) {
 		return new Function(id);
 	}
-	
-	private Function(String id){
-		this.id = id;
-	}
-	
-	public String getId() {
-		return id;
+
+	private Function(String id) {
+		super(id);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+	public void addParam(Var param) {
+		param.setParam(true);
+		addVar(param);
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Function other = (Function) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-	
 	@Override
 	public String toString() {
-		return id;
+		return getId();
+	}
+
+	public static final Function NULL = new Function("") {
+		@Override
+		public String getId() {
+			return "";
+		}
+	};
+
+	public int getParamPosition(Var var) {
+		return getVars().values().stream().filter(v -> v.isParam())
+				.collect(Collectors.toList()).indexOf(var) + 1;
 	}
 
 }

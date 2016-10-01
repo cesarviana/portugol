@@ -2,14 +2,16 @@ package ide.impl.compiler;
 
 public class Var {
 
-	private final String scope, type, id;
+	private final String scopeStr, type, id;
 	private String value;
 	private boolean initilized = false;
 	private boolean constant = false;
+	private boolean param = false;
+	private Scope scope;
 
 	private Var(String scope, String type, String id, boolean constant) {
 		super();
-		this.scope = scope;
+		this.scopeStr = scope;
 		this.type = type;
 		this.id = id;
 		this.constant = constant;
@@ -25,7 +27,7 @@ public class Var {
 	}
 
 	public String getScope() {
-		return scope;
+		return scopeStr;
 	}
 
 	public String getId() {
@@ -43,6 +45,14 @@ public class Var {
 	public boolean isConstant() {
 		return constant;
 	}
+
+	public void setParam(boolean param) {
+		this.param = param;
+	}
+	
+	public boolean isParam() {
+		return param;
+	}
 	
 	public void initialize() {
 		this.initilized = true;
@@ -57,7 +67,7 @@ public class Var {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((scope == null) ? 0 : scope.hashCode());
+		result = prime * result + ((scopeStr == null) ? 0 : scopeStr.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -76,10 +86,10 @@ public class Var {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (scope == null) {
-			if (other.scope != null)
+		if (scopeStr == null) {
+			if (other.scopeStr != null)
 				return false;
-		} else if (!scope.equals(other.scope))
+		} else if (!scopeStr.equals(other.scopeStr))
 			return false;
 		if (type == null) {
 			if (other.type != null)
@@ -114,6 +124,23 @@ public class Var {
 		public boolean isInitialized() {
 			return false;
 		}
+		
+		@Override
+		public boolean isParam() {
+			return false;
+		}
 	};
+
+	public int getParamPosition() {
+		if (scope instanceof Function) {
+			Function function = (Function) scope;
+			return function.getParamPosition(this);
+		}
+		return 0;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
+	}
 
 }

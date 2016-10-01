@@ -71,6 +71,16 @@ public class CompilerTest {
 					  "}";
 		compile(code);
 	}
+	
+	@Test(expected=CompilerException.class)
+	public void testVariavelComMesmoIdPassadoPorParametro() throws Exception {
+		String code = "programa {"+
+						"funcao inicio(inteiro a) {"+
+						"   inteiro a = 1 "+
+						"}"+
+					  "}";
+		compile(code);
+	}
 
 	private void compile(String code) {
 		PortugolFile pf = TestUtil.createPortugolFile(code);
