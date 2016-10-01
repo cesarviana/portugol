@@ -1,6 +1,7 @@
 package ide_gramatica;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +79,6 @@ public class CompilerTest {
 		compile(code);
 	}
 	
-<<<<<<< HEAD:test/ide/impl/compiler/CompilerTest.java
 	@Test(expected=CompilerException.class)
 	public void testVariavelComMesmoIdPassadoPorParametro() throws Exception {
 		String code = "programa {"+
@@ -110,7 +110,7 @@ public class CompilerTest {
 						"}"+
 					  "}";
 		compile(code);
-=======
+	}
 	@Test
 	public void testUso() {
 		String code = "programa {"+
@@ -140,7 +140,6 @@ public class CompilerTest {
 		Registry registry_a_inicio = simbolTable.getRegistry(VarRegistry.instance("inicio","a"));
 		assertTrue(registry_a_programa.isUsed());
 		assertFalse(registry_a_inicio.isUsed());
->>>>>>> 899a00f1f992ad8f4c0660697ecd72fa26b66196:test/ide_gramatica/CompilerTest.java
 	}
 
 	private void compile(String code) {

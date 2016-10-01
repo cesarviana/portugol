@@ -5,12 +5,5 @@ public interface Registry {
 	String getType();
 	boolean isInitialized();
 	boolean isUsed();
-	void setUsed(boolean b);
-	//String getScope();
-	//boolean isParameter();
-	//int getParameterPosition();
-	//boolean isVector();
-	//boolean isFunction();
-
-	
+	void setUsed(boolean b);	
 }

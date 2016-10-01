@@ -12,21 +12,10 @@ public class Function extends Scope{
 		super(id);
 	}
 
-	public void addParam(Var param) {
-		param.setParam(true);
-		addVar(param);
-	}
 	@Override
 	public String toString() {
 		return getId();
 	}
-
-	public static final Function NULL = new Function("") {
-		@Override
-		public String getId() {
-			return "";
-		}
-	};
 
 	public int getParamPosition(Var var) {
 		return getVars().values().stream().filter(v -> v.isParam())

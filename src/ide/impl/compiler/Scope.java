@@ -26,5 +26,20 @@ public class Scope {
 		vars.put(var.getId(), var);
 		var.setScope(this);
 	}
+
+	public Var getVar(String varId) {
+		return vars.getOrDefault(varId, Var.NULL);
+	}
+
+	public static final Scope NULL = new Scope("") {
+		@Override
+		public String getId() {
+			return "";
+		}
+		@Override
+		public Var getVar(String varId) {
+			return Var.NULL;
+		}
+	};
 	
 }
