@@ -90,6 +90,20 @@ public class CompilerTest {
 					  "}";
 		compile(code);
 	}
+	
+	@Test
+	public void testDeclaracaoDeVariavelComMesmoNomeEmOutroEscopo() throws Exception {
+		String code = "programa {"+
+						"funcao inicio(inteiro a) {"+
+						"}"+
+						"funcao dois(inteiro a) {"+
+						"}"+
+						"funcao tres() {"+
+							"inteiro a"+
+						"}"+
+					  "}";
+		compile(code);
+	}
 
 	private void compile(String code) {
 		PortugolFile pf = TestUtil.createPortugolFile(code);
