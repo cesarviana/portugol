@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = String
+Input = Stream
 Parser = SLR
 #RegularDefinitions
   
@@ -257,9 +257,9 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 	| FACA <ELEMENTO_FUNCAO> ENQUANTO "(" <PARAMETRO_ENQUANTO> ")" 
 	| FACA "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO "(" <PARAMETRO_ENQUANTO> ")";
 <PARA> ::=
-	  PARA "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{" "}"
-	| PARA "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" <ELEMENTO_FUNCAO>
-	| PARA "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{"  <LISTA_ELEMENTOS_FUNCAO> "}";
+	  PARA #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{" "}" #10
+	| PARA #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" <ELEMENTO_FUNCAO> #10
+	| PARA #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{"  <LISTA_ELEMENTOS_FUNCAO> "}" #10;
 <PARA_PARTE_1> ::= <TIPO>#1<VARIAVEL> | <VARIAVEL> | î;
 <PARA_PARTE_2> ::= <exp> | <CHAMADA_FUNCAO>;
 <PARA_PARTE_3> ::= <exp> | <VARIAVEL_COM_ATRIBUICAO> | î;

@@ -10,8 +10,6 @@ import ide.impl.compiler.Compiler;
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
-import ide.impl.compiler.registryControl.Registry;
-import ide.impl.compiler.registryControl.VarRegistry;
 import ide.impl.files.PortugolFile;
 import util.TestUtil;
 
@@ -130,17 +128,64 @@ public class CompilerTest {
 	@Test
 	public void testUsoVariavelIgualADoEscopoPai() {
 		String code = "programa {"+
-							" inteiro a = 0"+
+							" inteiro a = 0 "+
 							" inteiro b = a " +
 							" funcao inicio(){"+
 								" inteiro a = 0"+
 						   "}"	+
 					  "}";
 		compile(code);
-		Registry registry_a_programa = simbolTable.getRegistry(VarRegistry.instance("programa","a"));
-		Registry registry_a_inicio = simbolTable.getRegistry(VarRegistry.instance("inicio","a"));
-		assertTrue(registry_a_programa.isUsed());
-		assertFalse(registry_a_inicio.isUsed());
+		Var varAPrograma = simbolTable.getVar("a", "programa");
+		Var varAIncio = simbolTable.getVar("a", "inicio");
+		assertTrue(varAPrograma.isUsed());
+		assertFalse(varAIncio.isUsed());
+	}
+	
+	@Test
+	public void testUsoVariaveisIguaisEmTresFors() {
+		String code = " programa" +
+				" {" +
+				" 	funcao inicio()" +
+				" 	{" +
+				" 		para(inteiro i = 0; i < 10; i++){" +
+				" 		}" +
+				" 		para(inteiro i = 0; i < 10; i++){" +
+				" 		}" +
+				" 		para(inteiro i = 0; i < 10; i++){" +
+				" 		}" +
+				" 	}" +
+				" }";
+		
+		compile(code);
+		Var varIPara1 = simbolTable.getVar("i", "inicio->para0");
+		Var varIPara2 = simbolTable.getVar("i", "inicio->para1");
+		Var varIPara3 = simbolTable.getVar("i", "inicio->para2");
+		assertTrue(varIPara1.isUsed());
+		assertTrue(varIPara2.isUsed());
+		assertTrue(varIPara3.isUsed());
+	}
+	
+	@Test
+	public void testUsoVariaveisIguaisNoEscopoDeDoisFors() {
+		String code = " programa" +
+				" {" +
+				" 	funcao inicio()" +
+				" 	{" +
+				" 		para(inteiro i = 0; i < 10; i++){" +
+				" 			inteiro a = 0 " +
+				" 			inteiro b = a " +
+				" 		}" +
+				" 		para(inteiro i = 0; i < 10; i++){" +
+				" 			inteiro a " +
+				" 		}" +
+				" 	}" +
+				" }";
+		
+		compile(code);
+		Var varIPara1 = simbolTable.getVar("a", "inicio->para0");
+		Var varIPara2 = simbolTable.getVar("a", "inicio->para1");
+		assertTrue(varIPara1.isUsed());
+		assertFalse(varIPara2.isUsed());
 	}
 
 	private void compile(String code) {

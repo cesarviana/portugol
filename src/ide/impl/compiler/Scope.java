@@ -9,23 +9,26 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of={"id"})
+@EqualsAndHashCode(of = { "id" })
 public class Scope {
 
 	private String id;
 	private Map<String, Var> vars;
-	
+	private Scope parent = Scope.NULL;
+	private Map<String, Scope> childs;
+
 	public Scope(String id) {
 		this.id = id;
 		vars = new HashMap<>();
+		childs = new HashMap<>();
 	}
-	
-	public static Scope instance(String id){
+
+	public static Scope instance(String id) {
 		return new Scope(id);
 	}
-	
+
 	public void addVar(Var var) {
-		if(vars.containsKey(var.getId()))
+		if (vars.containsKey(var.getId()))
 			throw new CompilerException("A variável " + var + " já foi declarada na função " + this);
 		vars.put(var.getId(), var);
 		var.setScope(this);
@@ -40,15 +43,35 @@ public class Scope {
 		public String getId() {
 			return "";
 		}
+
 		@Override
 		public Var getVar(String varId) {
 			return Var.NULL;
 		}
 	};
-	
+
 	@Override
 	public String toString() {
 		return id;
 	}
-	
+
+	public Scope addChild(String childScope) {
+		childScope = changeChildScopeNameWhenRepeated(childScope);
+		String childScopeName = id + "->" + childScope;
+		Scope newChild = Scope.instance(childScopeName);
+		newChild.setParent(this);
+		childs.put(childScope, newChild);
+		return newChild;
+	}
+
+	private String changeChildScopeNameWhenRepeated(String childScope) {
+		int ocurrency = 0;
+		String ineditedChildScopeName = "";
+		do {
+			ineditedChildScopeName = childScope + ocurrency;
+			ocurrency++;
+		} while (childs.containsKey(ineditedChildScopeName));
+		return ineditedChildScopeName;
+	}
+
 }

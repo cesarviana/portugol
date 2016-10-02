@@ -35,7 +35,7 @@ public class SimbolTable {
 	}
 	
 	private void addVarToScope(Var var) {
-		getScope(var.getScope()).addVar(var);
+		getScope(var.getScopeStr()).addVar(var);
 	}
 	
 	public void addParam(Var param) {
@@ -82,14 +82,14 @@ public class SimbolTable {
 	public void initialize(String id, String scope) {
 		Var var = getVar(id, scope);
 		if(var==Var.NULL)
-			throw new CompilerException("Variável \""+ id + "\" não declarada");
+			throw new CompilerException("Variável \""+ id + "\" não declarada. Impossível inicializar.");
 		var.initialize();
 	}
 	
 	public void setUsed(String id, String scope) {
 		Var var = getVar(id, scope);
 		if(var==Var.NULL)
-			throw new CompilerException("Variável \""+ id + "\" não declarada");
+			throw new CompilerException("Variável \""+ id + "\" não declarada. Impossível usar.");
 		var.use();
 	}
 

@@ -30,6 +30,16 @@ public class SemanticoPortugol extends Semantico {
 		case 0:
 			scope = token.getLexeme();
 			break;
+		case 9:
+			String controlStructureScopeName = token.getLexeme();
+			Scope parentScope = table.getScope(scope);
+			Scope controlStructureScope = parentScope.addChild(controlStructureScopeName);
+			scope = controlStructureScope.getId();
+			table.addScope(controlStructureScope);
+			break;
+		case 10://close scope
+			scope = table.getScope(scope).getParent().getId();
+			break;
 		case 1:
 			type = token.getLexeme();
 			break;
@@ -68,9 +78,9 @@ public class SemanticoPortugol extends Semantico {
 			id = token.getLexeme();
 			Var param = Var.instance(scope, type, id);
 			table.addParam(param);
-		case 6: // variable use
-			String id = token.getLexeme();
-			table.setUsed(id, scope);
+		case 6:
+			String idVarToUse = token.getLexeme();
+			table.setUsed(idVarToUse, scope);
 			break;
 		default:
 			break;
