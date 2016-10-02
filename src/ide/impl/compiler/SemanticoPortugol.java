@@ -32,10 +32,7 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 9:
 			String controlStructureScopeName = token.getLexeme();
-			Scope parentScope = table.getScope(scope);
-			Scope controlStructureScope = parentScope.addChild(controlStructureScopeName);
-			scope = controlStructureScope.getId();
-			table.addScope(controlStructureScope);
+			onOpenControlStructureChangeScopeAndClearType(controlStructureScopeName);
 			break;
 		case 10://close scope
 			scope = table.getScope(scope).getParent().getId();
@@ -85,6 +82,14 @@ public class SemanticoPortugol extends Semantico {
 		default:
 			break;
 		}
+	}
+
+	private void onOpenControlStructureChangeScopeAndClearType(String controlStructureScopeName) {
+		Scope parentScope = table.getScope(scope);
+		Scope controlStructureScope = parentScope.addChild(controlStructureScopeName);
+		scope = controlStructureScope.getId();
+		table.addScope(controlStructureScope);
+		type = "";
 	}
 
 	private void onAtribuitionInitializeVarAndClearType() {
