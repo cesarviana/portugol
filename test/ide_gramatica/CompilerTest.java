@@ -1,5 +1,6 @@
 package ide_gramatica;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -231,6 +232,87 @@ public class CompilerTest {
 		
 		compile(code);
 	}
+	
+	@Test
+	public void testPermiteVariaveisMesmoNOmeEmEscoposSeESenao() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		"+
+				"se (1==1) {"+
+				"			inteiro a = 0"+
+				"		} senao {"+
+				"			inteiro a = 0"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		assertTrue(simbolTable.getVar("a", "inicio->se0").isInitialized());
+		assertTrue(simbolTable.getVar("a", "inicio->senao0").isInitialized());
+	}
+	
+	@Test
+	public void testUsoEscolhaCaso() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		inteiro a = 0"+
+				"		escolha(a){"+
+				"			caso 0:"+
+				"				inteiro b = 0"+
+				"			pare"+
+				"			caso 1:"+
+				"				inteiro b = 0"+
+				"			pare"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		assertTrue(simbolTable.getVar("b", "inicio->escolha0->caso0").isInitialized());
+		assertTrue(simbolTable.getVar("b", "inicio->escolha0->caso1").isInitialized());
+	}
+	
+	@Test
+	public void testUsoEscolhaCasoMaisEnquanto() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		inteiro a = 0"+
+				"		escolha(a){"+
+				"			caso 0:"+
+				"				inteiro b = 0"+
+				"				enquanto (1 == 1){"+
+				"					inteiro c = 0"+
+				"				}"+
+				"			pare"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		assertEquals("0", simbolTable.getVar("c", "inicio->escolha0->caso0->enquanto0").getValue());
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testFacaEnquanto() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		inteiro a = 0"+
+				"		faca{"+
+				"			inteiro a = 0"+
+				"		}enquanto(0 == 1)"+
+				"	}"+
+				"}";
+		compile(code);
+	}
 
 	private void compile(String code) {
 		PortugolFile pf = TestUtil.createPortugolFile(code);
@@ -242,3 +324,4 @@ public class CompilerTest {
 		}
 	}
 }
+

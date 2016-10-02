@@ -31,11 +31,16 @@ public class SemanticoPortugol extends Semantico {
 			scope = token.getLexeme();
 			break;
 		case 9:
-			String controlStructureScopeName = token.getLexeme();
-			onOpenControlStructureChangeScopeAndClearType(controlStructureScopeName);
+			String controlStructure = token.getLexeme();
+			onOpenControlStructureChangeScopeAndClearType(controlStructure);
+			break;
+		case 92:
+			String caso = token.getLexeme();
+			Scope scopeSwitch = table.getScope(scope).getParent();
+			onCaseClosePreviousCaseScopeAndOpenNew(caso, scopeSwitch);
 			break;
 		case 10://close scope
-			scope = table.getScope(scope).getParent().getId();
+			closeCurrentScope();
 			break;
 		case 1:
 			type = token.getLexeme();
@@ -82,6 +87,17 @@ public class SemanticoPortugol extends Semantico {
 		default:
 			break;
 		}
+	}
+
+	private void onCaseClosePreviousCaseScopeAndOpenNew(String caso, Scope switchScope) {
+		boolean isNotFirstCase = switchScope.getChilds().values().stream().anyMatch((scope)->scope.getId().endsWith("caso0"));
+		if(isNotFirstCase)
+			closeCurrentScope();
+		onOpenControlStructureChangeScopeAndClearType(caso);
+	}
+
+	private String closeCurrentScope() {
+		return scope = table.getScope(scope).getParent().getId();
 	}
 
 	private void onOpenControlStructureChangeScopeAndClearType(String controlStructureScopeName) {
