@@ -3,12 +3,10 @@ package ide.impl.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(of = { "id" })
 public class Scope {
 

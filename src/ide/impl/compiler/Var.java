@@ -1,11 +1,9 @@
 package ide.impl.compiler;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(of={"id", "scope"})
 public class Var {
 	private final String scopeStr, type, id;
