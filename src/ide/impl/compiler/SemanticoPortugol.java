@@ -62,7 +62,7 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 42:
 			onAtribuitionInitializeVarAndClearType();
-			table.validadeAtribuition(id, scope);
+			table.validateAtribuition(id, scope);
 			break;
 		case 43:
 			table.validateVarUse(token.getLexeme(), scope);

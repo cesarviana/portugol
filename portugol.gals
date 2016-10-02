@@ -236,10 +236,10 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <ESTRUTURA_CONTROLE> ::= <SE> | <ESCOLHA_CASO> | <ENQUANTO> | <FACA_ENQUANTO> | <PARA>;
 <SE> ::= <SE_SIMPLES> | <SENAO>;
 <SE_SIMPLES> ::=
-	  SE "(" <exp> ")" <ELEMENTO_FUNCAO> 
- 	| SE "(" <exp> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" 
-	| SE "(" <exp> ")" "{" "}";
-<SENAO> ::= SENAO <ELEMENTO_FUNCAO> |  SENAO "{" <LISTA_ELEMENTOS_FUNCAO> "}" |  SENAO "{" "}";
+	  SE #9 "(" <exp> ")" <ELEMENTO_FUNCAO> #10
+ 	| SE #9 "(" <exp> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10
+	| SE #9 "(" <exp> ")" "{" "}" #10;
+<SENAO> ::= SENAO #9 <ELEMENTO_FUNCAO> #10 |  SENAO #9 "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 |  SENAO #9 "{" "}" #10;
 <ESCOLHA_CASO> ::= ESCOLHA "(" <PARAMETRO_ESCOLHA_CASO> ")" "{" <LISTA_CASOS> "}";
 <PARAMETRO_ESCOLHA_CASO> ::= ID | <VARIAVEL_VETOR_COM_TAMANHO> | VALOR_INTEIRO | VALOR_CARACTER | <CHAMADA_FUNCAO>;
 <LISTA_CASOS> ::= <CASO><LISTA_CASOS> | <CASO>;

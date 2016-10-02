@@ -54,7 +54,7 @@ public class CompilerTest {
 						   "}"	+
 					  "}";
 		compile(code);
-		assertFalse(simbolTable.getVar("i", "inicio").equals(Var.NULL));
+		assertFalse(simbolTable.getVar("i", "inicio->para0").equals(Var.NULL));
 	}
 
 	@Test(expected=CompilerException.class)
@@ -186,6 +186,40 @@ public class CompilerTest {
 		Var varIPara2 = simbolTable.getVar("a", "inicio->para1");
 		assertTrue(varIPara1.isUsed());
 		assertFalse(varIPara2.isUsed());
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testUsoVariaveisIguaisEmForComSubEscopo() {
+		String code = " programa" +
+				" {" +
+				" 	funcao inicio()" +
+				" 	{" +
+				" 		para(inteiro i = 0; i < 10; i++){" +
+				"	 		para(inteiro i = 0; i < 10; i++){" +
+				" 			}" +
+				" 		}" +
+				" 	}" +
+				" }";
+		compile(code);
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testUsoVariaveisIguaisFuncaoComSe() {
+		String code = " programa" +
+				" {" +
+				" 	funcao inicio()" +
+				" 	{" +
+				" 		inteiro a = 0 " +
+				" 		se(a > 0){" +
+				"	 		inteiro b = 0" +
+				" 			para(inteiro i = 0; i < 10; i++){" +
+				" 				inteiro b " +
+				" 			}" +
+				" 		}" +
+				" 	}" +
+				" }";
+		
+		compile(code);
 	}
 
 	private void compile(String code) {
