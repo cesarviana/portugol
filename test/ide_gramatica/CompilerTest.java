@@ -46,17 +46,26 @@ public class CompilerTest {
 		compile(code);
 	}
 	
-	@Test
-	public void testPara() {
+	@Test(expected=CompilerException.class)
+	public void testParaDeveDizerQueJaFoiDeclaradoI() {
 		String code = "programa {"+
-							"funcao inicio(){"+
-								"para (inteiro i = 0; i<10; i++){}"+
-						   "}"	+
+						"funcao inicio(){"+
+							"inteiro i" +
+							"para (inteiro i = 0; i<10; i++){}"+
+					   "}"+
 					  "}";
 		compile(code);
-		assertFalse(simbolTable.getVar("i", "inicio").equals(Var.NULL));
 	}
-
+	@Test
+	public void testParaComContatadorExterno() {
+		String code = "programa {"+
+						"funcao inicio(){"+ 
+							"inteiro i"+
+							"para (i = 0; i<10; i++){}"+
+						"}"	+
+					 "}";
+		compile(code);
+	}
 	@Test(expected=CompilerException.class)
 	public void testAtribuicaoAConstante() {
 		String code = "programa {"+ 
