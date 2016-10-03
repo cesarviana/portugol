@@ -22,7 +22,7 @@ public class SemanticoPortugol extends Semantico {
 			tryExecute(action, token);
 		} catch (Exception e) {
 			handleException(e, action, token);
-		}
+		}	
 	}
 
 	private void tryExecute(int action, Token token) throws SemanticError {
@@ -31,11 +31,16 @@ public class SemanticoPortugol extends Semantico {
 			scope = token.getLexeme();
 			break;
 		case 9:
-			String controlStructureScopeName = token.getLexeme();
-			onOpenControlStructureChangeScopeAndClearType(controlStructureScopeName);
+			String controlStructure = token.getLexeme();
+			onOpenControlStructureChangeScopeAndClearType(controlStructure);
+			break;
+		case 92:
+			String caso = token.getLexeme();
+			Scope scopeSwitch = table.getScope(scope).getParent();
+			onCaseClosePreviousCaseScopeAndOpenNew(caso, scopeSwitch);
 			break;
 		case 10://close scope
-			scope = table.getScope(scope).getParent().getId();
+			closeCurrentScope();
 			break;
 		case 1:
 			type = token.getLexeme();
@@ -66,7 +71,8 @@ public class SemanticoPortugol extends Semantico {
 			table.setValue(id, scope, token.getLexeme());
 			break;
 		case 5:
-			table.addFunction(Function.instance(token.getLexeme()));
+			String functionId = token.getLexeme();
+			table.addFunction(Function.instance(type, functionId));
 			break;
 		case 51:
 			table.addScope(Scope.instance(token.getLexeme()));
@@ -75,13 +81,29 @@ public class SemanticoPortugol extends Semantico {
 			id = token.getLexeme();
 			Var param = Var.instance(scope, type, id);
 			table.addParam(param);
+			break;
 		case 6:
 			String idVarToUse = token.getLexeme();
-			table.setUsed(idVarToUse, scope);
+			table.setVarUsed(idVarToUse, scope);
+			break;
+		case 62:
+			String idFunctionToUse = token.getLexeme();
+			table.setFunctionUsed(idFunctionToUse, scope);
 			break;
 		default:
 			break;
 		}
+	}
+
+	private void onCaseClosePreviousCaseScopeAndOpenNew(String caso, Scope switchScope) {
+		boolean isNotFirstCase = switchScope.getChilds().values().stream().anyMatch((scope)->scope.getId().endsWith("caso0"));
+		if(isNotFirstCase)
+			closeCurrentScope();
+		onOpenControlStructureChangeScopeAndClearType(caso);
+	}
+
+	private String closeCurrentScope() {
+		return scope = table.getScope(scope).getParent().getId();
 	}
 
 	private void onOpenControlStructureChangeScopeAndClearType(String controlStructureScopeName) {

@@ -1,13 +1,19 @@
 package ide.impl.compiler.registryControl;
 
 import ide.impl.compiler.Var;
+import lombok.EqualsAndHashCode;
 
-public class VarRegistry implements Registry {
+@EqualsAndHashCode(of = "var", callSuper = false)
+public class VarRegistry extends Registry {
 
 	private Var var;
-	
-	public static VarRegistry instance(String scope, String id) {
+
+	public static VarRegistry instance(String id, String scope) {
 		return new VarRegistry(Var.instance(scope, "", id, false));
+	}
+
+	public static VarRegistry instance(Var var) {
+		return new VarRegistry(var);
 	}
 
 	public VarRegistry(Var var) {
@@ -35,12 +41,17 @@ public class VarRegistry implements Registry {
 	}
 
 	@Override
-	public String toString() {
-		return "name="+getName()+" |type="+getType()+" |initialized="+isInitialized()+" |used="+isUsed()+"";
+	public String getScope() {
+		return var.getScopeStr();
 	}
 
 	@Override
 	public void setUsed(boolean b) {
 		var.use();
+	}
+
+	@Override
+	public boolean isParameter() {
+		return var.isParam();
 	}
 }

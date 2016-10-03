@@ -1,26 +1,41 @@
 package ide.impl.compiler;
 
-
 import java.util.stream.Collectors;
 
-public class Function extends Scope{
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Function extends Scope {
+
+	private String type;
+	private boolean used;
 	
 	public static Function instance(String id) {
-		return new Function(id);
+		return new Function("", id);
 	}
 
-	private Function(String id) {
+	public static Function instance(String type, String id) {
+		return new Function(type, id);
+	}
+
+	private Function(String type, String id) {
 		super(id);
+		setType(type);
 	}
 
 	@Override
 	public String toString() {
-		return getId();
+		return getId() + ":" + getType();
 	}
 
 	public int getParamPosition(Var var) {
-		return getVars().values().stream().filter(v -> v.isParam())
-				.collect(Collectors.toList()).indexOf(var) + 1;
+		return getVars().values().stream().filter(v -> v.isParam()).collect(Collectors.toList()).indexOf(var) + 1;
+	}
+
+	public void use() {
+		this.used = true;
 	}
 
 }

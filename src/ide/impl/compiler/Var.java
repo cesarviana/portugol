@@ -31,11 +31,6 @@ public class Var {
 		return new Var(scope, type, id, constant);
 	}
 
-	public String getScope() {
-		return scopeStr;
-	}
-
-
 	public void initialize() {
 		this.initialized = true;
 	}	
@@ -51,7 +46,7 @@ public class Var {
 
 	public static final Var NULL = new Var("", "", "", false) {
 		@Override
-		public String getScope() {
+		public String getScopeStr() {
 			return "";
 		}
 

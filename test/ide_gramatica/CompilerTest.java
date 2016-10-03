@@ -1,5 +1,6 @@
 package ide_gramatica;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,6 +11,8 @@ import ide.impl.compiler.Compiler;
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import ide.impl.compiler.registryControl.FuncitonRegistry;
+import ide.impl.compiler.registryControl.VarRegistry;
 import ide.impl.files.PortugolFile;
 import util.TestUtil;
 
@@ -230,6 +233,157 @@ public class CompilerTest {
 				" }";
 		
 		compile(code);
+	}
+	
+	@Test
+	public void testPermiteVariaveisMesmoNOmeEmEscoposSeESenao() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		"+
+				"se (1==1) {"+
+				"			inteiro a = 0"+
+				"		} senao {"+
+				"			inteiro a = 0"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		assertTrue(simbolTable.getVar("a", "inicio->se0").isInitialized());
+		assertTrue(simbolTable.getVar("a", "inicio->senao0").isInitialized());
+	}
+	
+	@Test
+	public void testUsoEscolhaCaso() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		inteiro a = 0"+
+				"		escolha(a){"+
+				"			caso 0:"+
+				"				inteiro b = 0"+
+				"			pare"+
+				"			caso 1:"+
+				"				inteiro b = 0"+
+				"			pare"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		assertTrue(simbolTable.getVar("b", "inicio->escolha0->caso0").isInitialized());
+		assertTrue(simbolTable.getVar("b", "inicio->escolha0->caso1").isInitialized());
+	}
+	
+	@Test
+	public void testUsoEscolhaCasoMaisEnquanto() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		inteiro a = 0"+
+				"		escolha(a){"+
+				"			caso 0:"+
+				"				inteiro b = 0"+
+				"				enquanto (1 == 1){"+
+				"					inteiro c = 0"+
+				"				}"+
+				"			pare"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		assertEquals("0", simbolTable.getVar("c", "inicio->escolha0->caso0->enquanto0").getValue());
+	}
+	
+	@Test(expected=CompilerException.class)
+	public void testFacaEnquanto() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio()"+
+				"	{"+
+				"		inteiro a = 0"+
+				"		faca{"+
+				"			inteiro a = 0"+
+				"		}enquanto(0 == 1)"+
+				"	}"+
+				"}";
+		compile(code);
+	}
+	
+	@Test
+	public void testEstadoRegistroVariavelGlobal() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	cadeia a"+
+				"}";
+		compile(code);
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=programa |param=false";
+		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "programa")).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroVariavelLocal() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio(){"+
+				"		se(1 == 1){"+
+				"   		cadeia a"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio->se0 |param=false";
+		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio->se0")).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroVariavelParametro() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio(cadeia a){"+
+				"	}"+
+				"}";
+		compile(code);
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio |param=true";
+		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio")).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroFuncao() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao cadeia inicio(cadeia a){"+
+				"	}"+
+				"}";
+		compile(code);
+		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
+		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=false |scope=programa |param=false";
+		assertEquals(expectedInicio, simbolTable.getRegistryByExample(registroScopeInicio).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroFuncaoUsada() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao cadeia inicio(cadeia a){"+
+				"		inicio(\"a\")"+
+				"	}"+
+				"}";
+		compile(code);
+		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
+		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=true |scope=programa |param=false";
+		assertEquals(expectedInicio, simbolTable.getRegistryByExample(registroScopeInicio).toString());
 	}
 
 	private void compile(String code) {

@@ -53,13 +53,13 @@ public class Scope {
 		return id;
 	}
 
-	public Scope addChild(String childScope) {
-		childScope = changeChildScopeNameWhenRepeated(childScope);
-		String childScopeName = id + "->" + childScope;
-		Scope newChild = Scope.instance(childScopeName);
-		newChild.setParent(this);
-		childs.put(childScope, newChild);
-		return newChild;
+	public Scope addChild(String childScopeId) {
+		childScopeId = changeChildScopeNameWhenRepeated(childScopeId);
+		String nameParentPlusChildName = id + "->" + childScopeId;
+		Scope newChildScope = Scope.instance(nameParentPlusChildName);
+		newChildScope.setParent(this);
+		childs.put(childScopeId, newChildScope);
+		return newChildScope;
 	}
 
 	private String changeChildScopeNameWhenRepeated(String childScope) {
