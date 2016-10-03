@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of={"id", "scope"})
+@EqualsAndHashCode(of={"id", "scopeStr"})
 public class Var {
 	private final String scopeStr, type, id;
 	private String value;
@@ -33,11 +33,6 @@ public class Var {
 		return new Var(scope, type, id, constant);
 	}
 
-	public String getScope() {
-		return scopeStr;
-	}
-
-
 	public void initialize() {
 		this.initialized = true;
 	}	
@@ -53,7 +48,7 @@ public class Var {
 
 	public static final Var NULL = new Var("", "", "", false) {
 		@Override
-		public String getScope() {
+		public String getScopeStr() {
 			return "";
 		}
 

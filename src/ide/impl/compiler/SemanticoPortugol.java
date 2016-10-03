@@ -22,7 +22,7 @@ public class SemanticoPortugol extends Semantico {
 			tryExecute(action, token);
 		} catch (Exception e) {
 			handleException(e, action, token);
-		}
+		}	
 	}
 
 	private void tryExecute(int action, Token token) throws SemanticError {
@@ -71,7 +71,8 @@ public class SemanticoPortugol extends Semantico {
 			table.setValue(id, scope, token.getLexeme());
 			break;
 		case 5:
-			table.addFunction(Function.instance(token.getLexeme()));
+			String functionId = token.getLexeme();
+			table.addFunction(Function.instance(type, functionId));
 			break;
 		case 51:
 			table.addScope(Scope.instance(token.getLexeme()));
@@ -80,9 +81,14 @@ public class SemanticoPortugol extends Semantico {
 			id = token.getLexeme();
 			Var param = Var.instance(scope, type, id);
 			table.addParam(param);
+			break;
 		case 6:
 			String idVarToUse = token.getLexeme();
-			table.setUsed(idVarToUse, scope);
+			table.setVarUsed(idVarToUse, scope);
+			break;
+		case 62:
+			String idFunctionToUse = token.getLexeme();
+			table.setFunctionUsed(idFunctionToUse, scope);
 			break;
 		default:
 			break;

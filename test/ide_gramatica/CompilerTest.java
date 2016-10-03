@@ -11,6 +11,8 @@ import ide.impl.compiler.Compiler;
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import ide.impl.compiler.registryControl.FuncitonRegistry;
+import ide.impl.compiler.registryControl.VarRegistry;
 import ide.impl.files.PortugolFile;
 import util.TestUtil;
 
@@ -313,6 +315,76 @@ public class CompilerTest {
 				"}";
 		compile(code);
 	}
+	
+	@Test
+	public void testEstadoRegistroVariavelGlobal() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	cadeia a"+
+				"}";
+		compile(code);
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=programa |param=false";
+		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "programa")).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroVariavelLocal() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio(){"+
+				"		se(1 == 1){"+
+				"   		cadeia a"+
+				"		}"+
+				"	}"+
+				"}";
+		compile(code);
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio->se0 |param=false";
+		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio->se0")).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroVariavelParametro() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao inicio(cadeia a){"+
+				"	}"+
+				"}";
+		compile(code);
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio |param=true";
+		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio")).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroFuncao() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao cadeia inicio(cadeia a){"+
+				"	}"+
+				"}";
+		compile(code);
+		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
+		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=false |scope=programa |param=false";
+		assertEquals(expectedInicio, simbolTable.getRegistryByExample(registroScopeInicio).toString());
+	}
+	
+	@Test
+	public void testEstadoRegistroFuncaoUsada() {
+		String code = ""+
+				"programa"+
+				"{"+
+				"	funcao cadeia inicio(cadeia a){"+
+				"		inicio(\"a\")"+
+				"	}"+
+				"}";
+		compile(code);
+		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
+		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=true |scope=programa |param=false";
+		assertEquals(expectedInicio, simbolTable.getRegistryByExample(registroScopeInicio).toString());
+	}
 
 	private void compile(String code) {
 		PortugolFile pf = TestUtil.createPortugolFile(code);
@@ -324,4 +396,3 @@ public class CompilerTest {
 		}
 	}
 }
-

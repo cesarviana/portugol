@@ -1,16 +1,19 @@
 package ide.impl.compiler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ide.impl.compiler.registryControl.Registry;
+import ide.impl.compiler.registryControl.FuncitonRegistry;
 import ide.impl.compiler.registryControl.VarRegistry;
 
 public class SimbolTable {
 
 	private final Map<String, Function> functions;
 	private final Map<String, Scope> scopes;
-	private final Map<Registry, Registry> registries;
+	private final List<Registry> registries;
 
 	public static SimbolTable instance() {
 		return new SimbolTable();
@@ -18,7 +21,7 @@ public class SimbolTable {
 
 	private SimbolTable() {
 		functions = new HashMap<>();
-		registries = new HashMap<>();
+		registries = new ArrayList<>();
 		scopes = new HashMap<>();
 	}
 
@@ -27,6 +30,7 @@ public class SimbolTable {
 		mustNotExistsInParentScopesInsideTheFunction(var);
 		validadeNameOfAFunction(var);
 		addVarToScope(var);
+		addRegistry(VarRegistry.instance(var));
 	}
 
 	private void mustNotExistsInParentScopesInsideTheFunction(Var var) {
@@ -42,7 +46,6 @@ public class SimbolTable {
 	private void validadeNameOfAFunction(Var var) {
 		if (functions.values().stream().anyMatch(f -> f.getId().equals(var.toString())))
 			throw new CompilerException("Já há uma função com o nome " + var);
-		putRegistry(new VarRegistry(var));
 	}
 
 	private void addVarToScope(Var var) {
@@ -50,13 +53,14 @@ public class SimbolTable {
 	}
 
 	public void addParam(Var param) {
-		Scope function = getScope(param.getScope());
+		Scope function = getScope(param.getScopeStr());
 		param.setParam(true);
 		function.addVar(param);
+		addRegistry(VarRegistry.instance(param));
 	}
 
-	private void putRegistry(Registry registry) {
-		this.registries.put(registry, registry);
+	private void addRegistry(Registry registry) {
+		this.registries.add(registry);
 	}
 
 	public void addFunction(Function function) {
@@ -64,6 +68,7 @@ public class SimbolTable {
 		validateNameOfAGlobalVar(function);
 		this.functions.put(function.getId(), function);
 		addScope(function);
+		addRegistry(FuncitonRegistry.instance(function));
 	}
 
 	public void addScope(Scope scope) {
@@ -101,11 +106,18 @@ public class SimbolTable {
 		var.initialize();
 	}
 
-	public void setUsed(String id, String scope) {
+	public void setVarUsed(String id, String scope) {
 		Var var = getVar(id, scope);
 		if (var == Var.NULL)
 			throw new CompilerException("Variável \"" + id + "\" não declarada. Impossível usar.");
 		var.use();
+	}
+	
+	public void setFunctionUsed(String id, String scope) {
+		Function function = (Function) getScope(id);
+		if (function == Scope.NULL)
+			throw new CompilerException("Função \"" + id + "\" não declarada. Impossível usar.");
+		function.use();
 	}
 
 	public void validateVarUse(String id, String scope) {
@@ -130,8 +142,8 @@ public class SimbolTable {
 		getVar(id, scope).setValue(value);
 	}
 
-	public Registry getRegistry(Registry registry) {
-		return registries.get(registry);
+	public Registry getRegistryByExample(Registry registry) {
+		return registries.get(registries.indexOf(registry));
 	}
 
 }
