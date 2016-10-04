@@ -36,6 +36,11 @@ public abstract class Registry {
 		public String getName() {
 			return "no-name";
 		}
+
+		@Override
+		boolean isFunction() {
+			return false;
+		}
 	};
 
 	abstract public String getName();
@@ -52,7 +57,7 @@ public abstract class Registry {
 	abstract public boolean isParameter();
 	// int getParameterPosition();
 	// boolean isVector();
-	// boolean isFunction();
+	abstract boolean isFunction();
 
 	@Override
 	public String toString() {

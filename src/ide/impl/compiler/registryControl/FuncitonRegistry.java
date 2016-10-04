@@ -60,4 +60,9 @@ public class FuncitonRegistry extends Registry {
 		return "programa";
 	}
 
+	@Override
+	boolean isFunction() {
+		return true;
+	}
+
 }

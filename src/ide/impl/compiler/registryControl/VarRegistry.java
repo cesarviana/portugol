@@ -54,4 +54,9 @@ public class VarRegistry extends Registry {
 	public boolean isParameter() {
 		return var.isParam();
 	}
+
+	@Override
+	boolean isFunction() {
+		return false;
+	}
 }
