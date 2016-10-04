@@ -56,6 +56,7 @@ public class VarRegistry extends Registry {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public boolean isVector() {
 		return var.isVector();
 	}
@@ -64,5 +65,9 @@ public class VarRegistry extends Registry {
 	@Override
 	public int getParameterPosition() {
 		return var.getParamPosition();
+=======
+	boolean isFunction() {
+		return false;
+>>>>>>> 293b4b233026435042e6006111a289155de03d42
 	}
 }
