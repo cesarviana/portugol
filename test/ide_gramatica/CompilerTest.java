@@ -414,7 +414,7 @@ public class CompilerTest {
 		String code = ""+
 				"programa{"+
 				"	funcao inicio(){"+
-				"		cadeia a[] = {\"a\"}"+
+				"		cadeia a[]"+
 				"	}"+
 				"}";
 		compile(code);

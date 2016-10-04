@@ -15,6 +15,7 @@ public class SemanticoPortugol extends Semantico {
 	private SemanticState previousState;
 	private SemanticState state;
 	private boolean atribuindo = false;
+	private boolean vector = false;
 	
 	public SemanticoPortugol(SimbolTable simbolTable) {
 		table = simbolTable;
@@ -32,12 +33,10 @@ public class SemanticoPortugol extends Semantico {
 	private void tryExecute(int action, Token token) throws SemanticError {
 		switch (action) {
 		case 100:
-			previousState = state;
-			state = SemanticState.DECLARING_VAR;
+			changeStateTo(SemanticState.DECLARING_VAR);
 			break;
 		case 101:
-			previousState = state;
-			state = SemanticState.DECLARING_FUNCTION;
+			changeStateTo(SemanticState.DECLARING_FUNCTION);
 			break;
 		case 200:
 			atribuindo = true;
@@ -61,32 +60,27 @@ public class SemanticoPortugol extends Semantico {
 			state = previousState; // End declare function state
 			type=""; // Clear type on enter function
 			break;
+		case 13:
+			vector = true;
+			break;
+//		case 13:
+//			//changeStateTo(SemanticState.INITIALIZING_VECTOR);
+//			break;
 		case 1:
 			type = token.getLexeme();
 			break;
-		case 23: // add variable
-			if(state==SemanticState.DECLARING_VAR){
-				table.addVar(Var.instance(scope, type, id, constant));
-			}
+		case 23:
+			addVarIfIsDeclaringVar();
 			break;
 		case 21: 
-			if(state==SemanticState.DECLARING_VAR){
-				if(type!=""){
-					table.addVar(Var.instance(scope, type, id, constant));
-				} 
-				table.initialize(id, scope);
-				table.validateVarUse(id, scope);
-				table.setValue(id, scope, varValue);
-				varValue="";
-				atribuindo=false;
-			}
+			addInitializedVarIfIsDeclaringVar();
 			break;
-		case 2: // Get id. Store to declare variable if not attributing
+		case 2:
 			if(!atribuindo) 
 				id = token.getLexeme();
 			break;
 		case 22:
-			table.addParam(Var.instance(scope, type, id, constant));
+			table.addParam(createVar());
 			break;		
 		case 3:
 			type = "";
@@ -125,6 +119,41 @@ public class SemanticoPortugol extends Semantico {
 		}
 	}
 
+	private void addVarIfIsDeclaringVar() {
+		if(state==SemanticState.DECLARING_VAR){
+			addVarToSimbolTable();
+		}
+	}
+
+	private void addInitializedVarIfIsDeclaringVar() {
+		if(state==SemanticState.DECLARING_VAR){
+			if(type!=""){
+				addVarToSimbolTable();
+			} 
+			table.initialize(id, scope);
+			table.validateVarUse(id, scope);
+			table.setValue(id, scope, varValue);
+			varValue="";
+			atribuindo=false;
+		}
+	}
+
+	private void changeStateTo(SemanticState newState) {
+		previousState = state;
+		state = newState;
+	}
+	private void addVarToSimbolTable() {
+		table.addVar(createVar());
+	}
+
+	private Var createVar() {
+		Var var = Var.instance(scope, type, id, constant);
+		if(vector) {
+			var = VarVector.instance(var);
+		}
+		return var;
+	}
+
 	private void onCaseClosePreviousCaseScopeAndOpenNew(String caso, Scope switchScope) {
 		boolean isNotFirstCase = switchScope.getChilds().values().stream().anyMatch((scope)->scope.getId().endsWith("caso0"));
 		if(isNotFirstCase)
@@ -152,23 +181,7 @@ public class SemanticoPortugol extends Semantico {
 	}
 	
 	private enum SemanticState {
-		DECLARING_VAR {
-			@Override
-			void tryExecute(int action, Token token) {
-				
-			}
-		}, DECLARING_FUNCTION {
-			@Override
-			void tryExecute(int action, Token token) {	
-			}
-		}, GENERAL {
-			@Override
-			void tryExecute(int action, Token token) {	
-			}
-			
-		};
-		
-		abstract void tryExecute(int action, Token token);
+		DECLARING_VAR, DECLARING_FUNCTION, GENERAL, INITIALIZING_VECTOR
 	}	
 
 }
