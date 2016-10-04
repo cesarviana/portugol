@@ -468,4 +468,14 @@ public class CompilerTest {
 			"}"+
 		"}");
 	}
+	
+	@Test
+	public void testUsaVetorPassadoPorParametro(){
+		compile("programa {"+
+			"funcao inteiro inicio(inteiro a[]){"+
+				"inteiro b = a[0]	"+
+			"}"+
+		"}");
+		assertTrue(simbolTable.getVar("inicio", "a").isUsed());
+	}
 }
