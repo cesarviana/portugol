@@ -5,6 +5,7 @@ import ide.impl.actions.CompileAction;
 import ide.impl.actions.LoadFileAction;
 import ide.impl.actions.SaveFileAction;
 import ide.impl.compiler.Compiler;
+import ide.impl.compiler.SimbolTable;
 import ide.impl.files.PortugolFile;
 import ide.impl.files.PortugolFiles;
 import ide.impl.files.PortugolFilesListenerAdapter;
@@ -19,7 +20,7 @@ public class IdeImpl implements Ide {
 			portugolFiles.getSelectedFile().setText(code);
 		}
 	}
-
+	
 	private final class FileDisplayer extends PortugolFilesListenerAdapter {
 		@Override
 		public void added(PortugolFile pf) {
@@ -31,11 +32,13 @@ public class IdeImpl implements Ide {
 		}
 	}
 
+	
 	private final View view;
 	private final PortugolFiles portugolFiles;
 	private final FileLoader fileLoader;
 	private final FileSaver fileSaver;
 	private final Compiler compiler;
+	private final SimbolTable simbolTable;
 
 	public IdeImpl() {
 		view = View.instance();
@@ -47,7 +50,8 @@ public class IdeImpl implements Ide {
 		portugolFiles.addListener(new FileDisplayer());
 		fileLoader = FileLoader.instance(view);
 		fileSaver = FileSaver.instance(view);
-		compiler = Compiler.instance();
+		simbolTable = SimbolTable.instance();
+		compiler = Compiler.instance(simbolTable);
 	}
 
 	@Override
@@ -69,6 +73,7 @@ public class IdeImpl implements Ide {
 	public void compile() {
 		compiler.compile(portugolFiles.getSelectedFile());
 		view.message("Compilado com sucesso!");
+		view.setSimbolTable(new SimbolTableModel(simbolTable));
 	}
 
 }

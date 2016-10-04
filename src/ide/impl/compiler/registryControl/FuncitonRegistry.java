@@ -46,18 +46,22 @@ public class FuncitonRegistry extends Registry {
 
 	@Override
 	public void setUsed(boolean b) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isParameter() {
-		return false;
+		// TODO Indicate that the function was used 
 	}
 
 	@Override
 	public String getScope() {
-		return "programa";
+		return function.getParent().toString();
+	}
+
+	@Override
+	public boolean isVector() {
+		return false;
+	}
+
+	@Override
+	public boolean isFunction() {
+		return true;
 	}
 
 }

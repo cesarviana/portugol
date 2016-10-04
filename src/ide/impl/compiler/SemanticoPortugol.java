@@ -19,6 +19,7 @@ public class SemanticoPortugol extends Semantico {
 	
 	public SemanticoPortugol(SimbolTable simbolTable) {
 		table = simbolTable;
+		table.clear();
 	}
 
 	@Override
@@ -63,9 +64,6 @@ public class SemanticoPortugol extends Semantico {
 		case 13:
 			vector = true;
 			break;
-//		case 13:
-//			//changeStateTo(SemanticState.INITIALIZING_VECTOR);
-//			break;
 		case 1:
 			type = token.getLexeme();
 			break;
@@ -181,7 +179,7 @@ public class SemanticoPortugol extends Semantico {
 	}
 	
 	private enum SemanticState {
-		DECLARING_VAR, DECLARING_FUNCTION, GENERAL, INITIALIZING_VECTOR
+		DECLARING_VAR, DECLARING_FUNCTION
 	}	
 
 }

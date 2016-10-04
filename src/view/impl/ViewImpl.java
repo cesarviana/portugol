@@ -1,6 +1,7 @@
 package view.impl;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -13,8 +14,12 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableModel;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -48,6 +53,8 @@ public class ViewImpl extends JFrame implements View {
 	private Collection<ViewListener> listeners;
 	private JButton btnCompilar;
 	private JTextArea textArea;
+	private JPanel panelTabelaSimbolos;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -77,7 +84,7 @@ public class ViewImpl extends JFrame implements View {
 	public ViewImpl() {
 		this.listeners = new ArrayList<>();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 643, 449);
+		setBounds(100, 100, 1123, 449);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -104,13 +111,27 @@ public class ViewImpl extends JFrame implements View {
 		textArea.setEditable(false);
 		panelFooter.add(textArea);
 
+		JSplitPane splitCenter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		int location = (int) (getWidth() * 0.7); 
+		splitCenter.setDividerLocation(location);
+		contentPane.add(splitCenter, BorderLayout.CENTER);
+		
 		txtCode = new RSyntaxTextArea();
 		txtCode.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		txtCode.setAutoIndentEnabled(true);
+		txtCode.setColumns(10);
 		
 		txtCode.addKeyListener(new ChangeCodeListener());
-		contentPane.add(new RTextScrollPane(txtCode), BorderLayout.CENTER);
-		txtCode.setColumns(10);
+		RTextScrollPane panelCode = new RTextScrollPane(txtCode);
+		splitCenter.setLeftComponent(panelCode);
+		
+		panelTabelaSimbolos = new JPanel(new BorderLayout());
+		panelTabelaSimbolos.setPreferredSize(new Dimension(400,600));
+		splitCenter.setRightComponent(panelTabelaSimbolos);
+		
+		table = new JTable();
+		panelTabelaSimbolos.add(new JScrollPane(table), BorderLayout.CENTER);
+		
 	}
 
 	@Override
@@ -160,6 +181,11 @@ public class ViewImpl extends JFrame implements View {
 		}
 	}
 
+	@Override
+	public void setSimbolTable(TableModel tableModel) {
+		table.setModel(tableModel);
+	}
+	
 	@Override
 	public void showFile(PortugolFile pf) {
 		txtCode.setText(pf.getText());

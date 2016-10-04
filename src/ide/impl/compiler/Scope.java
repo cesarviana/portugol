@@ -28,7 +28,7 @@ public class Scope {
 
 	public void addVar(Var var) {
 		if (vars.containsKey(var.getId()))
-			throw new CompilerException("A variável " + var + " já foi declarada na função " + this);
+			throw new CompilerException("A variável " + var + " já foi declarada no escopo " + this);
 		vars.put(var.getId(), var);
 		var.setScope(this);
 	}

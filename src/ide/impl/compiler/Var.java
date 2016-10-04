@@ -79,4 +79,8 @@ public class Var {
 		this.scope = scope;
 	}
 
+	public boolean isVector() {
+		return false;
+	}
+
 }

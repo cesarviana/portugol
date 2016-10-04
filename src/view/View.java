@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.table.TableModel;
 
 import ide.impl.files.PortugolFile;
 import view.impl.ViewImpl;
@@ -29,5 +30,7 @@ public interface View {
 	public void addListener(ViewListener viewListener);
 
 	public void message(String string);
+
+	public void setSimbolTable( TableModel tableModel );
 
 }

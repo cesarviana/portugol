@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ide.impl.compiler.registryControl.Registry;
 import ide.impl.compiler.registryControl.FuncitonRegistry;
+import ide.impl.compiler.registryControl.Registry;
 import ide.impl.compiler.registryControl.VarRegistry;
 
 public class SimbolTable {
@@ -113,11 +113,14 @@ public class SimbolTable {
 		var.use();
 	}
 	
-	public void setFunctionUsed(String id, String scope) {
-		Function function = (Function) getScope(id);
-		if (function == Scope.NULL)
-			throw new CompilerException("Função \"" + id + "\" não declarada. Impossível usar.");
-		function.use();
+	public void setFunctionUsed(String id, String scopeStr) {
+		Scope scope = getScope(id);
+		if (scope instanceof Function) {
+			Function function = (Function) scope;
+			if (function == Scope.NULL)
+				throw new CompilerException("Função \"" + id + "\" não declarada. Impossível usar.");
+			function.use();
+		}
 	}
 
 	public void validateVarUse(String id, String scope) {
@@ -163,4 +166,14 @@ public class SimbolTable {
 		return lexeme;
 	}
 
+	public List<Registry> getRegistries() {
+		return registries;
+	}
+
+	public void clear() {
+		registries.clear();
+		functions.clear();
+		scopes.clear();
+	}
+	
 }

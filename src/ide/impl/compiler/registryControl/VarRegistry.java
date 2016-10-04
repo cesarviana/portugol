@@ -54,4 +54,15 @@ public class VarRegistry extends Registry {
 	public boolean isParameter() {
 		return var.isParam();
 	}
+
+	@Override
+	public boolean isVector() {
+		return var.isVector();
+	}
+
+	
+	@Override
+	public int getParameterPosition() {
+		return var.getParamPosition();
+	}
 }

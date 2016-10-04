@@ -9,4 +9,10 @@ public class VarVector extends Var {
 	public static Var instance(Var var) {
 		return new VarVector(var.getScope().getId(), var.getType(), var.getId(), var.isConstant());
 	}
+	
+	@Override
+	public boolean isVector() {
+		return true;
+	}
+	
 }
