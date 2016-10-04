@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of = { "id" })
 public class Scope {
 
+	private static final String GLOBAL_SCOPE = "programa";
 	private String id;
 	private Map<String, Var> vars;
 	private Scope parent = Scope.NULL;
@@ -70,6 +71,10 @@ public class Scope {
 			ocurrency++;
 		} while (childs.containsKey(ineditedChildScopeName));
 		return ineditedChildScopeName;
+	}
+
+	public boolean isGlobalScope() {
+		return id.equals(GLOBAL_SCOPE);
 	}
 
 }

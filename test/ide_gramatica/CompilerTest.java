@@ -11,6 +11,7 @@ import ide.impl.compiler.Compiler;
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import ide.impl.compiler.VarVector;
 import ide.impl.compiler.registryControl.FuncitonRegistry;
 import ide.impl.compiler.registryControl.VarRegistry;
 import ide.impl.files.PortugolFile;
@@ -90,6 +91,15 @@ public class CompilerTest {
 		compile(code);
 	}
 	
+	@Test
+	public void testDeclaracaoParametro() throws Exception {
+		String code = "programa {"+
+						"funcao inicio(inteiro a) {"+
+						"}"+
+					  "}";
+		compile(code);
+	}
+	
 	@Test(expected=CompilerException.class)
 	public void testVariavelComMesmoIdPassadoPorParametro() throws Exception {
 		String code = "programa {"+
@@ -141,8 +151,8 @@ public class CompilerTest {
 	@Test
 	public void testUsoVariavelIgualADoEscopoPai() {
 		String code = "programa {"+
-							" inteiro a = 0 "+
-							" inteiro b = a " +
+							" inteiro a = 0"+
+							" inteiro b = a" +
 							" funcao inicio(){"+
 								" inteiro a = 0"+
 						   "}"	+
@@ -341,7 +351,8 @@ public class CompilerTest {
 				"}";
 		compile(code);
 		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio->se0 |param=false";
-		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio->se0")).toString());
+		String result = simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio->se0")).toString();
+		assertEquals(expectedA, result);
 	}
 	
 	@Test
@@ -395,4 +406,15 @@ public class CompilerTest {
 			throw e;
 		}
 	}
+	
+	@Test
+	public void testDeclaraVetor(){
+		compile("programa{"
+				+ "funcao inicio(){"
+				+ " cadeia a[] = {\"a\"}"
+				+ "}"
+				+ "}");
+		Var var = simbolTable.getVar("a", "inicio");
+		assertTrue( var instanceof VarVector );
+	};
 }

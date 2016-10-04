@@ -36,7 +36,7 @@ public class SimbolTable {
 	private void mustNotExistsInParentScopesInsideTheFunction(Var var) {
 		Scope scopeToTest = getScope(var.getScopeStr());
 		while (scopeToTest != Scope.NULL) {
-			if (scopeToTest.getVars().containsKey(var.getId()))
+			if (!scopeToTest.isGlobalScope() && scopeToTest.getVars().containsKey(var.getId()))
 				throw new CompilerException(
 						"A variável \"" + var.getId() + "\" já existe no escopo " + scopeToTest.getId() + ".");
 			scopeToTest = scopeToTest.getParent();
@@ -128,7 +128,12 @@ public class SimbolTable {
 
 	private boolean matchVarRegexAndHasntVar(String id, String scope) {
 		boolean matchIdRegex = id.matches("[a-zA-Z][a-zA-Z0-9_]*");
-		return matchIdRegex && getVar(id, scope).equals(Var.NULL);
+		boolean hasntVar = !hasVar(id, scope);
+		return matchIdRegex && hasntVar;
+	}
+
+	private boolean hasVar(String id, String scope) {
+		return !getVar(id, scope).equals(Var.NULL);
 	}
 
 	public void validateAtribuition(String id, String scope) {
@@ -144,6 +149,17 @@ public class SimbolTable {
 
 	public Registry getRegistryByExample(Registry registry) {
 		return registries.get(registries.indexOf(registry));
+	}
+
+	public void convertToVector(String id, String scope) {
+		Var var = getVar(id, scope);
+		var = VarVector.instance(var);
+	}
+
+	public String getVarValueIfIsVar(String lexeme, String scope) {
+		if(hasVar(lexeme, scope))
+			return getVar(lexeme, scope).getValue();
+		return lexeme;
 	}
 
 }

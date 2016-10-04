@@ -5,12 +5,8 @@ public class VarVector extends Var {
 	protected VarVector(String scope, String type, String id, boolean constant) {
 		super(scope,type,id,constant);
 	}
-	public static VarVector instance(String scope, String type, String id) {
-		return instance(scope, type, id, false);
-	}
 	
-	public static VarVector instance(String scope, String type, String id,
-			boolean constant) {
-		return new VarVector(scope, type, id, constant);
+	public static Var instance(Var var) {
+		return new VarVector(var.getScopeStr(), var.getType(), var.getId(), var.isConstant());
 	}
 }

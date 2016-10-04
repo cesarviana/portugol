@@ -14,7 +14,7 @@ public class Var {
 	private boolean param = false;
 	private Scope scope;
 
-	private Var(String scope, String type, String id, boolean constant) {
+	protected Var(String scope, String type, String id, boolean constant) {
 		super();
 		this.scopeStr = scope;
 		this.type = type;
