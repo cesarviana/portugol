@@ -98,6 +98,7 @@ public class CompilerTest {
 						"}"+
 					  "}";
 		compile(code);
+		assertTrue(simbolTable.getVar("a", "inicio").isParam());
 	}
 	
 	@Test(expected=CompilerException.class)
@@ -421,4 +422,42 @@ public class CompilerTest {
 		Var var = simbolTable.getVar("a", "inicio");
 		assertTrue( var instanceof VarVector );
 	};
+	
+	@Test
+	public void testDeclaraVetorComAtribuicao(){
+		String code = ""+
+				"programa{"+
+				"	funcao inicio(){"+
+				"		cadeia a[2] = {\"1\",\"2\"}"+
+				"	}"+
+				"}";
+		compile(code);
+		Var var = simbolTable.getVar("a", "inicio");
+		assertTrue( var instanceof VarVector );
+		assertTrue( var.isInitialized() );
+	};
+	
+	// TODO Not required by the teacher
+	@Test(expected=CompilerException.class)
+	public void testDeclaraVetorAtribuindoMenosElementosQueONecessario(){
+		String code = ""+
+				"programa{"+
+				"	funcao inicio(){"+
+				"		cadeia a[2] = {\"1\"}"+
+				"	}"+
+				"}";
+		compile(code);
+	};
+	
+	@Test
+	public void testVerificaVariavelNaoUtilizada(){
+		String code = ""+
+				"programa{"+
+				"	funcao inicio(){"+
+				"		inteiro a = 10"+
+				"	}"+
+				"}";
+		compile(code);
+		assertFalse(simbolTable.getVar("a", "inicio").isUsed());
+	}
 }
