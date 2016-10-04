@@ -113,7 +113,7 @@ public class SemanticoPortugol extends Semantico {
 			String idVarToUse = token.getLexeme();
 			table.setVarUsed(idVarToUse, scope);
 			break;
-		case 62:
+		case 99:
 			String idFunctionToUse = token.getLexeme();
 			table.setFunctionUsed(idFunctionToUse, scope);
 			break;

@@ -1,6 +1,43 @@
 package ide.impl.compiler.registryControl;
 
 public abstract class Registry {
+	public static final Registry NULL = new Registry() {
+		
+		@Override
+		public void setUsed(boolean b) {
+		}
+		
+		@Override
+		public boolean isUsed() {
+			return false;
+		}
+		
+		@Override
+		public boolean isParameter() {
+			return false;
+		}
+		
+		@Override
+		public boolean isInitialized() { 
+			return false;
+		}
+		
+		@Override
+		public String getType() {
+			return null;
+		}
+		
+		@Override
+		public String getScope() {
+			return "no-scope";
+		}
+		
+		@Override
+		public String getName() {
+			return "no-name";
+		}
+	};
+
 	abstract public String getName();
 
 	abstract public String getType();

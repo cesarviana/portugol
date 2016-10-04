@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of={"id", "scope"})
 public class Var {
-	private final String scopeStr, type, id;
+	private final String type, id;
 	private String value;
 	private boolean initialized = false;
 	private boolean used = false;
@@ -16,7 +16,7 @@ public class Var {
 
 	protected Var(String scope, String type, String id, boolean constant) {
 		super();
-		this.scopeStr = scope;
+		this.scope = Scope.instance(scope);
 		this.type = type;
 		this.id = id;
 		this.constant = constant;
@@ -45,10 +45,6 @@ public class Var {
 	}
 
 	public static final Var NULL = new Var("", "", "", false) {
-		@Override
-		public String getScopeStr() {
-			return "";
-		}
 
 		@Override
 		public String getId() {

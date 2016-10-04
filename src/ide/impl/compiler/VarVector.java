@@ -7,6 +7,6 @@ public class VarVector extends Var {
 	}
 	
 	public static Var instance(Var var) {
-		return new VarVector(var.getScopeStr(), var.getType(), var.getId(), var.isConstant());
+		return new VarVector(var.getScope().getId(), var.getType(), var.getId(), var.isConstant());
 	}
 }

@@ -34,7 +34,7 @@ public class SimbolTable {
 	}
 
 	private void mustNotExistsInParentScopesInsideTheFunction(Var var) {
-		Scope scopeToTest = getScope(var.getScopeStr());
+		Scope scopeToTest = getScope(var.getScope().getId());
 		while (scopeToTest != Scope.NULL) {
 			if (!scopeToTest.isGlobalScope() && scopeToTest.getVars().containsKey(var.getId()))
 				throw new CompilerException(
@@ -49,11 +49,11 @@ public class SimbolTable {
 	}
 
 	private void addVarToScope(Var var) {
-		getScope(var.getScopeStr()).addVar(var);
+		getScope(var.getScope().getId()).addVar(var);
 	}
 
 	public void addParam(Var param) {
-		Scope function = getScope(param.getScopeStr());
+		Scope function = getScope(param.getScope().getId());
 		param.setParam(true);
 		function.addVar(param);
 		addRegistry(VarRegistry.instance(param));
@@ -148,7 +148,8 @@ public class SimbolTable {
 	}
 
 	public Registry getRegistryByExample(Registry registry) {
-		return registries.get(registries.indexOf(registry));
+		int indice = registries.indexOf(registry);
+		return indice >= 0? registries.get(indice) : Registry.NULL;
 	}
 
 	public void convertToVector(String id, String scope) {

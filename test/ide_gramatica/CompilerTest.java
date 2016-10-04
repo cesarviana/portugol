@@ -335,7 +335,8 @@ public class CompilerTest {
 				"}";
 		compile(code);
 		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=programa |param=false";
-		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "programa")).toString());
+		String result = simbolTable.getRegistryByExample(VarRegistry.instance("a", "programa")).toString();
+		assertEquals(expectedA, result);
 	}
 	
 	@Test
@@ -394,7 +395,8 @@ public class CompilerTest {
 		compile(code);
 		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
 		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=true |scope=programa |param=false";
-		assertEquals(expectedInicio, simbolTable.getRegistryByExample(registroScopeInicio).toString());
+		String result = simbolTable.getRegistryByExample(registroScopeInicio).toString();
+		assertEquals(expectedInicio, result);
 	}
 
 	private void compile(String code) {
@@ -409,11 +411,13 @@ public class CompilerTest {
 	
 	@Test
 	public void testDeclaraVetor(){
-		compile("programa{"
-				+ "funcao inicio(){"
-				+ " cadeia a[] = {\"a\"}"
-				+ "}"
-				+ "}");
+		String code = ""+
+				"programa{"+
+				"	funcao inicio(){"+
+				"		cadeia a[] = {\"a\"}"+
+				"	}"+
+				"}";
+		compile(code);
 		Var var = simbolTable.getVar("a", "inicio");
 		assertTrue( var instanceof VarVector );
 	};

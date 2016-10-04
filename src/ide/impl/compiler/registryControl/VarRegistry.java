@@ -42,7 +42,7 @@ public class VarRegistry extends Registry {
 
 	@Override
 	public String getScope() {
-		return var.getScopeStr();
+		return var.getScope().getId();
 	}
 
 	@Override
