@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of = { "id" })
 public class Scope {
 
-	private static final String GLOBAL_SCOPE = "programa";
+	public static final String GLOBAL_SCOPE = "programa";
 	private String id;
 	private Map<String, Var> vars;
 	private Scope parent = Scope.NULL;
@@ -75,6 +75,14 @@ public class Scope {
 
 	public boolean isGlobalScope() {
 		return id.equals(GLOBAL_SCOPE);
+	}
+	
+	public void setParent(Scope parent){
+		if(this.id.equals(GLOBAL_SCOPE))
+			this.parent = Scope.NULL;
+		if(this.id.equals(parent.id))
+			throw new RuntimeException("O escopo pai não pode ter mesmo id que o filho. Id: " + id);
+		this.parent = parent;
 	}
 
 }

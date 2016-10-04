@@ -49,7 +49,8 @@ public class SimbolTable {
 	}
 
 	private void addVarToScope(Var var) {
-		getScope(var.getScope().getId()).addVar(var);
+		Scope scope = getScope(var.getScope().getId());
+		scope.addVar(var);
 	}
 
 	public void addParam(Var param) {
@@ -68,11 +69,22 @@ public class SimbolTable {
 		validateNameOfAGlobalVar(function);
 		this.functions.put(function.getId(), function);
 		addScope(function);
-		addRegistry(FuncitonRegistry.instance(function));
 	}
 
 	public void addScope(Scope scope) {
 		scopes.put(scope.getId(), scope);
+		setParentScopeTo(scope);
+		if(scope instanceof Function)
+			addRegistry(FuncitonRegistry.instance((Function)scope));
+		else
+			addRegistry(ScopeRegistry.instance(scope));
+	}
+
+	private void setParentScopeTo(Scope scope) {
+		if(scope instanceof Function)
+			scope.setParent(getScope(Scope.GLOBAL_SCOPE));
+		else if(!scope.isGlobalScope())
+			scope.setParent(getScope(scope.getParent().getId()));
 	}
 
 	private void validateNameOfAGlobalVar(Function function) {

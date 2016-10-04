@@ -13,7 +13,7 @@ public class SemanticoPortugol extends Semantico {
 	private boolean constant = false;
 	private String varValue = "";
 	private SemanticState previousState;
-	private SemanticState state;
+	private SemanticState state = SemanticState.DECLARING_VAR;
 	private boolean atribuindo = false;
 	private boolean vector = false;
 	

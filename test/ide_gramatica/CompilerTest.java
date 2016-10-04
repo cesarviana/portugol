@@ -1,8 +1,6 @@
 package ide_gramatica;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -459,5 +457,15 @@ public class CompilerTest {
 				"}";
 		compile(code);
 		assertFalse(simbolTable.getVar("a", "inicio").isUsed());
+	}
+	
+	@Test
+	public void testaUsarVariavel() throws Exception {
+		compile("programa {"+
+			"inteiro a = 10"+
+			"funcao inicio(){"+
+				"inteiro b = a"+
+			"}"+
+		"}");
 	}
 }
