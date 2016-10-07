@@ -476,6 +476,6 @@ public class CompilerTest {
 				"inteiro b = a[0]	"+
 			"}"+
 		"}");
-		assertTrue(simbolTable.getVar("inicio", "a").isUsed());
+		assertTrue(simbolTable.getVar("a", "inicio").isUsed());
 	}
 }

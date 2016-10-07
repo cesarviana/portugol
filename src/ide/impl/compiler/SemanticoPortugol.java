@@ -10,13 +10,14 @@ public class SemanticoPortugol extends Semantico {
 	private String scope = "";
 	private String type = "";
 	private String id = "";
+	private String idAuxToUseVarVector = "";
 	private boolean constant = false;
 	private String varValue = "";
 	private SemanticState previousState;
 	private SemanticState state = SemanticState.DECLARING_VAR;
 	private boolean atribuindo = false;
 	private boolean vector = false;
-	
+
 	public SemanticoPortugol(SimbolTable simbolTable) {
 		table = simbolTable;
 		table.clear();
@@ -28,7 +29,7 @@ public class SemanticoPortugol extends Semantico {
 			tryExecute(action, token);
 		} catch (Exception e) {
 			handleException(e, action, token);
-		}	
+		}
 	}
 
 	private void tryExecute(int action, Token token) throws SemanticError {
@@ -54,12 +55,12 @@ public class SemanticoPortugol extends Semantico {
 			Scope scopeSwitch = table.getScope(scope).getParent();
 			onCaseClosePreviousCaseScopeAndOpenNew(caso, scopeSwitch);
 			break;
-		case 10://close scope
+		case 10:// close scope
 			closeCurrentScope();
 			break;
 		case 11: // Enter function on "{"
 			state = previousState; // End declare function state
-			type=""; // Clear type on enter function
+			type = ""; // Clear type on enter function
 			break;
 		case 13:
 			vector = true;
@@ -70,16 +71,17 @@ public class SemanticoPortugol extends Semantico {
 		case 23:
 			addVarIfIsDeclaringVar();
 			break;
-		case 21: 
+		case 21:
 			addInitializedVarIfIsDeclaringVar();
 			break;
 		case 2:
-			if(!atribuindo) 
+			idAuxToUseVarVector = token.getLexeme();
+			if (!atribuindo)
 				id = token.getLexeme();
 			break;
 		case 22:
 			table.addParam(createVar());
-			break;		
+			break;
 		case 3:
 			type = "";
 			break;
@@ -87,7 +89,7 @@ public class SemanticoPortugol extends Semantico {
 			constant = true;
 			break;
 		case 41:
-			varValue = table.getVarValueIfIsVar( token.getLexeme(), scope );
+			varValue = table.getVarValueIfIsVar(token.getLexeme(), scope);
 			break;
 		case 5:
 			String functionId = token.getLexeme();
@@ -103,6 +105,10 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 6:
 			String idVarToUse = token.getLexeme();
+			if(! table.matchVarRegex(idVarToUse)){
+				idVarToUse = idAuxToUseVarVector;
+				idAuxToUseVarVector = "";
+			}
 			table.setVarUsed(idVarToUse, scope);
 			break;
 		case 99:
@@ -110,7 +116,7 @@ public class SemanticoPortugol extends Semantico {
 			table.setFunctionUsed(idFunctionToUse, scope);
 			break;
 		case 8:
-			table.convertToVector(id,scope);
+			table.convertToVector(id, scope);
 			break;
 		default:
 			break;
@@ -118,21 +124,21 @@ public class SemanticoPortugol extends Semantico {
 	}
 
 	private void addVarIfIsDeclaringVar() {
-		if(state==SemanticState.DECLARING_VAR){
+		if (state == SemanticState.DECLARING_VAR) {
 			addVarToSimbolTable();
 		}
 	}
 
 	private void addInitializedVarIfIsDeclaringVar() {
-		if(state==SemanticState.DECLARING_VAR){
-			if(type!=""){
+		if (state == SemanticState.DECLARING_VAR) {
+			if (type != "") {
 				addVarToSimbolTable();
-			} 
+			}
 			table.initialize(id, scope);
 			table.validateVarUse(id, scope);
 			table.setValue(id, scope, varValue);
-			varValue="";
-			atribuindo=false;
+			varValue = "";
+			atribuindo = false;
 		}
 	}
 
@@ -140,21 +146,23 @@ public class SemanticoPortugol extends Semantico {
 		previousState = state;
 		state = newState;
 	}
+
 	private void addVarToSimbolTable() {
 		table.addVar(createVar());
 	}
 
 	private Var createVar() {
 		Var var = Var.instance(scope, type, id, constant);
-		if(vector) {
+		if (vector) {
 			var = VarVector.instance(var);
 		}
 		return var;
 	}
 
 	private void onCaseClosePreviousCaseScopeAndOpenNew(String caso, Scope switchScope) {
-		boolean isNotFirstCase = switchScope.getChilds().values().stream().anyMatch((scope)->scope.getId().endsWith("caso0"));
-		if(isNotFirstCase)
+		boolean isNotFirstCase = switchScope.getChilds().values().stream()
+				.anyMatch((scope) -> scope.getId().endsWith("caso0"));
+		if (isNotFirstCase)
 			closeCurrentScope();
 		onOpenControlStructureChangeScopeAndClearType(caso);
 	}
@@ -171,15 +179,13 @@ public class SemanticoPortugol extends Semantico {
 		type = "";
 	}
 
-
-	private void handleException(Exception e, int action, Token token)
-			throws SemanticError {
+	private void handleException(Exception e, int action, Token token) throws SemanticError {
 		e.printStackTrace();
 		throw new SemanticError(e.getMessage(), token.getPosition());
 	}
-	
+
 	private enum SemanticState {
 		DECLARING_VAR, DECLARING_FUNCTION
-	}	
+	}
 
 }
