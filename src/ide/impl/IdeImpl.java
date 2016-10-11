@@ -10,6 +10,7 @@ import ide.impl.files.PortugolFile;
 import ide.impl.files.PortugolFiles;
 import ide.impl.files.PortugolFilesListenerAdapter;
 import view.View;
+import view.ViewListener;
 import view.ViewListenerAdapter;
 
 public class IdeImpl implements Ide {
@@ -18,6 +19,17 @@ public class IdeImpl implements Ide {
 		@Override
 		public void codeChanged(String code) {
 			portugolFiles.getSelectedFile().setText(code);
+		}
+	}
+	
+	private final class ChangeCodeListenerUpdateSimbolTableAndShowError extends ViewListenerAdapter {
+		@Override
+		public void codeChanged(String code) {
+			try{
+				compile();
+			} catch (Exception e) {
+				view.error(e);
+			}
 		}
 	}
 	
@@ -44,8 +56,10 @@ public class IdeImpl implements Ide {
 		view = View.instance();
 		view.setLoadFileAction(new LoadFileAction(view, this));
 		view.setSaveFileAction(new SaveFileAction(view, this));
-		view.setCompileAction(new CompileAction(view, this));
+		CompileAction compileAction = new CompileAction(view, this);
+		view.setCompileAction(compileAction);
 		view.addListener(new ChangeCodeListener());
+		view.addListener(new ChangeCodeListenerUpdateSimbolTableAndShowError());
 		portugolFiles = PortugolFiles.instance();
 		portugolFiles.addListener(new FileDisplayer());
 		fileLoader = FileLoader.instance(view);

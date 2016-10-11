@@ -142,9 +142,13 @@ public class SimbolTable {
 	}
 
 	private boolean matchVarRegexAndHasntVar(String id, String scope) {
-		boolean matchIdRegex = id.matches("[a-zA-Z][a-zA-Z0-9_]*");
+		boolean matchIdRegex = matchVarRegex(id);
 		boolean hasntVar = !hasVar(id, scope);
 		return matchIdRegex && hasntVar;
+	}
+
+	public boolean matchVarRegex(String id) {
+		return id.matches("[a-zA-Z][a-zA-Z0-9_]*");
 	}
 
 	private boolean hasVar(String id, String scope) {
