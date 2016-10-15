@@ -1,7 +1,5 @@
 package gals;
 
-
-
 public interface ParserConstants
 {
     int FIRST_SEMANTIC_ACTION = 138;
