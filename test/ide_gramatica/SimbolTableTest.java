@@ -1,15 +1,14 @@
 package ide_gramatica;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.Function;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SimbolTableTest {
 

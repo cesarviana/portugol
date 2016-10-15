@@ -42,6 +42,8 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 200:
 			atribuindo = true;
+			if(state != SemanticState.DECLARING_VAR)
+				setVarUsed(id);
 			break;
 		case 0:
 			scope = token.getLexeme();
@@ -70,9 +72,11 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 23:
 			addVarIfIsDeclaringVar();
+			state = null;
 			break;
 		case 21:
 			addInitializedVarIfIsDeclaringVar();
+			state = null;
 			break;
 		case 2:
 			idAuxToUseVarVector = token.getLexeme();
@@ -105,11 +109,7 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 6:
 			String idVarToUse = token.getLexeme();
-			if(! table.matchVarRegex(idVarToUse)){
-				idVarToUse = idAuxToUseVarVector;
-				idAuxToUseVarVector = "";
-			}
-			table.setVarUsed(idVarToUse, scope);
+			setVarUsed(idVarToUse);
 			break;
 		case 99:
 			String idFunctionToUse = token.getLexeme();
@@ -121,6 +121,14 @@ public class SemanticoPortugol extends Semantico {
 		default:
 			break;
 		}
+	}
+
+	private void setVarUsed(String idVarToUse) {
+		if(! table.matchVarRegex(idVarToUse)){
+			idVarToUse = idAuxToUseVarVector;
+			idAuxToUseVarVector = "";
+		}
+		table.setVarUsed(idVarToUse, scope);
 	}
 
 	private void addVarIfIsDeclaringVar() {
@@ -145,6 +153,7 @@ public class SemanticoPortugol extends Semantico {
 	private void changeStateTo(SemanticState newState) {
 		previousState = state;
 		state = newState;
+		atribuindo = false;
 	}
 
 	private void addVarToSimbolTable() {

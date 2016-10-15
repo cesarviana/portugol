@@ -1,9 +1,9 @@
 package util;
 
+import ide.impl.files.PortugolFile;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import ide.impl.files.PortugolFile;
 
 public class TestUtil {
 

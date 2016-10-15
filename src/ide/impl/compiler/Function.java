@@ -1,9 +1,9 @@
 package ide.impl.compiler;
 
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.stream.Collectors;
 
 @Getter
 @Setter

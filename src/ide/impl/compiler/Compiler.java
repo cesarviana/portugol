@@ -1,11 +1,6 @@
 package ide.impl.compiler;
 
-import gals.LexicalError;
-import gals.Lexico;
-import gals.SemanticError;
-import gals.Semantico;
-import gals.Sintatico;
-import gals.SyntaticError;
+import gals.*;
 import ide.impl.files.PortugolFile;
 
 public class Compiler {

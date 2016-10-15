@@ -1,11 +1,10 @@
 package view;
 
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.table.TableModel;
-
 import ide.impl.files.PortugolFile;
 import view.impl.ViewImpl;
+
+import javax.swing.*;
+import javax.swing.table.TableModel;
 
 public interface View {
 

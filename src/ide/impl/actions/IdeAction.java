@@ -1,11 +1,10 @@
 package ide.impl.actions;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 import ide.Ide;
 import view.View;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public abstract class IdeAction extends AbstractAction {
 
