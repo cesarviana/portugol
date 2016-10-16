@@ -1,11 +1,9 @@
 package ide.impl;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.concurrent.CancellationException;
-
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 
 public abstract class FileIO {
 	

@@ -1,10 +1,10 @@
 package ide.impl.compiler;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @EqualsAndHashCode(of = { "id" })

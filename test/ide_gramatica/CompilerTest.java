@@ -1,19 +1,15 @@
 package ide_gramatica;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import ide.impl.compiler.Compiler;
-import ide.impl.compiler.CompilerException;
-import ide.impl.compiler.SimbolTable;
-import ide.impl.compiler.Var;
-import ide.impl.compiler.VarVector;
+import ide.impl.compiler.*;
 import ide.impl.compiler.registryControl.FuncitonRegistry;
 import ide.impl.compiler.registryControl.VarRegistry;
 import ide.impl.files.PortugolFile;
+import org.junit.Before;
+import org.junit.Test;
 import util.TestUtil;
+
+import static org.junit.Assert.*;
 
 public class CompilerTest {
 
@@ -145,6 +141,23 @@ public class CompilerTest {
 		Var varC = simbolTable.getVar("c", "inicio");
 		assertTrue(varA.isUsed());
 		assertFalse(varC.isUsed());
+	}
+
+	@Test
+	public void testAtribuicao() {
+		String code = "programa {"+
+				"funcao inicio(){"+
+				" 	inteiro a=0"+
+				" 	a=5 "+
+				" 	inteiro c "+
+				" 	c=0 "+
+				"}"	+
+				"}";
+		compile(code);
+		Var varA = simbolTable.getVar("a", "inicio");
+		Var varC = simbolTable.getVar("c", "inicio");
+		assertTrue(varA.isUsed());
+		assertTrue(varC.isUsed());
 	}
 	
 	@Test
@@ -433,19 +446,7 @@ public class CompilerTest {
 		Var var = simbolTable.getVar("a", "inicio");
 		assertTrue( var instanceof VarVector );
 		assertTrue( var.isInitialized() );
-	};
-	
-	// TODO Not required by the teacher
-	@Test(expected=CompilerException.class)
-	public void testDeclaraVetorAtribuindoMenosElementosQueONecessario(){
-		String code = ""+
-				"programa{"+
-				"	funcao inicio(){"+
-				"		cadeia a[2] = {\"1\"}"+
-				"	}"+
-				"}";
-		compile(code);
-	};
+	}
 	
 	@Test
 	public void testVerificaVariavelNaoUtilizada(){

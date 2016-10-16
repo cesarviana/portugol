@@ -10,7 +10,6 @@ import ide.impl.files.PortugolFile;
 import ide.impl.files.PortugolFiles;
 import ide.impl.files.PortugolFilesListenerAdapter;
 import view.View;
-import view.ViewListener;
 import view.ViewListenerAdapter;
 
 public class IdeImpl implements Ide {

@@ -1,11 +1,10 @@
 package ide.impl;
 
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.registryControl.Registry;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.List;
 
 public class SimbolTableModel extends AbstractTableModel {
 

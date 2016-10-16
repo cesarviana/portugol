@@ -1,13 +1,13 @@
 package ide.impl.compiler;
 
+import ide.impl.compiler.registryControl.FuncitonRegistry;
+import ide.impl.compiler.registryControl.Registry;
+import ide.impl.compiler.registryControl.VarRegistry;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import ide.impl.compiler.registryControl.FuncitonRegistry;
-import ide.impl.compiler.registryControl.Registry;
-import ide.impl.compiler.registryControl.VarRegistry;
 
 public class SimbolTable {
 
@@ -119,6 +119,7 @@ public class SimbolTable {
 	}
 
 	public void setVarUsed(String id, String scope) {
+		validateAtribuition(id, scope);
 		Var var = getVar(id, scope);
 		if (var == Var.NULL)
 			throw new CompilerException("Variável \"" + id + "\" não declarada. Impossível usar.");

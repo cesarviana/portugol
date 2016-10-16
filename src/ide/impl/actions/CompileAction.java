@@ -1,9 +1,9 @@
 package ide.impl.actions;
 
-import java.awt.event.ActionEvent;
-
 import ide.Ide;
 import view.View;
+
+import java.awt.event.ActionEvent;
 
 public class CompileAction extends IdeAction {
 
