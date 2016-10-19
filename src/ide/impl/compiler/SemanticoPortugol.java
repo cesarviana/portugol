@@ -17,6 +17,7 @@ public class SemanticoPortugol extends Semantico {
 	private SemanticState state = SemanticState.DECLARING_VAR;
 	private boolean atribuindo = false;
 	private boolean vector = false;
+	private int vectorSize = 0;
 
 	public SemanticoPortugol(SimbolTable simbolTable) {
 		table = simbolTable;
@@ -66,6 +67,9 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 13:
 			vector = true;
+			break;
+		case 14:
+			vectorSize = Integer.parseInt(token.getLexeme());
 			break;
 		case 1:
 			type = token.getLexeme();
@@ -163,7 +167,11 @@ public class SemanticoPortugol extends Semantico {
 	private Var createVar() {
 		Var var = Var.instance(scope, type, id, constant);
 		if (vector) {
-			var = VarVector.instance(var);
+			vector = false;
+			VarVector vector = VarVector.instance(var);
+			vector.setSize(vectorSize);
+			vectorSize = 0;
+			return vector;
 		}
 		return var;
 	}

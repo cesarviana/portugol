@@ -192,5 +192,8 @@ public class SimbolTable {
 		functions.clear();
 		scopes.clear();
 	}
-	
+
+	public Map<String, Scope> getScopes() {
+		return scopes;
+	}
 }

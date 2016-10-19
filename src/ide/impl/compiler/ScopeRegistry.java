@@ -17,7 +17,7 @@ public class ScopeRegistry extends Registry {
 
 	@Override
 	public String getType() {
-		return "";
+		return "escopo";
 	}
 
 	@Override
