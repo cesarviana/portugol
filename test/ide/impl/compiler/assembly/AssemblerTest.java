@@ -43,6 +43,7 @@ public class AssemblerTest {
         add(".data");
         add("programa_a : 0");
         add(".text");
+        add("_PRINCIPAL:");
         add("HLT 0");
         generateAssemblyAndAssert( code );
     }
@@ -53,6 +54,7 @@ public class AssemblerTest {
         add(".data");
         add("programa_a : 0,0,0,0,0");
         add(".text");
+        add("_PRINCIPAL:");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -136,6 +138,22 @@ public class AssemblerTest {
         add("_PRINCIPAL:");
         add("LDI 7");
         add("STO $out_port");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+    
+    @Test
+    public void testAtribuicaoValor(){
+    	String code =
+                " programa {  " +
+                "	inteiro a = 5"+
+                " }";
+        add(".data");
+        add("programa_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO programa_a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }

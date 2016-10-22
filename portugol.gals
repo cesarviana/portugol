@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = String
+Input = Stream
 Parser = SLR
 #RegularDefinitions
   
@@ -201,7 +201,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <LISTA_VARIAVEIS_COM_ATRIBUICAO> ::= <VARIAVEL_COM_ATRIBUICAO> "," <LISTA_VARIAVEIS_COM_ATRIBUICAO> | <VARIAVEL_COM_ATRIBUICAO>;
 
 <VARIAVEL_SEM_ATRIBUICAO> ::= <VARIAVEL_VETOR> | ID #2;
-<VARIAVEL_COM_ATRIBUICAO> ::=  <VARIAVEL_SEM_ATRIBUICAO> <ATRIBUIDOR> #200 <exp> #41 #21 | <VARIAVEL_SEM_ATRIBUICAO> <AUTO_ATRIBUIDOR>;
+<VARIAVEL_COM_ATRIBUICAO> ::=  <VARIAVEL_SEM_ATRIBUICAO> #400 <ATRIBUIDOR> #200 <exp> #41 | <VARIAVEL_SEM_ATRIBUICAO> <AUTO_ATRIBUIDOR>;
 
 <ATRIBUIDOR> ::= "=" | "+=" | "-=" | "*=" | "/=";
 <AUTO_ATRIBUIDOR> ::= "++" | "--";
@@ -275,7 +275,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <exp4> ::= <exp4> <op_arit_baixa> <exp5> | <exp5>;
 <exp5> ::= <exp5> <op_arit_alta> <exp6> | <exp6> ;
 <exp6> ::= <op_neg> <exp7> | <exp7>;
-<exp7> ::= VALOR_INTEIRO | VALOR_REAL | VALOR_LOGICO |  VALOR_CADEIA | VALOR_CARACTER | <INICIALIZACAO_VETOR> | <VARIAVEL_SEM_ATRIBUICAO> #6 | "(" <exp> ")";
+<exp7> ::= VALOR_INTEIRO #401 | VALOR_REAL | VALOR_LOGICO |  VALOR_CADEIA | VALOR_CARACTER | <INICIALIZACAO_VETOR> | <VARIAVEL_SEM_ATRIBUICAO> #6 #402 | "(" <exp> ")";
 
 <op_rel> ::= ">" | "<" | ">=" | "<=" | "==" | "!="; 
 <op_neg> ::= "-" | NAO;

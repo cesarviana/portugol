@@ -11,9 +11,12 @@ import lombok.Data;
 
 @Data
 public class AssemblerImpl extends Semantico implements Assembler {
-    public static final String INICIO = "inicio";
+    public static final String PROGRAMA = "programa";
     public static final String READING = "reading";
     public static final String READING_VECTOR = "reading_vector";
+	private static final String ASSIGNING = "assigning";
+	private static final String ASSIGNING_VALUE = "assigning_value";
+	private static final String ASSIGNING_VAR = "assigning_var";
     private SimbolTable simbolTable;
     private Assembly assembly;
     private String code = "";
@@ -76,7 +79,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public void executeAction(int action, Token token) throws SemanticError {
         switch (action){
             case 0 :
-                if(INICIO.equals(token.getLexeme())){
+                if(PROGRAMA.equals(token.getLexeme())){
                     assembly.addText("_PRINCIPAL:");
                 }
                 break;
@@ -110,6 +113,17 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 2:
                 id = token.getLexeme();
                 break;
+            case 400:
+            	state = ASSIGNING;
+            	break;
+            case 401:
+            	state = ASSIGNING_VALUE;
+            	assembly.addText("LDI "+ token.getLexeme());
+            	assembly.addText("STO "+ id);
+            	break;
+            case 402:
+            	state = ASSIGNING_VAR;
+            	break;
 
         }
     }
