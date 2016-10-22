@@ -129,8 +129,7 @@ public class AssemblerTest {
 
     @Test
     public void testEscrevaImediate(){
-        String code =
-                " programa {  funcao inicio() { escreva(7) } }";
+        String code = " programa { funcao inicio() { escreva(7) } }";
         add(".data");
         add(".text");
         add("_PRINCIPAL:");
@@ -140,6 +139,27 @@ public class AssemblerTest {
         generateAssemblyAndAssert(code);
     }
 
+    @Test
+    public void testEscrevaVetor(){
+        String code =
+                "programa {" +
+                " funcao inicio(){ " +
+                    "inteiro vet[4] " +
+                    "escreva(vet[3]) " +
+                    "}" +
+                "}";
+        add(".data");
+        add("programa_inicio_vet : 0,0,0,0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 3");
+        add("STO $indr");
+        add("LDV vet");
+        add("STO $out_port");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+    
     private void generateAssemblyAndAssert(String code) {
         Assembly assembly = getAssembly(code);
         assemblyOk(assembly);

@@ -2,7 +2,6 @@ package ide.impl.compiler.assembly.impl;
 
 import gals.*;
 import ide.impl.compiler.Scope;
-import ide.impl.compiler.SemanticoPortugol;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
 import ide.impl.compiler.assembly.Assembler;
@@ -14,11 +13,13 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public static final String INICIO = "inicio";
     public static final String READING = "reading";
     public static final String READING_VECTOR = "reading_vector";
+    public static final String WRITING = "writing";
+    public static final String WRITING_VECTOR = "writing_vector";
     private SimbolTable simbolTable;
     private Assembly assembly;
     private String code = "";
     private String state = "";
-    private int vectorPositionToStoreReadedValue = 0;
+    private int vectorPosition = 0;
     private String id;
 
     public AssemblerImpl() {
@@ -88,27 +89,44 @@ public class AssemblerImpl extends Semantico implements Assembler {
                     assembly.addText("LD $in_port");
                     assembly.addText("STO " + token.getLexeme());
                 } else if( state == READING_VECTOR ) {
-                    assembly.addText("LDI " + vectorPositionToStoreReadedValue);
+                    assembly.addText("LDI " + vectorPosition);
                     assembly.addText("STO $indr");
                     assembly.addText("LD $in_port");
                     assembly.addText("STOV " + id );
                 }
                 state = "";
                 id = "";
-                vectorPositionToStoreReadedValue = 0;
+                vectorPosition = 0;
                 break;
             case 302:
-                String lexeme = token.getLexeme();
-                String command = lexeme.matches("[0-9]*") ? "LDI" : "LD";
-                assembly.addText(command + " " + lexeme);;
-                assembly.addText("STO $out_port");
+                if(state == WRITING){
+                    String lexeme = token.getLexeme();
+                    String command = lexeme.matches("[0-9]*") ? "LDI" : "LD";
+                    assembly.addText(command + " " + lexeme);;
+                    assembly.addText("STO $out_port");
+                } else if(state == WRITING_VECTOR){
+                    assembly.addText("LDI " + vectorPosition);
+                    assembly.addText("STO $indr");
+                    assembly.addText("LDV " + id);
+                    assembly.addText("STO $out_port");
+                }
+                state = "";
+                id = "";
+                vectorPosition = 0;
                 break;
             case 14:
-                if(state == READING) state = READING_VECTOR;
-                    vectorPositionToStoreReadedValue = Integer.parseInt(token.getLexeme());
+                if(state == READING) {
+                    state = READING_VECTOR;
+                } else if(state == WRITING) {
+                    state = WRITING_VECTOR;
+                }
+                vectorPosition = Integer.parseInt(token.getLexeme());
                 break;
             case 2:
                 id = token.getLexeme();
+                break;
+            case 400:
+                state = WRITING;
                 break;
 
         }
