@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = Stream
+Input = String
 Parser = SLR
 #RegularDefinitions
   
@@ -206,7 +206,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <ATRIBUIDOR> ::= "=" | "+=" | "-=" | "*=" | "/=";
 <AUTO_ATRIBUIDOR> ::= "++" | "--";
 <VARIAVEL_VETOR>::= <VARIAVEL_VETOR_COM_TAMANHO> | <VARIAVEL_VETOR_SEM_TAMANHO>;
-<VARIAVEL_VETOR_COM_TAMANHO> ::= ID #2 "[" #13 VALOR_INTEIRO "]" | ID #2 "[" #13 VALOR_INTEIRO "]" "[" VALOR_INTEIRO "]";
+<VARIAVEL_VETOR_COM_TAMANHO> ::= ID #2 "[" #13 VALOR_INTEIRO #14 "]" | ID #2 "[" #13 VALOR_INTEIRO #14 "]" "[" VALOR_INTEIRO "]";
 <VARIAVEL_VETOR_SEM_TAMANHO> ::= ID #2 "["#13 "]" | ID #2 "["#13 "]" "[" "]";
 
 <INICIALIZACAO_VETOR> ::=    "{" <LISTA_ELEMENTOS_VETOR> "}";

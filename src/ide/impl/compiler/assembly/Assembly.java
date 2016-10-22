@@ -6,10 +6,12 @@ import java.util.List;
 public class Assembly {
 
     private StringBuilder sb;
-    private List<String> data;
+    private final List<String> data;
+    private final List<String> text;
     public Assembly() {
         sb = new StringBuilder();
         data = new ArrayList<>();
+        text = new ArrayList<>();
     }
 
     @Override
@@ -17,11 +19,16 @@ public class Assembly {
         add(".data");
         adicionaSessaoData();
         add(".text");
+        addText();
         return sb.toString();
     }
 
     private void adicionaSessaoData() {
         data.forEach(this::add);
+    }
+
+    private void addText() {
+        text.forEach(this::add);
     }
 
     private void add(String str) {
@@ -32,4 +39,7 @@ public class Assembly {
         this.data.add( data );
     }
 
+    public void addText(String text) {
+        this.text.add(text);
+    }
 }

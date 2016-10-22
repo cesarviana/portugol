@@ -12,4 +12,6 @@ public interface Assembler {
     }
 
     void setSimbolTable(SimbolTable simbolTable);
+
+    void setCode(String code);
 }
