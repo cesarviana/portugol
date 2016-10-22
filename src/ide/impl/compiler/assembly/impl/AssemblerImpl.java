@@ -12,10 +12,14 @@ import lombok.Data;
 @Data
 public class AssemblerImpl extends Semantico implements Assembler {
     public static final String INICIO = "inicio";
+    public static final String READING = "reading";
+    public static final String READING_VECTOR = "reading_vector";
     private SimbolTable simbolTable;
     private Assembly assembly;
     private String code = "";
-    private boolean vaiEscrever;
+    private String state = "";
+    private int vectorPositionToStoreReadedValue = 0;
+    private String id;
 
     public AssemblerImpl() {
         assembly = new Assembly();
@@ -77,10 +81,21 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 }
                 break;
             case 300 :
-                assembly.addText("LD $in_port");
+                state = READING;
                 break;
             case 301:
-                assembly.addText("STO " + token.getLexeme());
+                if(state == READING){
+                    assembly.addText("LD $in_port");
+                    assembly.addText("STO " + token.getLexeme());
+                } else if( state == READING_VECTOR ) {
+                    assembly.addText("LDI " + vectorPositionToStoreReadedValue);
+                    assembly.addText("STO $indr");
+                    assembly.addText("LD $in_port");
+                    assembly.addText("STOV " + id );
+                }
+                state = "";
+                id = "";
+                vectorPositionToStoreReadedValue = 0;
                 break;
             case 302:
                 String lexeme = token.getLexeme();
@@ -88,6 +103,14 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 assembly.addText(command + " " + lexeme);;
                 assembly.addText("STO $out_port");
                 break;
+            case 14:
+                if(state == READING) state = READING_VECTOR;
+                    vectorPositionToStoreReadedValue = Integer.parseInt(token.getLexeme());
+                break;
+            case 2:
+                id = token.getLexeme();
+                break;
+
         }
     }
 }

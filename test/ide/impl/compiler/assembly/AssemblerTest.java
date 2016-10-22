@@ -98,6 +98,22 @@ public class AssemblerTest {
     }
 
     @Test
+    public void testLeiaVet(){
+        String code =
+                " programa {  funcao inicio() { inteiro vet[5]  leia(vet[3]) } }";
+        add(".data");
+        add("programa_inicio_vet : 0,0,0,0,0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 3");
+        add("STO $indr");
+        add("LD $in_port");
+        add("STOV vet");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
     public void testEscreva(){
         String code =
                 " programa {  funcao inicio() { inteiro a  escreva(a) } }";
@@ -116,7 +132,6 @@ public class AssemblerTest {
         String code =
                 " programa {  funcao inicio() { escreva(7) } }";
         add(".data");
-        add("programa_inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 7");
