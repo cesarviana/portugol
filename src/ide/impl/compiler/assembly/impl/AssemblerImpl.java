@@ -15,6 +15,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public static final String READING_VECTOR = "reading_vector";
     public static final String WRITING = "writing";
     public static final String WRITING_VECTOR = "writing_vector";
+    public static final String ADDING = "adding";
+    public static final String ASSIGNING = "assigning";
     private SimbolTable simbolTable;
     private Assembly assembly;
     private String code = "";
@@ -128,7 +130,23 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 400:
                 state = WRITING;
                 break;
+            case 499:
+                String lexeme = token.getLexeme();
+                boolean immediate = lexeme.matches("[0-9]*");
+                if(state == ASSIGNING){
+                    String command = immediate ? "LDI" : "LD";
+                    assembly.addText(command + " " + lexeme);
+                } else if( state == ADDING ) {
+                    String command = immediate ? "ADDI" : "ADD";
+                    assembly.addText(command + " " + immediate);
+                }
+                break;
+            case 500:
+                state = ADDING;
+                break;
+            case 498:
 
+                break;
         }
     }
 }

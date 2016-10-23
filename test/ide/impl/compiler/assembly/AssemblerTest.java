@@ -159,7 +159,23 @@ public class AssemblerTest {
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
-    
+
+    public void somaADDI(){
+        String code = "programa { " +
+                "       funcao inicio(){ " +
+                "           inteiro a = 5 + 5 " +
+                "       } " +
+                "     }";
+        add(".data");
+        add("programa_inicio_a : 0");
+        add(".text");
+        add("LDI 5");
+        add("ADDI 5");
+        add("STO a");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
     private void generateAssemblyAndAssert(String code) {
         Assembly assembly = getAssembly(code);
         assemblyOk(assembly);
