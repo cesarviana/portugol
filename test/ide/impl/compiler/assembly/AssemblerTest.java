@@ -143,7 +143,6 @@ public class AssemblerTest {
         add("programa_c : 0");
         add(".text");
         add("_PRINCIPAL:");
-        
         add("LDI 5");
         add("STO programa_a");
         add("LD programa_a");
@@ -241,6 +240,33 @@ public class AssemblerTest {
         add("LD programa_inicio_x");
         add("ADD programa_inicio_x");
         add("STO programa_inicio_x");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testADD_SUBI(){
+        String code = "programa { " +
+                "       funcao inicio(){ " +
+                "           inteiro x = 5 " +
+                "           inteiro a = 2 " +
+                "           inteiro z = x + a - 3" +
+                "       } " +
+                "     }";
+        add(".data");
+        add("programa_inicio_a : 0");
+        add("programa_inicio_x : 0");
+        add("programa_inicio_z : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO programa_inicio_x");
+        add("LDI 2");
+        add("STO programa_inicio_a");
+        add("LD programa_inicio_x");
+        add("ADD programa_inicio_a");
+        add("SUBI 3");
+        add("STO programa_inicio_z");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }

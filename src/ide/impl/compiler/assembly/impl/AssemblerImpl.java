@@ -157,11 +157,10 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 41:
                 if (states.isEmpty())
                     return;
-                // finaliza expressão
                 removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse();
                 do {
                     String state = states.pollLast();
-                    String idOrValue = isInt(token.getLexeme()) ? token.getLexeme() : idsOrValues.pollLast();
+                    String idOrValue = idsOrValues.pollLast();
                     if (state == ASSIGNING) {
                         command("LD",idOrValue);
                     } else
