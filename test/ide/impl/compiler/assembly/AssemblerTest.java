@@ -321,10 +321,10 @@ public class AssemblerTest {
                 "       } " +
                 "     }";
         add(".data");
-        add("programa_inicio_a : 0");
         add("programa_inicio_x : 0");
-        add("programa_inicio_z : 0");
         add("programa_inicio_n : 0");
+        add("programa_inicio_z : 0");
+        add("programa_inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
@@ -372,8 +372,8 @@ public class AssemblerTest {
                 "       } " +
                 "     }";
         add(".data");
-        add("programa_inicio_a : 0");
         add("programa_inicio_x : 0");
+        add("programa_inicio_a : 0");
         add("programa_inicio_z : 0");
         add(".text");
         add("_PRINCIPAL:");

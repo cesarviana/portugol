@@ -165,31 +165,35 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 idsOrValues.push(token.getLexeme());
                 break;
             case 41:
+                if (states.isEmpty())
+                    return;
+                removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse();
+                do {
+                    String state = states.pollLast();
+                    String idOrValue = idsOrValues.pollLast();
+                    if (state == ASSIGNING) {
+                        String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
+                        command(ld,idOrValue);
+                    } else
+                    if (state == ADDING) {
+                        command("ADD",idOrValue);
+                    } else
+                    if (state == SUBTRACTING) {
+                        command("SUB",idOrValue);
+                    }
+                } while (!states.isEmpty());
+
                 if (assigningToVector) {
+                    ldToAcc(token.getLexeme());
                     storeAccValueToStack();
                     loadVectorIndexFromStack();
                     storeVectorValue();
                     states.poll();
                 } else {
-                    if (states.isEmpty())
-                        return;
-                    removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse();
-                    do {
-                        String state = states.pollLast();
-                        String idOrValue = idsOrValues.pollLast();
-                        if (state == ASSIGNING) {
-                            command("LD",idOrValue);
-                        } else
-                        if (state == ADDING) {
-                            command("ADD",idOrValue);
-                        } else
-                        if (state == SUBTRACTING) {
-                            command("SUB",idOrValue);
-                        }
-                    } while (!states.isEmpty());
                     assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
-                    idsOrValues.clear();
                 }
+                idsOrValues.clear();
+
                 break;
             case 500:
                 states.push(ADDING);
@@ -243,12 +247,15 @@ public class AssemblerImpl extends Semantico implements Assembler {
         return VarCompiler.instance(simbolTable.getScope(scope).getVar(id)).getName();
     }
 
-    private void command(String command,String lexeme) {
+    private void ldToAcc(String lexeme){
         boolean assigningFromVector = "]".equals(lexeme);
         if (assigningFromVector) {
             assembly.addText("LDV " + getVarName(id));
             return;
         }
+    }
+
+    private void command(String command,String lexeme) {
         boolean inteiro = isInt(lexeme);
         command = inteiro ? command+"I" : command;
         if(!inteiro)
