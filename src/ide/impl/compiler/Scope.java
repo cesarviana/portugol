@@ -1,10 +1,11 @@
 package ide.impl.compiler;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @EqualsAndHashCode(of = { "id" })
@@ -18,7 +19,7 @@ public class Scope {
 
 	public Scope(String id) {
 		this.id = id;
-		vars = new HashMap<>();
+		vars = new LinkedHashMap<>();
 		childs = new HashMap<>();
 	}
 

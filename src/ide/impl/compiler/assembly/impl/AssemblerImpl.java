@@ -1,6 +1,12 @@
 package ide.impl.compiler.assembly.impl;
 
-import gals.*;
+import gals.LexicalError;
+import gals.Lexico;
+import gals.SemanticError;
+import gals.Semantico;
+import gals.Sintatico;
+import gals.SyntaticError;
+import gals.Token;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
@@ -27,6 +33,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
 	private String id;
 	private String idThatWillReceiveAssigning;
 	private String scope;
+	private String indexWhereVectorWillReceiveAssigning;
+	private boolean assigningToVector;
 
 	public AssemblerImpl() {
 		assembly = new Assembly();
@@ -136,12 +144,54 @@ public class AssemblerImpl extends Semantico implements Assembler {
 		case 600:
 			idThatWillReceiveAssigning = id;
 			state = ASSIGNING;
+			storeVectorIndexToStackIfIsAssigningVector(token);
 			break;
-		case 41:
+		case 41:// final da atribuicao
 			ldToAcc(token);
-			assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
+			if (assigningToVector) {
+				storeAccValueToStack();
+				loadVectorIndexFromStack();
+				storeVectorValue();
+			} else {
+				assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
+			}
+
 			state = "";
 			break;
+		case 800:// vet[0 #800]
+			String index = token.getLexeme();
+			if (state == ASSIGNING) {
+				// x = vet[0]
+				assembly.addText("LDI " + index);
+				assembly.addText("STO $indr");
+			} else {
+				// vet[0]...
+				indexWhereVectorWillReceiveAssigning = index;
+			}
+			break;
+		}
+	}
+	
+	private void storeAccValueToStack() {
+		assembly.addText("STO 1001");
+	}
+	
+	private void loadVectorIndexFromStack() {
+		assembly.addText("LD 1000");
+		assembly.addText("STO $indr");
+	}
+
+	private void storeVectorValue() {
+		assembly.addText("LD 1001");
+		assembly.addText("STOV " + getVarName(idThatWillReceiveAssigning));
+		assigningToVector = false;
+	}
+
+	private void storeVectorIndexToStackIfIsAssigningVector(Token token) {
+		assigningToVector = "]".equals(token.getLexeme());
+		if (assigningToVector) {
+			assembly.addText("LDI " + indexWhereVectorWillReceiveAssigning);
+			assembly.addText("STO 1000");
 		}
 	}
 
@@ -151,9 +201,16 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
 	private void ldToAcc(Token token) {
 		String lexeme = token.getLexeme();
+		boolean assigningFromVector = "]".equals(lexeme);
+		if (assigningFromVector) {
+			assembly.addText("LDV " + getVarName(id));
+			return;
+		}
 		boolean inteiro = lexeme.matches("[0-9]*");
-		String command = inteiro ? "LDI" : "LD";
-		if(!inteiro) lexeme = getVarName(lexeme);
-		assembly.addText(command + " " + lexeme);
+		if (inteiro) {
+			assembly.addText("LDI " + lexeme);
+			return;
+		}
+		assembly.addText("LD " + getVarName(lexeme));
 	}
 }
