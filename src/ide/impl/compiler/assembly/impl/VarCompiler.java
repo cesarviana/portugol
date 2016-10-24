@@ -28,7 +28,7 @@ public class VarCompiler {
         return sb.toString();
     }
 
-    private String getName() {
+    public String getName() {
         List<String> names = new ArrayList<>();
         Scope scope = var.getScope();
         while( scope != Scope.NULL ){

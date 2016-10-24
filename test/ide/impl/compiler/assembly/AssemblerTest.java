@@ -43,6 +43,7 @@ public class AssemblerTest {
         add(".data");
         add("programa_a : 0");
         add(".text");
+        add("_PRINCIPAL:");
         add("HLT 0");
         generateAssemblyAndAssert( code );
     }
@@ -52,31 +53,6 @@ public class AssemblerTest {
         String code = " programa { inteiro a[5] } ";
         add(".data");
         add("programa_a : 0,0,0,0,0");
-        add(".text");
-        add("HLT 0");
-        generateAssemblyAndAssert(code);
-    }
-
-    @Test
-    public void testVarInsideScopes(){
-        String code =
-                "programa{" +
-                "   inteiro a" +
-                "   funcao inicio(){" +
-                "       inteiro a" +
-                "       inteiro x[6]" +
-                "       para(inteiro i=0; i<10;i++){" +
-                "           inteiro c" +
-                "       }" +
-                "   }" +
-                "}";
-
-        add(".data");
-        add("programa_a : 0");
-        add("programa_inicio_a : 0");
-        add("programa_inicio_x : 0,0,0,0,0,0");
-        add("programa_inicio_inicio->para0_c : 0");
-        add("programa_inicio_inicio->para0_i : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("HLT 0");
@@ -121,7 +97,7 @@ public class AssemblerTest {
         add("programa_inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
-        add("LD a");
+        add("LD programa_inicio_a");
         add("STO $out_port");
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -135,6 +111,44 @@ public class AssemblerTest {
         add("_PRINCIPAL:");
         add("LDI 7");
         add("STO $out_port");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+    
+    @Test
+    public void testAtribuicaoValor(){
+    	String code =
+                " programa {  " +
+                "	inteiro a = 5"+
+                " }";
+        add(".data");
+        add("programa_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO programa_a");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+    
+    @Test
+    public void testAtribuicaoVariavel(){
+    	String code =
+                " programa {  " +
+                "	inteiro a = 5"+
+                "	inteiro c = a"+
+                " }";
+        add(".data");
+        add("programa_a : 0");
+        add("programa_c : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        
+        add("LDI 5");
+        add("STO programa_a");
+        add("LD programa_a");
+        add("STO programa_c");
+        
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -160,18 +174,73 @@ public class AssemblerTest {
         generateAssemblyAndAssert(code);
     }
 
-    public void somaADDI(){
+    @Test
+    public void testADDI_SUBI(){
         String code = "programa { " +
                 "       funcao inicio(){ " +
-                "           inteiro a = 5 + 5 " +
+                "           inteiro a = 5 + 5 - 5" +
                 "       } " +
                 "     }";
         add(".data");
         add("programa_inicio_a : 0");
         add(".text");
+        add("_PRINCIPAL:");
         add("LDI 5");
         add("ADDI 5");
-        add("STO a");
+        add("SUBI 5");
+        add("STO programa_inicio_a");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testADD_SUB(){
+        String code = "programa { " +
+                "       funcao inicio(){ " +
+                "           inteiro x = 5 " +
+                "           inteiro n = 3 " +
+                "           inteiro z = 1" +
+                "           inteiro a = x + n - z" +
+                "       } " +
+                "     }";
+        add(".data");
+        add("programa_inicio_a : 0");
+        add("programa_inicio_x : 0");
+        add("programa_inicio_z : 0");
+        add("programa_inicio_n : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO programa_inicio_x");
+        add("LDI 3");
+        add("STO programa_inicio_n");
+        add("LDI 1");
+        add("STO programa_inicio_z");
+        add("LD programa_inicio_x");
+        add("ADD programa_inicio_n");
+        add("SUB programa_inicio_z");
+        add("STO programa_inicio_a");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testADD_SUB_sameVar(){
+        String code = "programa { " +
+                "       funcao inicio(){ " +
+                "           inteiro x = 5 " +
+                "           x = x + x " +
+                "       } " +
+                "     }";
+        add(".data");
+        add("programa_inicio_x : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO programa_inicio_x");
+        add("LD programa_inicio_x");
+        add("ADD programa_inicio_x");
+        add("STO programa_inicio_x");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }

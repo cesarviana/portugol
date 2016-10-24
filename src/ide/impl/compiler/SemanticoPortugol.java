@@ -78,10 +78,6 @@ public class SemanticoPortugol extends Semantico {
 			addVarIfIsDeclaringVar();
 			state = null;
 			break;
-		case 21:
-			addInitializedVarIfIsDeclaringVar();
-			state = null;
-			break;
 		case 2:
 			idAuxToUseVarVector = token.getLexeme();
 			if (!atribuindo)
@@ -97,7 +93,9 @@ public class SemanticoPortugol extends Semantico {
 			constant = true;
 			break;
 		case 41:
-			varValue = table.getVarValueIfIsVar(token.getLexeme(), scope);
+			varValue = table.getVarValueIfHasVar(token.getLexeme(), scope);
+			addInitializedVarIfIsDeclaringVar();
+			state = null;
 			break;
 		case 5:
 			String functionId = token.getLexeme();

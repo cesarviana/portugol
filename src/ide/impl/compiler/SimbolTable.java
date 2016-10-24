@@ -177,7 +177,7 @@ public class SimbolTable {
 		var = VarVector.instance(var);
 	}
 
-	public String getVarValueIfIsVar(String lexeme, String scope) {
+	public String getVarValueIfHasVar(String lexeme, String scope) {
 		if(hasVar(lexeme, scope))
 			return getVar(lexeme, scope).getValue();
 		return lexeme;
