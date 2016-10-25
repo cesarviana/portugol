@@ -159,6 +159,7 @@ public class AssemblerTest {
                     	" funcao inicio() {" +
                     	" 	inteiro a " +
                     	" 	inteiro vet2[2] " +
+                        " 	inteiro vet3[2] " +
                     	" 	a = vet2[2] " +
                     	" } " +
                 " }";
@@ -166,6 +167,7 @@ public class AssemblerTest {
     	add(".data");
     	add("programa_inicio_a : 0");
         add("programa_inicio_vet2 : 0,0");
+        add("programa_inicio_vet3 : 0,0");
         add(".text");
         add("_PRINCIPAL:");
         

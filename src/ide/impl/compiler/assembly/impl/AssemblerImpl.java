@@ -29,6 +29,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public static final String WRITING = "writing";
     public static final String WRITING_VECTOR = "writing_vector";
     public static final String SUBTRACTING = "subtracting";
+    public static final String DECLARING = "declaring";
 
     private SimbolTable simbolTable;
     private Assembly assembly;
@@ -104,6 +105,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
                     assembly.addText("_PRINCIPAL:");
                 }
                 break;
+            case 1:
+                states.push(DECLARING);
+                break;
             case 300:
                 states.add(READING);
                 break;
@@ -151,7 +155,11 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 break;
             case 2:
                 id = token.getLexeme();
-                idsOrValues.push(id);
+                if(states.peek()!=DECLARING){
+                    idsOrValues.push(id);
+                } else {
+                    states.clear();
+                }
                 break;
             case 400:
                 states.push(WRITING);
@@ -167,7 +175,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 41:
                 if (states.isEmpty())
                     return;
-                removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse();
+                boolean vectorToVar = states.contains(ASSIGNING) && token.getLexeme().equals("]");
+                if(assigningToVector || vectorToVar)
+                    removesFromTheStackTheVarThatWillReceiveTheExpressionResult();
                 do {
                     String state = states.pollLast();
                     String idOrValue = idsOrValues.pollLast();
@@ -193,7 +203,6 @@ public class AssemblerImpl extends Semantico implements Assembler {
                     assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
                 }
                 idsOrValues.clear();
-
                 break;
             case 500:
                 states.push(ADDING);
@@ -239,7 +248,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
         }
     }
 
-    private void removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse() {
+    private void removesFromTheStackTheVarThatWillReceiveTheExpressionResult() {
         idsOrValues.pollLast();
     }
 
