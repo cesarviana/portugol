@@ -393,6 +393,15 @@ public class AssemblerTest {
         generateAssemblyAndAssert(code);
     }
 
+    @Test
+    public void testOperacaoAritmeticaVetorRecebendoValor(){
+        String code = " programa{" +
+                "           funcao inicio(){" +
+                "               " +
+                "           }" +
+                "} ";
+    }
+
     private void generateAssemblyAndAssert(String code) {
         Assembly assembly = getAssembly(code);
         assemblyOk(assembly);
