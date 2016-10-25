@@ -1,5 +1,6 @@
 package view.impl;
 
+import ide.impl.actions.SaveAsmAction;
 import ide.impl.compiler.CompilerException;
 import ide.impl.compiler.assembly.Assembly;
 import ide.impl.files.PortugolFile;
@@ -51,10 +52,10 @@ public class ViewImpl extends JFrame implements View {
 	private JButton btnCarregarArquivo;
 	private RSyntaxTextArea txtCode;
 	private JButton btnSalvar;
+	private JButton btnSalvarAsm;
 	private Collection<ViewListener> listeners;
 	private JButton btnCompilar;
 	private JTextArea textArea;
-	private JPanel panelTabelaSimbolos;
 	private JTable table;
 	private RSyntaxTextArea txtAssembly;
 
@@ -104,6 +105,9 @@ public class ViewImpl extends JFrame implements View {
 
 		btnCompilar = new JButton("Compilar");
 		panelTop.add(btnCompilar);
+		
+		btnSalvarAsm = new JButton("Salvar ASM");
+		panelTop.add(btnSalvarAsm);
 
 		JPanel panelFooter = new JPanel();
 		contentPane.add(panelFooter, BorderLayout.SOUTH);
@@ -153,6 +157,11 @@ public class ViewImpl extends JFrame implements View {
 	public void setSaveFileAction(Action saveFileAction) {
 		btnSalvar.setAction(saveFileAction);
 	}
+	
+	@Override
+	public void setSaveAsmAction(SaveAsmAction saveAsmAction) {
+		btnSalvarAsm.setAction(saveAsmAction);
+	}
 
 	@Override
 	public void setCompileAction(Action compileAction) {
@@ -161,7 +170,6 @@ public class ViewImpl extends JFrame implements View {
 
 	@Override
 	public void error(Throwable e) {
-		e.printStackTrace();
 		String errMessage = createErrorMessage(e);
 		showErrorMessage(e, errMessage);
 	}

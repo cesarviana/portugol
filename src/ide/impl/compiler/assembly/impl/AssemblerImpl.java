@@ -93,12 +93,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
         Sintatico sintatico = new Sintatico();
         try {
             sintatico.parse(lexico, this);
-        } catch (LexicalError lexicalError) {
-            lexicalError.printStackTrace();
-        } catch (SyntaticError syntaticError) {
-            syntaticError.printStackTrace();
-        } catch (SemanticError semanticError) {
-            semanticError.printStackTrace();
+        } catch (LexicalError | SemanticError | SyntaticError error) {
+        	System.err.println(error.getMessage());
         }
     }
 
@@ -269,6 +265,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private boolean isLoadingVector(Token token, String id) {
+        if(isInt(id)) return false;
         String lexeme = token.getLexeme();
         boolean tokenVetor = "]".equals(lexeme) ;
         if( tokenVetor ) return true;
@@ -276,11 +273,6 @@ public class AssemblerImpl extends Semantico implements Assembler {
         return vectors.contains(varName);
 
     }
-
-    private boolean matchesVarName(String lexeme) {
-        return lexeme.contains(VAR_NAME_SCOPE_SEPARATOR);
-    }
-
 
     private void storeAccValueToStack() {
         assembly.addText("STO 1001");
@@ -312,7 +304,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private String getVarName(String id) {
-        return VarCompiler.instance(simbolTable.getScope(scope).getVar(id)).getName();
+        Var var = simbolTable.getVar(id, scope);
+        return VarCompiler.instance(var).getName();
     }
 
     private void ldToAcc(String lexeme) {

@@ -1,25 +1,32 @@
 package ide.impl.files;
 
+import ide.impl.compiler.assembly.Assembly;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PortugolFiles {
+import lombok.Data;
 
-	private static PortugolFiles instance;
+@Data
+public class IdeFiles {
+
+	private static IdeFiles instance;
 	private final List<PortugolFilesListener> listeners;
 	private final List<PortugolFile> files;
+	private Assembly assembly;
 	private PortugolFile selectedFile = PortugolFile.newInstance();
 
-	public static PortugolFiles instance() {
+	public static IdeFiles instance() {
 		if (instance == null)
-			instance = new PortugolFiles();
+			instance = new IdeFiles();
 		return instance;
 	}
 
-	private PortugolFiles() {
+	private IdeFiles() {
 		listeners = new ArrayList<>();
 		files = new ArrayList<>();
+		assembly = new Assembly();
 	}
 
 	public void add(File file) {
@@ -36,5 +43,5 @@ public class PortugolFiles {
 	public PortugolFile getSelectedFile() {
 		return selectedFile;
 	}
-
+	
 }

@@ -1,5 +1,6 @@
 package view;
 
+import ide.impl.actions.SaveAsmAction;
 import ide.impl.compiler.assembly.Assembly;
 import ide.impl.files.PortugolFile;
 
@@ -36,5 +37,7 @@ public interface View {
 	public void setSimbolTable( TableModel tableModel );
 
 	public void setAssembly(Assembly assembly);
+
+	public void setSaveAsmAction(SaveAsmAction saveAsmAction);
 
 }

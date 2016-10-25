@@ -11,4 +11,5 @@ public interface Ide {
 	void saveFile();
 	void compile();
 	void assembly();
+	void saveAsm();
 }
