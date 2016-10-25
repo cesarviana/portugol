@@ -1,16 +1,23 @@
 package ide.impl.compiler.assembly.impl;
 
-import gals.*;
+import gals.LexicalError;
+import gals.Lexico;
+import gals.SemanticError;
+import gals.Semantico;
+import gals.Sintatico;
+import gals.SyntaticError;
+import gals.Token;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
 import ide.impl.compiler.assembly.Assembler;
 import ide.impl.compiler.assembly.Assembly;
-import lombok.Data;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+
+import lombok.Data;
 
 @Data
 public class AssemblerImpl extends Semantico implements Assembler {

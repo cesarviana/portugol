@@ -126,7 +126,7 @@ public class SimbolTable {
 		var.use();
 	}
 	
-	public void setFunctionUsed(String id, String scopeStr) {
+	public void setFunctionUsed(String id) {
 		Scope scope = getScope(id);
 		if (scope instanceof Function) {
 			Function function = (Function) scope;

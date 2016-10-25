@@ -29,8 +29,8 @@ public abstract class IdeAction extends AbstractAction {
 		try {
 			execute(e);
 		} catch (Exception e2) {
-			view.error( e2 );
 			e2.printStackTrace();
+			view.error( e2 );
 		}
 	}
 	

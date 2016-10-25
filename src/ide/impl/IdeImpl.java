@@ -6,6 +6,7 @@ import ide.impl.actions.LoadFileAction;
 import ide.impl.actions.SaveFileAction;
 import ide.impl.compiler.Compiler;
 import ide.impl.compiler.SimbolTable;
+import ide.impl.compiler.assembly.Assembler;
 import ide.impl.files.PortugolFile;
 import ide.impl.files.PortugolFiles;
 import ide.impl.files.PortugolFilesListenerAdapter;
@@ -30,6 +31,18 @@ public class IdeImpl implements Ide {
 				view.error(e);
 			}
 		}
+	}
+	
+	private final class ChangeCodeListenerAssembly extends ViewListenerAdapter {
+		@Override
+		public void codeChanged(String code) {
+			try{
+				assembly();
+			} catch (Exception e) {
+				view.error(e);
+			}
+		}
+
 	}
 	
 	private final class FileDisplayer extends PortugolFilesListenerAdapter {
@@ -59,6 +72,7 @@ public class IdeImpl implements Ide {
 		view.setCompileAction(compileAction);
 		view.addListener(new ChangeCodeListener());
 		view.addListener(new ChangeCodeListenerUpdateSimbolTableAndShowError());
+		view.addListener(new ChangeCodeListenerAssembly());
 		portugolFiles = PortugolFiles.instance();
 		portugolFiles.addListener(new FileDisplayer());
 		fileLoader = FileLoader.instance(view);
@@ -87,6 +101,14 @@ public class IdeImpl implements Ide {
 		compiler.compile(portugolFiles.getSelectedFile());
 		view.message("Compilado com sucesso!");
 		view.setSimbolTable(new SimbolTableModel(simbolTable));
+	}
+	
+	@Override
+	public void assembly() {
+		Assembler assembler = Assembler.instance();
+		assembler.setSimbolTable(simbolTable);
+		assembler.setCode(portugolFiles.getSelectedFile().getText());
+		view.setAssembly( assembler.assembly() );
 	}
 
 }

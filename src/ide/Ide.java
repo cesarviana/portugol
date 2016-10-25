@@ -10,4 +10,5 @@ public interface Ide {
 	void loadFile();
 	void saveFile();
 	void compile();
+	void assembly();
 }

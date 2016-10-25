@@ -116,7 +116,7 @@ public class SemanticoPortugol extends Semantico {
 			break;
 		case 99:
 			String idFunctionToUse = token.getLexeme();
-			table.setFunctionUsed(idFunctionToUse, scope);
+			table.setFunctionUsed(idFunctionToUse);
 			break;
 		case 8:
 			table.convertToVector(id, scope);
