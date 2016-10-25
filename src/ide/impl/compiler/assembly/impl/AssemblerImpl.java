@@ -175,9 +175,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 41:
                 if (states.isEmpty())
                     return;
-
-                removesFromTheStackTheVarThatWillReceiveTheExpressionResult(token.getLexeme());
-
+                removesFromTheStackTheVarThatWillReceiveTheExpressionResult(token);
                 do {
                     consumeExpressionToAssembly(token);
                 } while (!states.isEmpty());
@@ -258,8 +256,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
         }
     }
 
-    private void removesFromTheStackTheVarThatWillReceiveTheExpressionResult(String lexeme) {
-        boolean vectorToVar = states.contains(ASSIGNING) && "]".equals(lexeme);
+    private void removesFromTheStackTheVarThatWillReceiveTheExpressionResult(Token token) {
+        boolean vectorToVar = states.contains(ASSIGNING) && "]".equals(token.getLexeme());
         if (varToVector || vectorToVar)
             idsOrValues.pollLast();
     }
