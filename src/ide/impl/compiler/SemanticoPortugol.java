@@ -66,7 +66,8 @@ public class SemanticoPortugol extends Semantico {
 			type = ""; // Clear type on enter function
 			break;
 		case 13:
-			vector = true;
+			if(state == SemanticState.DECLARING_VAR && !atribuindo)
+				vector = true;
 			break;
 		case 14:
 			vectorSize = Integer.parseInt(token.getLexeme());
