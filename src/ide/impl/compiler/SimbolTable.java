@@ -26,7 +26,7 @@ public class SimbolTable {
 	}
 
 	public void addVar(Var var) {
-		System.out.println("SimbolTable.addVar() = " + var);
+		System.out.println("SimbolTable.defineAddr() = " + var);
 		mustNotExistsInParentScopesInsideTheFunction(var);
 		validadeNameOfAFunction(var);
 		addVarToScope(var);

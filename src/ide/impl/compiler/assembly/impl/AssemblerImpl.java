@@ -1,12 +1,6 @@
 package ide.impl.compiler.assembly.impl;
 
-import gals.LexicalError;
-import gals.Lexico;
-import gals.SemanticError;
-import gals.Semantico;
-import gals.Sintatico;
-import gals.SyntaticError;
-import gals.Token;
+import gals.*;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
@@ -206,8 +200,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
     private void storeExpression(Token token) {
         if (varToVector) {
-            ldToAcc(token.getLexeme());
-            storeAccValueToStack();
+            String lexeme = token.getLexeme();
+            ldToAcc(lexeme);
+            storeAccValueToStack(lexeme);
             loadVectorIndexFromStack();
             storeVectorValue();
             states.poll();
@@ -233,7 +228,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
 
-    private void storeAccValueToStack() {
+    private void storeAccValueToStack(String lexeme) {
         assembly.addText("STO 1001");
     }
 

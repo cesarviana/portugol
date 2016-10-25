@@ -223,16 +223,14 @@ public class AssemblerTest {
                     	" funcao inicio() {" +
                     	" 	inteiro a = 2 " +
                     	" 	inteiro vet2[3] " +
-                    	" 	inteiro vet3[3] " +
                     	" 	vet2[0] = a " +
-                    	" 	vet3[0] = a " +
+                    	" 	vet2[1] = a " +
                     	" } " +
                 " }";
         
     	add(".data");
     	add("programa_inicio_a : 0");        
         add("programa_inicio_vet2 : 0,0,0");
-        add("programa_inicio_vet3 : 0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         
@@ -245,18 +243,15 @@ public class AssemblerTest {
         // guarda o valor da variavel a na pilha
         add("LD programa_inicio_a");
         add("STO 1001");
-        // carrega para $indr o valor do indice guardado 
+        // carrega para $indr o valor do indice guardado
         add("LD 1000");
         add("STO $indr");
         // salva no vetor o valor da variavel a guardado na pilha
         add("LD 1001");
         add("STOV programa_inicio_vet2");
-        
-        // carrega a
-        add("LDI 2");
-        add("STO programa_inicio_a");
-        // guarda o indice onde o vet3 deve receber o valor
-        add("LDI 0");
+
+        // guarda o indice onde o vet2 deve receber o valor
+        add("LDI 1");
         add("STO 1000");
         // guarda o valor da variavel a na pilha
         add("LD programa_inicio_a");
@@ -266,7 +261,7 @@ public class AssemblerTest {
         add("STO $indr");
         // salva no vetor o valor da variavel a guardado na pilha
         add("LD 1001");
-        add("STOV programa_inicio_vet3");
+        add("STOV programa_inicio_vet2");
         
         add("HLT 0");
         generateAssemblyAndAssert(code);
