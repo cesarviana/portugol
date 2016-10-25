@@ -47,6 +47,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private String indexWhereVectorWillReceiveAssigning;
     private boolean varToVector;
     private final Set<String> vectors;
+    private boolean negative = false;
 
     public AssemblerImpl() {
         assembly = new Assembly();
@@ -158,10 +159,14 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 2:
                 id = token.getLexeme();
                 if (states.peek() != DECLARING) {
-                    idsOrValues.push(id);
+                    if(negative)
+                        idsOrValues.push("-"+id);
+                    else
+                        idsOrValues.push(id);
                 } else {
                     states.clear();
                 }
+                negative = false;
                 break;
             case 400:
                 states.push(WRITING);
@@ -172,7 +177,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 storeVectorIndexToStackIfIsAssigningVector(token);
                 break;
             case 601:
-                idsOrValues.push(token.getLexeme());
+                String signal = negative ? "-" : "";
+                idsOrValues.push(signal+token.getLexeme());
+                negative = false;
                 break;
             case 41:
                 if (states.isEmpty())
@@ -193,6 +200,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 break;
             case 501:
                 states.push(SUBTRACTING);
+                break;
+            case 502:
+                negative = true;
                 break;
             case 800:// vet[0 #800]
                 String index = token.getLexeme();
@@ -325,7 +335,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private boolean isInt(String lexeme) {
-        return lexeme.matches("[0-9]*");
+        return lexeme.matches("-?[0-9]+");
     }
 
 }

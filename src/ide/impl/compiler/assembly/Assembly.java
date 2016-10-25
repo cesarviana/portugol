@@ -9,13 +9,13 @@ public class Assembly {
     private final List<String> data;
     private final List<String> text;
     public Assembly() {
-        sb = new StringBuilder();
         data = new ArrayList<>();
         text = new ArrayList<>();
     }
 
     @Override
     public String toString() {
+        sb = new StringBuilder();
         add(".data");
         adicionaSessaoData();
         add(".text");
