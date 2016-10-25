@@ -258,6 +258,75 @@ public class AssemblerTest {
     }
 
     @Test
+    public void testOperacaoAritmeticaComVetorComoOperando(){
+        String code = "programa {" +
+                "   funcao inicio(){" +
+                "       inteiro vet[5]" +
+                "       vet[3] = 2 " +
+                "       inteiro a = vet[3] + 6" +
+                "   }" +
+                "}";
+        add(".data");
+        add("programa_inicio_vet : 0,0,0,0,0");
+        add("programa_inicio_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 3");                       // Carrega indice
+        add("STO 1000");                    // Armazena indice em 1000
+        add("LDI 2");                       // Carrega valor
+        add("STO 1001");                    // Armazena 2 em 1001
+        add("LD 1000");                     // Carrega o indice
+        add("STO $indr");                   // Armazena em $indr
+        add("LD 1001");                     // Carrega valor 2 de 1001 pro ACC
+        add("STOV programa_inicio_vet");    // Armazena valor do ACC em vet
+                                            // == Finalizou atribuição
+        add("LDI 3");                       // Carrega indice que receberá atribuição
+        add("STO $indr");                   // Armazena no $indr;
+        add("LDV programa_inicio_vet");     // Carrega vet em $indr=3 (vet[3])
+        add("ADDI 6");                      // Adiciona
+        add("STO programa_inicio_a");       // Armazena
+
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testOperacaoAritmeticaComVetorComoSegundoOperando(){
+        String code = "programa {" +
+                "   funcao inicio(){" +
+                "       inteiro vet[5]" +
+                "       vet[3] = 2 " +
+                "       inteiro a = 6 + vet[3]" +
+                "   }" +
+                "}";
+        add(".data");
+        add("programa_inicio_vet : 0,0,0,0,0");
+        add("programa_inicio_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 3");
+        add("STO 1000");
+        add("LDI 2");
+        add("STO 1001");
+        add("LD 1000");
+        add("STO $indr");
+        add("LD 1001");
+        add("STOV programa_inicio_vet");
+
+        add("LDI 6");
+        add("STO 1000");
+        add("LDI 3");
+        add("STO $indr");
+        add("LDV programa_inicio_vet");
+        add("STO 1001");
+        add("LD 1000");  // 6
+        add("ADD 1001"); // vet[3]
+        add("STO programa_inicio_a");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
     public void testEscrevaVetor(){
         String code =
                 "programa {" +
