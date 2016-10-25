@@ -167,12 +167,15 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 41:
                 if (states.isEmpty())
                     return;
-                removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse();
+                String removed = removesFromTheStackTheVarThatWillReceiveSTO();
                 do {
                     String state = states.pollLast();
                     String idOrValue = idsOrValues.pollLast();
                     if (state == ASSIGNING) {
                         String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
+                        if (assigningToVector) {
+                        	removed = idsOrValues.pollLast();
+                        }
                         command(ld,idOrValue);
                     } else
                     if (state == ADDING) {
@@ -239,8 +242,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
         }
     }
 
-    private void removesFromTheStackTheVarThatWillReceiveTheExpressionResultDoYouWantAShortNameOfCourse() {
-        idsOrValues.pollLast();
+    private String removesFromTheStackTheVarThatWillReceiveSTO() {
+        return idsOrValues.pollLast();
     }
 
     private String getVarName(String id) {

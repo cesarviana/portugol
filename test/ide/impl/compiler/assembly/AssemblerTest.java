@@ -185,6 +185,7 @@ public class AssemblerTest {
                     	" funcao inicio() {" +
                     	" 	inteiro a = 2 " +
                     	" 	inteiro vet2[3] " +
+                        " 	inteiro vet3[3] " +
                     	" 	vet2[0] = a " +
                     	" } " +
                 " }";
@@ -192,6 +193,7 @@ public class AssemblerTest {
     	add(".data");
     	add("programa_inicio_a : 0");        
         add("programa_inicio_vet2 : 0,0,0");
+        add("programa_inicio_vet3 : 0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         
@@ -200,7 +202,7 @@ public class AssemblerTest {
         
         add("LDI 0");// indice que recebera atribuicao
         add("STO 1000");
-        
+
         add("LD programa_inicio_a");
         add("STO 1001");
         
