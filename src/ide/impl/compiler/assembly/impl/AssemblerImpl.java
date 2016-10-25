@@ -29,6 +29,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public static final String WRITING = "writing";
     public static final String WRITING_VECTOR = "writing_vector";
     public static final String SUBTRACTING = "subtracting";
+    public static final String DECLARING = "declaring";
 
     private SimbolTable simbolTable;
     private Assembly assembly;
@@ -40,7 +41,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private final LinkedList<String> states;
     private final LinkedList<String> idsOrValues;
     private String indexWhereVectorWillReceiveAssigning;
-    private boolean assigningToVector;
+    private boolean varToVector;
 
     public AssemblerImpl() {
         assembly = new Assembly();
@@ -104,6 +105,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
                     assembly.addText("_PRINCIPAL:");
                 }
                 break;
+            case 1:
+                states.push(DECLARING);
+                break;
             case 300:
                 states.add(READING);
                 break;
@@ -125,7 +129,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 break;
             case 302:
                 if (states.peek() == WRITING) {
-                    command("LD",token.getLexeme());
+                    command("LD", token.getLexeme());
                     assembly.addText("STO $out_port");
                 } else if (states.peek() == WRITING_VECTOR) {
                     assembly.addText("LDI " + vectorPosition);
@@ -151,7 +155,11 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 break;
             case 2:
                 id = token.getLexeme();
-                idsOrValues.push(id);
+                if (states.peek() != DECLARING) {
+                    idsOrValues.push(id);
+                } else {
+                    states.clear();
+                }
                 break;
             case 400:
                 states.push(WRITING);
@@ -167,36 +175,16 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 41:
                 if (states.isEmpty())
                     return;
-                String removed = removesFromTheStackTheVarThatWillReceiveSTO();
+
+                removesFromTheStackTheVarThatWillReceiveTheExpressionResult();
+
                 do {
-                    String state = states.pollLast();
-                    String idOrValue = idsOrValues.pollLast();
-                    if (state == ASSIGNING) {
-                        String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
-                        if (assigningToVector) {
-                        	removed = idsOrValues.pollLast();
-                        }
-                        command(ld,idOrValue);
-                    } else
-                    if (state == ADDING) {
-                        command("ADD",idOrValue);
-                    } else
-                    if (state == SUBTRACTING) {
-                        command("SUB",idOrValue);
-                    }
+                    consumeExpressionToAssembly(token);
                 } while (!states.isEmpty());
 
-                if (assigningToVector) {
-                    ldToAcc(token.getLexeme());
-                    storeAccValueToStack();
-                    loadVectorIndexFromStack();
-                    storeVectorValue();
-                    states.poll();
-                } else {
-                    assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
-                }
-                idsOrValues.clear();
+                storeExpression(token);
 
+                idsOrValues.clear();
                 break;
             case 500:
                 states.push(ADDING);
@@ -218,6 +206,34 @@ public class AssemblerImpl extends Semantico implements Assembler {
         }
     }
 
+    private void storeExpression(Token token) {
+        if (varToVector) {
+            ldToAcc(token.getLexeme());
+            storeAccValueToStack();
+            loadVectorIndexFromStack();
+            storeVectorValue();
+            states.poll();
+        } else {
+            assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
+        }
+    }
+
+    private void consumeExpressionToAssembly(Token token) {
+        String state = states.pollLast();
+        String idOrValue = idsOrValues.pollLast();
+        if (state == ASSIGNING) {
+            String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
+            if (varToVector) {
+                idsOrValues.pollLast();
+            }
+            command(ld, idOrValue);
+        } else if (state == ADDING) {
+            command("ADD", idOrValue);
+        } else if (state == SUBTRACTING) {
+            command("SUB", idOrValue);
+        }
+    }
+
 
     private void storeAccValueToStack() {
         assembly.addText("STO 1001");
@@ -231,26 +247,28 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private void storeVectorValue() {
         assembly.addText("LD 1001");
         assembly.addText("STOV " + getVarName(idThatWillReceiveAssigning));
-        assigningToVector = false;
+        varToVector = false;
     }
 
     private void storeVectorIndexToStackIfIsAssigningVector(Token token) {
-        assigningToVector = "]".equals(token.getLexeme());
-        if (assigningToVector) {
+        varToVector = "]".equals(token.getLexeme());
+        if (varToVector) {
             assembly.addText("LDI " + indexWhereVectorWillReceiveAssigning);
             assembly.addText("STO 1000");
         }
     }
 
-    private String removesFromTheStackTheVarThatWillReceiveSTO() {
-        return idsOrValues.pollLast();
+    private void removesFromTheStackTheVarThatWillReceiveTheExpressionResult() {
+        boolean isAssigning = states.contains(ASSIGNING);
+        if (varToVector || isAssigning)
+            idsOrValues.pollLast();
     }
 
     private String getVarName(String id) {
         return VarCompiler.instance(simbolTable.getScope(scope).getVar(id)).getName();
     }
 
-    private void ldToAcc(String lexeme){
+    private void ldToAcc(String lexeme) {
         boolean assigningFromVector = "]".equals(lexeme);
         if (assigningFromVector) {
             assembly.addText("LDV " + getVarName(id));
@@ -258,10 +276,10 @@ public class AssemblerImpl extends Semantico implements Assembler {
         }
     }
 
-    private void command(String command,String lexeme) {
+    private void command(String command, String lexeme) {
         boolean inteiro = isInt(lexeme);
-        command = inteiro ? command+"I" : command;
-        if(!inteiro)
+        command = inteiro ? command + "I" : command;
+        if (!inteiro)
             lexeme = getVarName(lexeme);
         assembly.addText(command + " " + lexeme);
     }
