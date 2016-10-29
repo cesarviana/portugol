@@ -17,7 +17,7 @@ public abstract class FileIO {
 		}
 		@Override
 		public boolean accept(File f) {
-			return f.isDirectory() || f.getName().endsWith(".por");
+			return f.isDirectory() || f.getName().endsWith(".por") || f.getName().endsWith(".asm");
 		}
 	}
 	

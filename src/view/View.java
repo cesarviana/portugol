@@ -1,10 +1,14 @@
 package view;
 
+import ide.impl.actions.SaveAsmAction;
+import ide.impl.compiler.assembly.Assembly;
 import ide.impl.files.PortugolFile;
-import view.impl.ViewImpl;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.table.TableModel;
+
+import view.impl.ViewImpl;
 
 public interface View {
 
@@ -31,5 +35,9 @@ public interface View {
 	public void message(String string);
 
 	public void setSimbolTable( TableModel tableModel );
+
+	public void setAssembly(Assembly assembly);
+
+	public void setSaveAsmAction(SaveAsmAction saveAsmAction);
 
 }

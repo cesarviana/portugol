@@ -6,9 +6,12 @@ import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
 import ide.impl.compiler.assembly.Assembler;
 import ide.impl.compiler.assembly.Assembly;
-import lombok.Data;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
+
+import lombok.Data;
 
 @Data
 public class AssemblerImpl extends Semantico implements Assembler {
@@ -24,6 +27,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public static final String WRITING_VECTOR = "writing_vector";
     public static final String SUBTRACTING = "subtracting";
     public static final String DECLARING = "declaring";
+    public static final String VAR_NAME_SCOPE_SEPARATOR = "_";
 
     private SimbolTable simbolTable;
     private Assembly assembly;
@@ -36,11 +40,14 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private final LinkedList<String> idsOrValues;
     private String indexWhereVectorWillReceiveAssigning;
     private boolean varToVector;
+    private final Set<String> vectors;
+    private boolean negative = false;
 
     public AssemblerImpl() {
         assembly = new Assembly();
         states = new LinkedList<>();
         idsOrValues = new LinkedList<>();
+        vectors = new HashSet<>();
     }
 
     @Override
@@ -81,12 +88,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
         Sintatico sintatico = new Sintatico();
         try {
             sintatico.parse(lexico, this);
-        } catch (LexicalError lexicalError) {
-            lexicalError.printStackTrace();
-        } catch (SyntaticError syntaticError) {
-            syntaticError.printStackTrace();
-        } catch (SemanticError semanticError) {
-            semanticError.printStackTrace();
+        } catch (LexicalError | SemanticError | SyntaticError error) {
+        	System.err.println(error.getMessage());
         }
     }
 
@@ -150,10 +153,14 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 2:
                 id = token.getLexeme();
                 if (states.peek() != DECLARING) {
-                    idsOrValues.push(id);
+                    if(negative)
+                        idsOrValues.push("-"+id);
+                    else
+                        idsOrValues.push(id);
                 } else {
                     states.clear();
                 }
+                negative = false;
                 break;
             case 400:
                 states.push(WRITING);
@@ -164,15 +171,23 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 storeVectorIndexToStackIfIsAssigningVector(token);
                 break;
             case 601:
-                idsOrValues.push(token.getLexeme());
+                String signal = negative ? "-" : "";
+                idsOrValues.push(signal+token.getLexeme());
+                negative = false;
                 break;
             case 41:
                 if (states.isEmpty())
                     return;
-                removesFromTheStackTheVarThatWillReceiveTheExpressionResult(token);
-                consumeExpressionToAssembly(token);
-                storeExpression(token);
-                idsOrValues.clear();
+                boolean isOperation = states.contains(SUBTRACTING) || states.contains(ADDING);
+                boolean vectorIsTheLast = "]".equals(token.getLexeme());
+                if(vectorIsTheLast && isOperation){
+                    consumesExpressionToAssemblyVectorAsLastOperand(token);
+                } else {
+                    removesFromTheStackTheVarThatWillReceiveTheExpressionResult(token);
+                    consumeExpressionToAssembly(token);
+                    storeExpression(token);
+                    idsOrValues.clear();
+                }
                 break;
             case 500:
                 states.push(ADDING);
@@ -180,9 +195,13 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 501:
                 states.push(SUBTRACTING);
                 break;
+            case 502:
+                negative = true;
+                break;
             case 800:// vet[0 #800]
                 String index = token.getLexeme();
-                if (states.contains(ASSIGNING)) {   // we are right left of =
+                boolean operation = states.contains(ADDING) || states.contains(SUBTRACTING);
+                if (states.contains(ASSIGNING) && !operation) {   // we are right left of =
                     // x = vet[0]
                     assembly.addText("LDI " + index);
                     assembly.addText("STO $indr");
@@ -191,15 +210,30 @@ public class AssemblerImpl extends Semantico implements Assembler {
                     indexWhereVectorWillReceiveAssigning = index;
                     varToVector = true;
                 }
+                vectors.add(getVarName(id));
                 break;
         }
     }
 
-    private void consumeExpressionToAssemblyWithVectorReceivingOperation(Token token) {
-        idsOrValues.pollLast();
-        consumeExpressionToAssembly(token);
-        storeExpression(token);
-        varToVector = false;
+    private void consumesExpressionToAssemblyVectorAsLastOperand(Token token) {
+        do {
+            String idOrValue = idsOrValues.pollLast();
+            String state = states.pollLast();
+            switch (state){
+                case ASSIGNING:
+                    command("LD", idOrValue);
+                    assembly.addText("STO 1000");
+                    break;
+                case ADDING:
+                    command("LD", indexWhereVectorWillReceiveAssigning);
+                    assembly.addText("STO $indr");
+                    assembly.addText("LDV "+getVarName(idOrValue));
+                    assembly.addText("STO 1001");
+                    assembly.addText("LD 1000");
+                    assembly.addText("ADD 1001");
+            }
+        } while (!states.isEmpty());
+        assembly.addText("STO " + getVarName(idThatWillReceiveAssigning));
     }
 
     private void storeExpression(Token token) {
@@ -219,17 +253,31 @@ public class AssemblerImpl extends Semantico implements Assembler {
         do {
             String state = states.pollLast();
             String idOrValue = idsOrValues.pollLast();
-            if (state == ASSIGNING) {
-                String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
-                command(ld, idOrValue);
-            } else if (state == ADDING) {
-                command("ADD", idOrValue);
-            } else if (state == SUBTRACTING) {
-                command("SUB", idOrValue);
+            switch (state){
+                case ASSIGNING:
+                    boolean loadingVector = isLoadingVector(token, idOrValue);
+                    String ld = loadingVector ? "LDV" : "LD";
+                    command(ld, idOrValue);
+                break;
+                case ADDING:
+                    command("ADD", idOrValue);
+                break;
+                case SUBTRACTING:
+                    command("SUB", idOrValue);
+                break;
             }
         } while (!states.isEmpty());
     }
 
+    private boolean isLoadingVector(Token token, String id) {
+        if(isInt(id)) return false;
+        String lexeme = token.getLexeme();
+        boolean tokenVetor = "]".equals(lexeme) ;
+        if( tokenVetor ) return true;
+        String varName = getVarName(id);
+        return vectors.contains(varName);
+
+    }
 
     private void storeAccValueToStack(String lexeme) {
         assembly.addText("STO 1001");
@@ -261,7 +309,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private String getVarName(String id) {
-        return VarCompiler.instance(simbolTable.getScope(scope).getVar(id)).getName();
+        Var var = simbolTable.getVar(id, scope);
+        return VarCompiler.instance(var).getName();
     }
 
     private void ldToAcc(String lexeme) {
@@ -281,7 +330,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private boolean isInt(String lexeme) {
-        return lexeme.matches("[0-9]*");
+        return lexeme.matches("-?[0-9]+");
     }
 
 }

@@ -3,7 +3,9 @@ package ide.impl;
 import ide.impl.files.PortugolFile;
 import view.View;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 public class FileSaver extends FileIO {
@@ -17,7 +19,9 @@ public class FileSaver extends FileIO {
 	}
 
 	public void save(PortugolFile selectedFile) {
-		try (PrintWriter writer = new PrintWriter(saveFile())){
+		File file = saveFile();
+		boolean append = false;
+		try (PrintWriter writer = new PrintWriter(new FileOutputStream(file, append))){
 			writer.write(selectedFile.getText());
 			writer.close();
 		} catch (FileNotFoundException e) {

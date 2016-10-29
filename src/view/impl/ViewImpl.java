@@ -1,21 +1,36 @@
 package view.impl;
 
+import ide.impl.actions.SaveAsmAction;
 import ide.impl.compiler.CompilerException;
+import ide.impl.compiler.assembly.Assembly;
 import ide.impl.files.PortugolFile;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
-import view.View;
-import view.ViewListener;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableModel;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
+import view.View;
+import view.ViewListener;
 
 public class ViewImpl extends JFrame implements View {
 
@@ -37,11 +52,12 @@ public class ViewImpl extends JFrame implements View {
 	private JButton btnCarregarArquivo;
 	private RSyntaxTextArea txtCode;
 	private JButton btnSalvar;
+	private JButton btnSalvarAsm;
 	private Collection<ViewListener> listeners;
 	private JButton btnCompilar;
 	private JTextArea textArea;
-	private JPanel panelTabelaSimbolos;
 	private JTable table;
+	private RSyntaxTextArea txtAssembly;
 
 	/**
 	 * Launch the application.
@@ -89,6 +105,9 @@ public class ViewImpl extends JFrame implements View {
 
 		btnCompilar = new JButton("Compilar");
 		panelTop.add(btnCompilar);
+		
+		btnSalvarAsm = new JButton("Salvar ASM");
+		panelTop.add(btnSalvarAsm);
 
 		JPanel panelFooter = new JPanel();
 		contentPane.add(panelFooter, BorderLayout.SOUTH);
@@ -112,12 +131,15 @@ public class ViewImpl extends JFrame implements View {
 		RTextScrollPane panelCode = new RTextScrollPane(txtCode);
 		splitCenter.setLeftComponent(panelCode);
 		
-		panelTabelaSimbolos = new JPanel(new BorderLayout());
-		panelTabelaSimbolos.setPreferredSize(new Dimension(400,600));
-		splitCenter.setRightComponent(panelTabelaSimbolos);
-		
+		JSplitPane splitRight = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitRight.setDividerLocation(300);
+		JPanel panelAssembly = new JPanel(new BorderLayout());
+		txtAssembly = new RSyntaxTextArea();
+		panelAssembly.add(txtAssembly, BorderLayout.CENTER);
+		splitRight.setTopComponent(panelAssembly);
 		table = new JTable();
-		panelTabelaSimbolos.add(new JScrollPane(table), BorderLayout.CENTER);
+		splitRight.setBottomComponent(new JScrollPane(table));
+		splitCenter.setRightComponent(splitRight);
 		
 	}
 
@@ -134,6 +156,11 @@ public class ViewImpl extends JFrame implements View {
 	@Override
 	public void setSaveFileAction(Action saveFileAction) {
 		btnSalvar.setAction(saveFileAction);
+	}
+	
+	@Override
+	public void setSaveAsmAction(SaveAsmAction saveAsmAction) {
+		btnSalvarAsm.setAction(saveAsmAction);
 	}
 
 	@Override
@@ -171,6 +198,11 @@ public class ViewImpl extends JFrame implements View {
 	@Override
 	public void setSimbolTable(TableModel tableModel) {
 		table.setModel(tableModel);
+	}
+	
+	@Override
+	public void setAssembly(Assembly assembly) {
+		txtAssembly.setText(assembly.toString());
 	}
 	
 	@Override

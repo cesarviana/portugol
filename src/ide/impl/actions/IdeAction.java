@@ -30,7 +30,6 @@ public abstract class IdeAction extends AbstractAction {
 			execute(e);
 		} catch (Exception e2) {
 			view.error( e2 );
-			e2.printStackTrace();
 		}
 	}
 	
