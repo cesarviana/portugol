@@ -170,12 +170,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 if (states.isEmpty())
                     return;
                 removesFromTheStackTheVarThatWillReceiveTheExpressionResult(token);
-                do {
-                    consumeExpressionToAssembly(token);
-                } while (!states.isEmpty());
-
+                consumeExpressionToAssembly(token);
                 storeExpression(token);
-
                 idsOrValues.clear();
                 break;
             case 500:
@@ -186,16 +182,24 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 break;
             case 800:// vet[0 #800]
                 String index = token.getLexeme();
-                if (states.contains(ASSIGNING)) {
+                if (states.contains(ASSIGNING)) {   // we are right left of =
                     // x = vet[0]
                     assembly.addText("LDI " + index);
                     assembly.addText("STO $indr");
-                } else {
+                } else {                            // we are left of =
                     // vet[0]...
                     indexWhereVectorWillReceiveAssigning = index;
+                    varToVector = true;
                 }
                 break;
         }
+    }
+
+    private void consumeExpressionToAssemblyWithVectorReceivingOperation(Token token) {
+        idsOrValues.pollLast();
+        consumeExpressionToAssembly(token);
+        storeExpression(token);
+        varToVector = false;
     }
 
     private void storeExpression(Token token) {
@@ -212,19 +216,18 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private void consumeExpressionToAssembly(Token token) {
-        String state = states.pollLast();
-        String idOrValue = idsOrValues.pollLast();
-        if (state == ASSIGNING) {
-            String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
-            if (varToVector) {
-                idsOrValues.pollLast();
+        do {
+            String state = states.pollLast();
+            String idOrValue = idsOrValues.pollLast();
+            if (state == ASSIGNING) {
+                String ld = "]".equals(token.getLexeme()) ? "LDV" : "LD";
+                command(ld, idOrValue);
+            } else if (state == ADDING) {
+                command("ADD", idOrValue);
+            } else if (state == SUBTRACTING) {
+                command("SUB", idOrValue);
             }
-            command(ld, idOrValue);
-        } else if (state == ADDING) {
-            command("ADD", idOrValue);
-        } else if (state == SUBTRACTING) {
-            command("SUB", idOrValue);
-        }
+        } while (!states.isEmpty());
     }
 
 

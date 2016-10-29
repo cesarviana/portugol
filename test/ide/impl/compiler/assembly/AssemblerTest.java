@@ -223,46 +223,38 @@ public class AssemblerTest {
                     	" funcao inicio() {" +
                     	" 	inteiro a = 2 " +
                     	" 	inteiro vet2[3] " +
+                        " 	inteiro vet3[3] " +
                     	" 	vet2[0] = a " +
-                    	" 	vet2[1] = a " +
+                    	" 	vet3[0] = a " +
                     	" } " +
                 " }";
         
     	add(".data");
     	add("programa_inicio_a : 0");        
         add("programa_inicio_vet2 : 0,0,0");
+        add("programa_inicio_vet3 : 0,0,0");
         add(".text");
         add("_PRINCIPAL:");
-        
-        // carrega a
-        add("LDI 2");
-        add("STO programa_inicio_a");
-        // guarda o indice onde o vet2 deve receber o valor
+        add("LDI 2");                       // carrega a
+        add("STO programa_inicio_a");       // guarda o indice onde o vet2 deve receber o valor
+        add("LDI 0");
+        add("STO 1000");                    // guarda o valor da variavel a na pilha
+        add("LD programa_inicio_a");
+        add("STO 1001");                    // carrega para $indr o valor do indice guardado
+        add("LD 1000");
+        add("STO $indr");                   // salva no vetor o valor da variavel a guardado na pilha
+        add("LD 1001");
+        add("STOV programa_inicio_vet2");
         add("LDI 0");
         add("STO 1000");
-        // guarda o valor da variavel a na pilha
-        add("LD programa_inicio_a");
+        add("LD programa_inicio_a");        // guarda o valor da variavel a na pilha
         add("STO 1001");
-        // carrega para $indr o valor do indice guardado
-        add("LD 1000");
-        add("STO $indr");
-        // salva no vetor o valor da variavel a guardado na pilha
+        add("LD 1000");                     // carrega para $indr o valor do indice guardado
+        add("STO $indr");                   // salva no vetor o valor da variavel a guardado na pilha
         add("LD 1001");
-        add("STOV programa_inicio_vet2");
 
-        // guarda o indice onde o vet2 deve receber o valor
-        add("LDI 1");
-        add("STO 1000");
-        // guarda o valor da variavel a na pilha
-        add("LD programa_inicio_a");
-        add("STO 1001");
-        // carrega para $indr o valor do indice guardado 
-        add("LD 1000");
-        add("STO $indr");
-        // salva no vetor o valor da variavel a guardado na pilha
-        add("LD 1001");
-        add("STOV programa_inicio_vet2");
-        
+        add("STOV programa_inicio_vet3");
+
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -382,6 +374,35 @@ public class AssemblerTest {
         add("ADD programa_inicio_a");
         add("SUBI 3");
         add("STO programa_inicio_z");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testVetorRecebendoOperacaoAritmetica(){
+        String code = " programa{" +
+                "           funcao inicio(){" +
+                "               inteiro vet[5]" +
+                "               inteiro a = 4" +
+                "               vet[2] = a + 5" +
+                "           }" +
+                "} ";
+        add(".data");
+        add("programa_inicio_vet : 0,0,0,0,0");
+        add("programa_inicio_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 4");
+        add("STO programa_inicio_a");
+        add("LDI 2");
+        add("STO 1000"); // Armarzena indice 2 do vetor na pilha[0]
+        add("LD programa_inicio_a");     // Calcula expressão
+        add("ADDI 5");
+        add("STO 1001"); // Armazena resultado da expressão  na pilha[1]
+        add("LD 1000");  // Carrega indice do vetor (pilha[0])
+        add("STO $indr");// Coloca indice do vetor na variável especial $indr
+        add("LD 1001");  // Carrega resultado da expressão calculado para ACC
+        add("STOV programa_inicio_vet"); // Transfere o resultado do ACC pro vet
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
