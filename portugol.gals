@@ -278,8 +278,8 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <exp7> ::= VALOR_INTEIRO | VALOR_REAL | VALOR_LOGICO |  VALOR_CADEIA | VALOR_CARACTER | <INICIALIZACAO_VETOR> | <VARIAVEL_SEM_ATRIBUICAO> #6 | "(" <exp> ")";
 
 <op_rel> ::= ">" | "<" | ">=" | "<=" | "==" | "!="; 
-<op_neg> ::= "-" | NAO;
+<op_neg> ::= "-" #601 | NAO;
 <op_bitwise> ::= "<<" | ">>" | "|" | "&" | "^" | "~";
-<op_arit_baixa> ::= "+" | "-";
+<op_arit_baixa> ::= "+" #500 | "-" #501;
 <op_arit_alta> ::= "*" | "/" | "%";
 
