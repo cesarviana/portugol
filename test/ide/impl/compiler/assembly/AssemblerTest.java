@@ -2,11 +2,12 @@ package ide.impl.compiler.assembly;
 
 import ide.impl.compiler.*;
 import ide.impl.compiler.Compiler;
+
 import org.junit.Before;
 import org.junit.Test;
-import util.TestUtil;
 
-import static org.junit.Assert.assertEquals;
+import util.TestUtil;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("ALL")
 public class AssemblerTest {
@@ -47,7 +48,31 @@ public class AssemblerTest {
         add("HLT 0");
         generateAssemblyAndAssert( code );
     }
-
+    
+    @Test
+	public void testVetorOutsideScope(){
+		String code = "programa {"+
+						"inteiro vet[5]"+
+						"funcao inicio(){"+
+							"vet[5] = 1"+
+						"}"+
+					"}";
+		add(".data");
+		add("programa_vet : 0,0,0,0,0");
+		add(".text");
+		add("_PRINCIPAL:");
+		add("LDI 5");
+		add("STO 1000");
+		add("LDI 1");
+		add("STO 1001");
+		add("LD 1000");
+		add("STO $indr");
+		add("LD 1001");
+		add("STOV programa_vet");
+        add("HLT 0");
+		generateAssemblyAndAssert(code);
+	}
+    
     @Test
     public void testOneVector() {
         String code = " programa { inteiro a[5] } ";
@@ -68,7 +93,7 @@ public class AssemblerTest {
         add(".text");
         add("_PRINCIPAL:");
         add("LD $in_port");
-        add("STO a");
+        add("STO programa_inicio_a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -84,7 +109,7 @@ public class AssemblerTest {
         add("LDI 3");
         add("STO $indr");
         add("LD $in_port");
-        add("STOV vet");
+        add("STOV programa_inicio_vet");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -92,7 +117,12 @@ public class AssemblerTest {
     @Test
     public void testEscreva(){
         String code =
-                " programa {  funcao inicio() { inteiro a  escreva(a) } }";
+                " programa {  " +
+                   "funcao inicio() { " +
+                        "inteiro a  " +
+                        "escreva(a) " +
+                   "}" +
+                "}";
         add(".data");
         add("programa_inicio_a : 0");
         add(".text");
@@ -110,6 +140,26 @@ public class AssemblerTest {
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 7");
+        add("STO $out_port");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testEscreverVetor(){
+        String code = " programa { " +
+                            "funcao inicio() { " +
+                                "inteiro vet1[5]" +
+                                "escreva(vet1[2])" +
+                           "}" +
+                        "}";
+        add(".data");
+        add("programa_inicio_vet1 : 0,0,0,0,0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 2");
+        add("STO $indr");
+        add("LDV programa_inicio_vet1");
         add("STO $out_port");
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -191,7 +241,7 @@ public class AssemblerTest {
                 " }";
         
     	add(".data");
-    	add("programa_inicio_a : 0");        
+    	add("programa_inicio_a : 0");
         add("programa_inicio_vet2 : 0,0,0");
         add("programa_inicio_vet3 : 0,0,0");
         add(".text");
@@ -230,7 +280,7 @@ public class AssemblerTest {
                 " }";
         
     	add(".data");
-    	add("programa_inicio_a : 0");        
+    	add("programa_inicio_a : 0");
         add("programa_inicio_vet2 : 0,0,0");
         add("programa_inicio_vet3 : 0,0,0");
         add(".text");
@@ -343,7 +393,7 @@ public class AssemblerTest {
         add("_PRINCIPAL:");
         add("LDI 3");
         add("STO $indr");
-        add("LDV vet");
+        add("LDV programa_inicio_vet");
         add("STO $out_port");
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -476,7 +526,37 @@ public class AssemblerTest {
         generateAssemblyAndAssert(code);
     }
 
-    private void generateAssemblyAndAssert(String code) {
+    @Test
+	public void testAtribuiVariavelPraVetor() throws Exception {
+		String code = "programa {" +
+						"funcao inicio(){ " +
+							" inteiro a " +
+							" inteiro vet[5] = a " +
+						"}"+
+					"}";
+		add(".data");
+		add(".text");
+		add("_PRINCIPAL:");
+		add("HLT 0");
+		
+	}
+
+	@Test
+	public void testNegative(){
+        String code = " programa{" +
+                "           inteiro a = -3" +
+                "       }";
+        add(".data");
+        add("programa_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI -3");
+        add("STO programa_a");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    protected void generateAssemblyAndAssert(String code) {
         Assembly assembly = getAssembly(code);
         assemblyOk(assembly);
     }

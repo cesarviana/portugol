@@ -116,12 +116,12 @@ public class AssemblerImpl extends Semantico implements Assembler {
                     return;
                 if (states.peek() == READING) {
                     assembly.addText("LD $in_port");
-                    assembly.addText("STO " + token.getLexeme());
+                    assembly.addText("STO " + getVarName(token.getLexeme()));
                 } else if (states.peek() == READING_VECTOR) {
                     assembly.addText("LDI " + vectorPosition);
                     assembly.addText("STO $indr");
                     assembly.addText("LD $in_port");
-                    assembly.addText("STOV " + id);
+                    assembly.addText("STOV " + getVarName(id));
                 }
                 states.pop();
                 id = "";
@@ -134,7 +134,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 } else if (states.peek() == WRITING_VECTOR) {
                     assembly.addText("LDI " + vectorPosition);
                     assembly.addText("STO $indr");
-                    assembly.addText("LDV " + id);
+                    assembly.addText("LDV " + getVarName(id));
                     assembly.addText("STO $out_port");
                 }
                 states.pop();
