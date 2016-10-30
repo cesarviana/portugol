@@ -198,6 +198,75 @@ public class AssemblerControlStructuresTest {
         generateAssemblyAndAssert(code);
     }
 
+    @Test
+    public void testDiferente(){
+        String code = " programa {" +
+                "   funcao inicio(){" +
+                "       inteiro x = 5" +
+                "       inteiro y = 5" +
+                "       se( x != y ){" +
+                "           escreva(1)" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("inicio_x : 0");
+        add("inicio_y : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO inicio_x");
+        add("LDI 5");
+        add("STO inicio_y");
+
+        add("LD inicio_x");
+        add("STO 1000");
+        add("LD inicio_y");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BEQ FIM_INICIO_SE0");  // se igual, então falso, vai pro fim
+        add("LDI 1");               // escreva (entra se verdadeiro)
+        add("STO $out_port");
+        add("HLT 0");
+
+    }
+
+    public void testSenao(){
+        String code = "" +
+                "programa {" +
+                "   funcao inicio(){" +
+                "       inteiro x = 5" +
+                "       inteiro y = 5" +
+                "       se( x != y ){" +
+                "           escreva(1)" +
+                "       } senao {" +
+                "           escreva(2)" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("inicio_x : 0");
+        add("inicio_y : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO inicio_x");
+        add("LDI 5");
+        add("STO inicio_y");
+
+        add("LD inicio_x");
+        add("STO 1000");
+        add("LD inicio_y");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BEQ INICIO_SENAO0");  // se igual, então falso, vai pro fim
+        add("LDI 1");               // escreva (entra se verdadeiro)
+        add("STO $out_port");
+        add("HLT 0");
+    }
+
 	private void generateAssemblyAndAssert(String code) {
         Assembly assembly = getAssembly(code);
         assemblyOk(assembly);

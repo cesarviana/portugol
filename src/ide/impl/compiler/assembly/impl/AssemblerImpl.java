@@ -230,13 +230,16 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 areClosingSeScope();
                 scope = simbolTable.getScope(scope).getParent().getId();
                 break;
+            case 915:
+                setRelationalOperatorOnRelationalExpression(token.getLexeme());
+                break;
         }
     }
 
     private void areOpeningSeScope(String scopeName) {
         RelExpBuilder relExp = new RelExpAsmBuilderImpl();
         relExp.startWatching();
-        relExp.setBranchIfNotEqual(scopeName);
+        relExp.setFalseBranch(scopeName);
         relExps.push(relExp);
     }
 
@@ -249,7 +252,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
     private void areClosingSeScope() {
         RelExpBuilder currentRelExp = relExps.peek();
-        addText(currentRelExp.useBranchIfNotEqual() + ":");
+        addText(currentRelExp.useBranch() + ":");
         relExps.pop();
     }
 
@@ -257,6 +260,11 @@ public class AssemblerImpl extends Semantico implements Assembler {
         RelExpBuilder currentRelExp = relExps.peek();
         currentRelExp.build(this);
         currentRelExp.stopWatching();
+    }
+
+    public void setRelationalOperatorOnRelationalExpression(String operator) {
+        RelExpBuilder currentRelExp = relExps.peek();
+        currentRelExp.setOperator(operator);
     }
 
     private void consumesExpressionToAssemblyVectorAsLastOperand(Token token) {
@@ -387,4 +395,5 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public String popIdOrValue() {
         return idsOrValues.pop();
     }
+
 }

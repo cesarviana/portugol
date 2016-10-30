@@ -8,9 +8,11 @@ public interface RelExpBuilder {
 
     void startWatching();
 
-    void setBranchIfNotEqual(String scope);
+    void setFalseBranch(String scope);
 
     void stopWatching();
 
-    String useBranchIfNotEqual();
+    String useBranch();
+
+    void setOperator(String operator);
 }
