@@ -27,53 +27,182 @@ public class AssemblerControlStructuresTest {
         assembler.setSimbolTable(simbolTable);
         sb = new StringBuilder();
     }
-	
-	@Test
-	public void testSe(){
-		
-		String code = ""+
-		"programa"+
-		"{"+
-		"	funcao inicio()"+
-		"	{"+
-		"		inteiro x = 4"+
-		"		inteiro y = 4"+
-		"		se(x == y){"+
-		"			escreva(1)"+
-		"		}"+
-		"	}"+
-		"}";
+
+    @Test
+    public void testSe(){
+
+        String code = ""+
+                "programa"+
+                "{"+
+                "	funcao inicio()"+
+                "	{"+
+                "		inteiro x = 4"+
+                "		inteiro y = 4"+
+                "		se(x == y){"+
+                "			escreva(1)"+
+                "		}"+
+                "	}"+
+                "}";
 
         add(".data");
-        add("programa_inicio_x : 0");
-        add("programa_inicio_y : 0");
+        add("inicio_x : 0");
+        add("inicio_y : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 4");
-        add("STO programa_inicio_x");
+        add("STO inicio_x");
         add("LDI 4");
-        add("STO programa_inicio_y");
-        add("LD programa_inicio_x");
+        add("STO inicio_y");
+
+        add("LD inicio_x");
         add("STO 1000");
-        add("LD programa_inicio_y");
+        add("LD inicio_y");
         add("STO 1001");
         add("LD 1000");
         add("SUB 1001");
         add("BNE FIM_INICIO_SE0");
+
         add("LDI 1");
         add("STO $out_port");
+
         add("FIM_INICIO_SE0:");
         add("HLT 0");
 
         generateAssemblyAndAssert(code);
 
-	}
-	
+    }
+
+    @Test
+    public void testSeComparandoNumeros(){
+
+        String code = ""+
+                "programa"+
+                "{"+
+                "	funcao inicio()"+
+                "	{"+
+                "		se(4 == 4){"+
+                "			escreva(1)"+
+                "		}"+
+                "	}"+
+                "}";
+
+        add(".data");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 4");
+        add("STO 1000");
+        add("LDI 4");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BNE FIM_INICIO_SE0");
+
+        add("LDI 1");
+        add("STO $out_port");
+
+        add("FIM_INICIO_SE0:");
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+
+    }
+
+    @Test
+    public void testSeComparandoNumeroEVar(){
+
+        String code = ""+
+                "programa"+
+                "{"+
+                "	funcao inicio()"+
+                "	{"+
+                "       inteiro a = 4"+
+                "		se(a == 4){"+
+                "			escreva(1)"+
+                "		}"+
+                "	}"+
+                "}";
+
+        add(".data");
+        add("inicio_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 4");
+        add("STO inicio_a");
+        add("LD inicio_a");
+        add("STO 1000");
+        add("LDI 4");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BNE FIM_INICIO_SE0");
+
+        add("LDI 1");
+        add("STO $out_port");
+
+        add("FIM_INICIO_SE0:");
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+
+    }
+    
+    @Test
+    public void testSeAninhado(){
+        String code = ""+
+                "programa" +
+                "{" +
+                "   funcao inicio() {" +
+                "       se(4 == 4) {" +
+                "           inteiro a = 2" +
+                "           se(5 == 5) {" +
+                "               escreva(3)" +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}";
+
+        add(".data");
+        add("inicio_se0_a : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+
+        add("LDI 4");
+        add("STO 1000");
+        add("LDI 4");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+
+        add("BNE FIM_INICIO_SE0");
+
+        add("LDI 2");
+        add("STO inicio_se0_a");
+
+        add("LDI 5");
+        add("STO 1000");
+        add("LDI 5");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+
+        add("BNE FIM_INICIO_SE0_SE0");
+
+        add("LDI 3");
+        add("STO $out_port");
+
+        add("FIM_INICIO_SE0_SE0:");
+        add("FIM_INICIO_SE0:");
+
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
+
 	private void generateAssemblyAndAssert(String code) {
         Assembly assembly = getAssembly(code);
         assemblyOk(assembly);
     }
-	
+
 	private void assemblyOk(Assembly assembly) {
         assertEquals(sb.toString(), assembly.toString());
         System.out.println(sb.toString());
@@ -89,3 +218,4 @@ public class AssemblerControlStructuresTest {
     }
 
 }
+

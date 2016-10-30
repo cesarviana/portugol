@@ -1,35 +1,31 @@
 package ide.impl.compiler.assembly.impl;
 
-import ide.impl.compiler.assembly.RelExpAsmBuilder;
+import ide.impl.compiler.assembly.Assembler;
+import ide.impl.compiler.assembly.RelExpBuilder;
 
 /**
  * Created by cassiano on 30/10/16.
  */
-public class RelExpAsmBuilderImpl implements RelExpAsmBuilder {
+public class RelExpAsmBuilderImpl implements RelExpBuilder {
     private String scopeBne;
     private String leftOperand, rightOperand;
     private boolean watching = false;
-    private String relationalOperator;
 
-    private StringBuilder sb;
-
-    public RelExpAsmBuilderImpl() {
-        sb = new StringBuilder();
-    }
 
     @Override
-    public String build() {
+    public void build(Assembler assembler) {
 
-        add("LD " + leftOperand);
-        add("STO 1000");
-        add("LD " + rightOperand);
-        add("STO 1001");
-        add("LD 1000");
-        add("SUB 1001");
-        add("BNE " + scopeBne, false);
+        assembler.command("LD", leftOperand);
+        assembler.addText("STO 1000");
+        assembler.command("LD", rightOperand);
+        assembler.addText("STO 1001");
+        assembler.addText("LD 1000");
+        assembler.addText("SUB 1001");
+        assembler.addText("BNE " + scopeBne);
 
-        String result = sb.toString();
-        return result;
+        assembler.popIdOrValue();
+        assembler.popIdOrValue();
+
     }
 
     @Override
@@ -40,11 +36,6 @@ public class RelExpAsmBuilderImpl implements RelExpAsmBuilder {
         else
             rightOperand = operand;
 
-    }
-
-    public void setRelationalOperator(String relationalOperator) {
-        if (!watching) return;
-        this.relationalOperator = relationalOperator;
     }
 
     @Override
@@ -66,15 +57,5 @@ public class RelExpAsmBuilderImpl implements RelExpAsmBuilder {
     public void setBranchIfNotEqual(String scope) {
         if (!watching) return;
         this.scopeBne = "FIM_" + scope.toUpperCase().replace("->", "_");
-    }
-
-    public void add(String text) {
-        sb.append(text).append("\n");
-    }
-
-    public void add(String text, boolean breakLine) {
-        sb.append(text);
-        if(breakLine)
-            sb.append("\n");
     }
 }

@@ -42,7 +42,7 @@ public class AssemblerTest {
         String code = " programa { inteiro a } ";
 
         add(".data");
-        add("programa_a : 0");
+        add("a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("HLT 0");
@@ -58,7 +58,7 @@ public class AssemblerTest {
 						"}"+
 					"}";
 		add(".data");
-		add("programa_vet : 0,0,0,0,0");
+		add("vet : 0,0,0,0,0");
 		add(".text");
 		add("_PRINCIPAL:");
 		add("LDI 5");
@@ -68,7 +68,7 @@ public class AssemblerTest {
 		add("LD 1000");
 		add("STO $indr");
 		add("LD 1001");
-		add("STOV programa_vet");
+		add("STOV vet");
         add("HLT 0");
 		generateAssemblyAndAssert(code);
 	}
@@ -77,7 +77,7 @@ public class AssemblerTest {
     public void testOneVector() {
         String code = " programa { inteiro a[5] } ";
         add(".data");
-        add("programa_a : 0,0,0,0,0");
+        add("a : 0,0,0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         add("HLT 0");
@@ -89,11 +89,11 @@ public class AssemblerTest {
         String code =
                 " programa {  funcao inicio() { inteiro a  leia(a) } }";
         add(".data");
-        add("programa_inicio_a : 0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LD $in_port");
-        add("STO programa_inicio_a");
+        add("STO inicio_a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -103,13 +103,13 @@ public class AssemblerTest {
         String code =
                 " programa {  funcao inicio() { inteiro vet[5]  leia(vet[3]) } }";
         add(".data");
-        add("programa_inicio_vet : 0,0,0,0,0");
+        add("inicio_vet : 0,0,0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 3");
         add("STO $indr");
         add("LD $in_port");
-        add("STOV programa_inicio_vet");
+        add("STOV inicio_vet");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -124,10 +124,10 @@ public class AssemblerTest {
                    "}" +
                 "}";
         add(".data");
-        add("programa_inicio_a : 0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
-        add("LD programa_inicio_a");
+        add("LD inicio_a");
         add("STO $out_port");
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -154,12 +154,12 @@ public class AssemblerTest {
                            "}" +
                         "}";
         add(".data");
-        add("programa_inicio_vet1 : 0,0,0,0,0");
+        add("inicio_vet1 : 0,0,0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 2");
         add("STO $indr");
-        add("LDV programa_inicio_vet1");
+        add("LDV inicio_vet1");
         add("STO $out_port");
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -172,11 +172,11 @@ public class AssemblerTest {
                 "	inteiro a = 5"+
                 " }";
         add(".data");
-        add("programa_a : 0");
+        add("a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
-        add("STO programa_a");
+        add("STO a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -189,14 +189,14 @@ public class AssemblerTest {
                 "	inteiro c = a"+
                 " }";
         add(".data");
-        add("programa_a : 0");
-        add("programa_c : 0");
+        add("a : 0");
+        add("c : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
-        add("STO programa_a");
-        add("LD programa_a");
-        add("STO programa_c");
+        add("STO a");
+        add("LD a");
+        add("STO c");
         
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -214,15 +214,15 @@ public class AssemblerTest {
                 " }";
 
     	add(".data");
-    	add("programa_inicio_a : 0");
-        add("programa_inicio_vet2 : 0,0");
+    	add("inicio_a : 0");
+        add("inicio_vet2 : 0,0");
         add(".text");
         add("_PRINCIPAL:");
         
         add("LDI 2");
         add("STO $indr");
-        add("LDV programa_inicio_vet2");
-        add("STO programa_inicio_a");
+        add("LDV inicio_vet2");
+        add("STO inicio_a");
         
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -241,26 +241,26 @@ public class AssemblerTest {
                 " }";
         
     	add(".data");
-    	add("programa_inicio_a : 0");
-        add("programa_inicio_vet2 : 0,0,0");
-        add("programa_inicio_vet3 : 0,0,0");
+    	add("inicio_a : 0");
+        add("inicio_vet2 : 0,0,0");
+        add("inicio_vet3 : 0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         
         add("LDI 2");
-        add("STO programa_inicio_a");
+        add("STO inicio_a");
         
         add("LDI 0");// indice que recebera atribuicao
         add("STO 1000");
 
-        add("LD programa_inicio_a");
+        add("LD inicio_a");
         add("STO 1001");
         
         add("LD 1000");// pega o indice aqui
         add("STO $indr");
         
         add("LD 1001");
-        add("STOV programa_inicio_vet2");
+        add("STOV inicio_vet2");
         
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -280,30 +280,30 @@ public class AssemblerTest {
                 " }";
         
     	add(".data");
-    	add("programa_inicio_a : 0");
-        add("programa_inicio_vet2 : 0,0,0");
-        add("programa_inicio_vet3 : 0,0,0");
+    	add("inicio_a : 0");
+        add("inicio_vet2 : 0,0,0");
+        add("inicio_vet3 : 0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 2");                       // carrega a
-        add("STO programa_inicio_a");       // guarda o indice onde o vet2 deve receber o valor
+        add("STO inicio_a");       // guarda o indice onde o vet2 deve receber o valor
         add("LDI 0");
         add("STO 1000");                    // guarda o valor da variavel a na pilha
-        add("LD programa_inicio_a");
+        add("LD inicio_a");
         add("STO 1001");                    // carrega para $indr o valor do indice guardado
         add("LD 1000");
         add("STO $indr");                   // salva no vetor o valor da variavel a guardado na pilha
         add("LD 1001");
-        add("STOV programa_inicio_vet2");
+        add("STOV inicio_vet2");
         add("LDI 0");
         add("STO 1000");
-        add("LD programa_inicio_a");        // guarda o valor da variavel a na pilha
+        add("LD inicio_a");        // guarda o valor da variavel a na pilha
         add("STO 1001");
         add("LD 1000");                     // carrega para $indr o valor do indice guardado
         add("STO $indr");                   // salva no vetor o valor da variavel a guardado na pilha
         add("LD 1001");
 
-        add("STOV programa_inicio_vet3");
+        add("STOV inicio_vet3");
 
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -319,8 +319,8 @@ public class AssemblerTest {
                 "   }" +
                 "}";
         add(".data");
-        add("programa_inicio_vet : 0,0,0,0,0");
-        add("programa_inicio_a : 0");
+        add("inicio_vet : 0,0,0,0,0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 3");                       // Carrega indice
@@ -330,13 +330,13 @@ public class AssemblerTest {
         add("LD 1000");                     // Carrega o indice
         add("STO $indr");                   // Armazena em $indr
         add("LD 1001");                     // Carrega valor 2 de 1001 pro ACC
-        add("STOV programa_inicio_vet");    // Armazena valor do ACC em vet
+        add("STOV inicio_vet");    // Armazena valor do ACC em vet
                                             // == Finalizou atribuição
         add("LDI 3");                       // Carrega indice que receberá atribuição
         add("STO $indr");                   // Armazena no $indr;
-        add("LDV programa_inicio_vet");     // Carrega vet em $indr=3 (vet[3])
+        add("LDV inicio_vet");     // Carrega vet em $indr=3 (vet[3])
         add("ADDI 6");                      // Adiciona
-        add("STO programa_inicio_a");       // Armazena
+        add("STO inicio_a");       // Armazena
 
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -352,8 +352,8 @@ public class AssemblerTest {
                 "   }" +
                 "}";
         add(".data");
-        add("programa_inicio_vet : 0,0,0,0,0");
-        add("programa_inicio_a : 0");
+        add("inicio_vet : 0,0,0,0,0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 3");
@@ -363,17 +363,17 @@ public class AssemblerTest {
         add("LD 1000");
         add("STO $indr");
         add("LD 1001");
-        add("STOV programa_inicio_vet");
+        add("STOV inicio_vet");
 
         add("LDI 6");
         add("STO 1000");
         add("LDI 3");
         add("STO $indr");
-        add("LDV programa_inicio_vet");
+        add("LDV inicio_vet");
         add("STO 1001");
         add("LD 1000");  // 6
         add("ADD 1001"); // vet[3]
-        add("STO programa_inicio_a");
+        add("STO inicio_a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -388,12 +388,12 @@ public class AssemblerTest {
                     "}" +
                 "}";
         add(".data");
-        add("programa_inicio_vet : 0,0,0,0");
+        add("inicio_vet : 0,0,0,0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 3");
         add("STO $indr");
-        add("LDV programa_inicio_vet");
+        add("LDV inicio_vet");
         add("STO $out_port");
         add("HLT 0");
         generateAssemblyAndAssert(code);
@@ -407,13 +407,13 @@ public class AssemblerTest {
                 "       } " +
                 "     }";
         add(".data");
-        add("programa_inicio_a : 0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
         add("ADDI 5");
         add("SUBI 5");
-        add("STO programa_inicio_a");
+        add("STO inicio_a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -429,22 +429,22 @@ public class AssemblerTest {
                 "       } " +
                 "     }";
         add(".data");
-        add("programa_inicio_x : 0");
-        add("programa_inicio_n : 0");
-        add("programa_inicio_z : 0");
-        add("programa_inicio_a : 0");
+        add("inicio_x : 0");
+        add("inicio_n : 0");
+        add("inicio_z : 0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
-        add("STO programa_inicio_x");
+        add("STO inicio_x");
         add("LDI 3");
-        add("STO programa_inicio_n");
+        add("STO inicio_n");
         add("LDI 1");
-        add("STO programa_inicio_z");
-        add("LD programa_inicio_x");
-        add("ADD programa_inicio_n");
-        add("SUB programa_inicio_z");
-        add("STO programa_inicio_a");
+        add("STO inicio_z");
+        add("LD inicio_x");
+        add("ADD inicio_n");
+        add("SUB inicio_z");
+        add("STO inicio_a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -458,14 +458,14 @@ public class AssemblerTest {
                 "       } " +
                 "     }";
         add(".data");
-        add("programa_inicio_x : 0");
+        add("inicio_x : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
-        add("STO programa_inicio_x");
-        add("LD programa_inicio_x");
-        add("ADD programa_inicio_x");
-        add("STO programa_inicio_x");
+        add("STO inicio_x");
+        add("LD inicio_x");
+        add("ADD inicio_x");
+        add("STO inicio_x");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -480,19 +480,19 @@ public class AssemblerTest {
                 "       } " +
                 "     }";
         add(".data");
-        add("programa_inicio_x : 0");
-        add("programa_inicio_a : 0");
-        add("programa_inicio_z : 0");
+        add("inicio_x : 0");
+        add("inicio_a : 0");
+        add("inicio_z : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 5");
-        add("STO programa_inicio_x");
+        add("STO inicio_x");
         add("LDI 2");
-        add("STO programa_inicio_a");
-        add("LD programa_inicio_x");
-        add("ADD programa_inicio_a");
+        add("STO inicio_a");
+        add("LD inicio_x");
+        add("ADD inicio_a");
         add("SUBI 3");
-        add("STO programa_inicio_z");
+        add("STO inicio_z");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -507,21 +507,21 @@ public class AssemblerTest {
                 "           }" +
                 "} ";
         add(".data");
-        add("programa_inicio_vet : 0,0,0,0,0");
-        add("programa_inicio_a : 0");
+        add("inicio_vet : 0,0,0,0,0");
+        add("inicio_a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI 4");
-        add("STO programa_inicio_a");
+        add("STO inicio_a");
         add("LDI 2");
         add("STO 1000"); // Armarzena indice 2 do vetor na pilha[0]
-        add("LD programa_inicio_a");     // Calcula expressão
+        add("LD inicio_a");     // Calcula expressão
         add("ADDI 5");
         add("STO 1001"); // Armazena resultado da expressão  na pilha[1]
         add("LD 1000");  // Carrega indice do vetor (pilha[0])
         add("STO $indr");// Coloca indice do vetor na variável especial $indr
         add("LD 1001");  // Carrega resultado da expressão calculado para ACC
-        add("STOV programa_inicio_vet"); // Transfere o resultado do ACC pro vet
+        add("STOV inicio_vet"); // Transfere o resultado do ACC pro vet
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -547,11 +547,11 @@ public class AssemblerTest {
                 "           inteiro a = -3" +
                 "       }";
         add(".data");
-        add("programa_a : 0");
+        add("a : 0");
         add(".text");
         add("_PRINCIPAL:");
         add("LDI -3");
-        add("STO programa_a");
+        add("STO a");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }

@@ -1,12 +1,10 @@
 package ide.impl.compiler.assembly;
 
 
-public interface RelExpAsmBuilder {
-    String build();
+public interface RelExpBuilder {
+    void build(Assembler assembler);
 
     void addOperand(String operand);
-
-    void setRelationalOperator(String relationalOperator);
 
     void startWatching();
 

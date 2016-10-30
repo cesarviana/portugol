@@ -14,7 +14,6 @@ public class SimbolTable {
 	private final Map<String, Function> functions;
 	private final Map<String, Scope> scopes;
 	private final List<Registry> registries;
-	private Scope lastAddedScope;
 
 	public static SimbolTable instance() {
 		return new SimbolTable();
@@ -73,7 +72,6 @@ public class SimbolTable {
 	}
 
 	public void addScope(Scope scope) {
-		lastAddedScope = scope;
 		scopes.put(scope.getId(), scope);
 		setParentScopeTo(scope);
 		if(scope instanceof Function)
@@ -197,9 +195,5 @@ public class SimbolTable {
 
 	public Map<String, Scope> getScopes() {
 		return scopes;
-	}
-
-	public Scope getLastAddedScope() {
-		return lastAddedScope;
 	}
 }
