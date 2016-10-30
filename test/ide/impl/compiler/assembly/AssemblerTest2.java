@@ -18,8 +18,11 @@ public class AssemblerTest2 extends AssemblerTest {
                 "       }" +
                 "   }" +
                 "}";
-        String assembly = "" +
-                add(".text");
+
+        add(".data");
+        add("programa_inicio_x : 0");
+        add("programa_inicio_y : 0");
+        add(".text");
         add("_PRINCIPAL:");
         add("LDI 4");
         add("STO programa_inicio_x");
