@@ -10,24 +10,8 @@ import ide.impl.compiler.SimbolTable;
 import util.TestUtil;
 
 @SuppressWarnings("ALL")
-public class AssemblerControlStructuresTest {
-	
-	private Assembler assembler;
-	private SimbolTable simbolTable;
-	private StringBuilder sb = new StringBuilder();
-	
-	public StringBuilder add(String s) {
-        return sb.append(s).append("\n");
-    }
-	
-	@Before
-    public void setUp() {
-        assembler = Assembler.instance();
-        simbolTable = SimbolTable.instance();
-        assembler.setSimbolTable(simbolTable);
-        sb = new StringBuilder();
-    }
-
+public class AssemblerControlStructuresTest extends AssemblerTest {
+    
     @Test
     public void testSe(){
 
@@ -196,25 +180,6 @@ public class AssemblerControlStructuresTest {
         add("HLT 0");
 
         generateAssemblyAndAssert(code);
-    }
-
-	private void generateAssemblyAndAssert(String code) {
-        Assembly assembly = getAssembly(code);
-        assemblyOk(assembly);
-    }
-
-	private void assemblyOk(Assembly assembly) {
-        assertEquals(sb.toString(), assembly.toString());
-        System.out.println(sb.toString());
-    }
-
-    private Assembly getAssembly(String code) {
-        SimbolTable simbolTable = SimbolTable.instance();
-        Compiler compiler = Compiler.instance(simbolTable);
-        compiler.compile(TestUtil.createPortugolFile(code));
-        assembler.setSimbolTable(simbolTable);
-        assembler.setCode(code);
-        return assembler.assembly();
     }
 
 }
