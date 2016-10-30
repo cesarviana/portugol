@@ -20,7 +20,7 @@ public class Scope {
 	public Scope(String id) {
 		this.id = id;
 		vars = new LinkedHashMap<>();
-		childs = new HashMap<>();
+		childs = new LinkedHashMap<>();
 	}
 
 	public static Scope instance(String id) {
@@ -85,5 +85,4 @@ public class Scope {
 			throw new RuntimeException("O escopo pai não pode ter mesmo id que o filho. Id: " + id);
 		this.parent = parent;
 	}
-
 }

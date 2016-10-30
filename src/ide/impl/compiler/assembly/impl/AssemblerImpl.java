@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import ide.impl.compiler.assembly.RelExpAsmBuilder;
 import lombok.Data;
 
 @Data
@@ -42,12 +43,14 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private boolean varToVector;
     private final Set<String> vectors;
     private boolean negative = false;
+    private RelExpAsmBuilder relExpAsmBuilder;
 
     public AssemblerImpl() {
         assembly = new Assembly();
         states = new LinkedList<>();
         idsOrValues = new LinkedList<>();
         vectors = new HashSet<>();
+        relExpAsmBuilder = new RelExpAsmBuilderImpl();
     }
 
     @Override
@@ -212,7 +215,41 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 }
                 vectors.add(getVarName(id));
                 break;
+            case 910:
+                areOpeningSeScope();
+                break;
+            case 912:
+                possibleGotRelationalOperand(token);
+                break;
+            case 913:
+                areRightAfterExpInsideSe();
+                break;
+            case 914:
+                areClosingSeScope();
+                break;
         }
+    }
+
+    private void areOpeningSeScope() {
+        relExpAsmBuilder.startWatching();
+        String scope = simbolTable.getLastAddedScope().getId();
+        relExpAsmBuilder.setBranchIfNotEqual(scope);
+    }
+
+    private void possibleGotRelationalOperand(Token token) {
+        String operand = token.getLexeme();
+        operand = getVarName(operand);
+        relExpAsmBuilder.addOperand(operand);
+    }
+
+    private void areClosingSeScope() {
+        assembly.addText(relExpAsmBuilder.useBranchIfNotEqual()+":");
+    }
+
+    private void areRightAfterExpInsideSe() {
+        String generatedExpAssembly = relExpAsmBuilder.build();
+        relExpAsmBuilder.stopWatching();
+        assembly.addText(generatedExpAssembly);
     }
 
     private void consumesExpressionToAssemblyVectorAsLastOperand(Token token) {
