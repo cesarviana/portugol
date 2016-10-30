@@ -236,9 +236,9 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <ESTRUTURA_CONTROLE> ::= <SE> | <ESCOLHA_CASO> | <ENQUANTO> | <FACA_ENQUANTO> | <PARA>;
 <SE> ::= <SE_SIMPLES> | <SENAO>;
 <SE_SIMPLES> ::=
-	  SE #9 "(" <exp> ")" <ELEMENTO_FUNCAO> #10
- 	| SE #9 "(" <exp> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10
-	| SE #9 "(" <exp> ")" "{" "}" #10;
+	  SE #9 #910 "(" <exp> #913 ")" <ELEMENTO_FUNCAO> #10 #914
+ 	| SE #9 #910 "(" <exp> #913 ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 #914
+	| SE #9 #910 "(" <exp> #913 ")" "{" "}" #10 #914;
 <SENAO> ::= SENAO #9 <ELEMENTO_FUNCAO> #10 |  SENAO #9 "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 |  SENAO #9 "{" "}" #10;
 <ESCOLHA_CASO> ::= ESCOLHA #9 "(" <PARAMETRO_ESCOLHA_CASO> ")" "{" <LISTA_CASOS> "}" #10;
 <PARAMETRO_ESCOLHA_CASO> ::= ID #2 | <VARIAVEL_VETOR_COM_TAMANHO> | VALOR_INTEIRO | VALOR_CARACTER | <CHAMADA_FUNCAO>;
@@ -275,11 +275,11 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <exp4> ::= <exp4> <op_arit_baixa> <exp5> | <exp5>;
 <exp5> ::= <exp5> <op_arit_alta> <exp6> | <exp6> ;
 <exp6> ::= <op_neg> <exp7> | <exp7>;
-<exp7> ::= VALOR_INTEIRO | VALOR_REAL | VALOR_LOGICO |  VALOR_CADEIA | VALOR_CARACTER | <INICIALIZACAO_VETOR> | <VARIAVEL_SEM_ATRIBUICAO> #6 | "(" <exp> ")";
+
+<exp7> ::= VALOR_INTEIRO #601 #912 | VALOR_REAL | VALOR_LOGICO |  VALOR_CADEIA | VALOR_CARACTER | <INICIALIZACAO_VETOR> | <VARIAVEL_SEM_ATRIBUICAO> #6 #912 | "(" <exp> ")";
 
 <op_rel> ::= ">" | "<" | ">=" | "<=" | "==" | "!="; 
-<op_neg> ::= "-" #601 | NAO;
+<op_neg> ::= "-" #502 | NAO;
 <op_bitwise> ::= "<<" | ">>" | "|" | "&" | "^" | "~";
 <op_arit_baixa> ::= "+" #500 | "-" #501;
 <op_arit_alta> ::= "*" | "/" | "%";
-
