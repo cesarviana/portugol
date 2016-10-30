@@ -16,29 +16,26 @@ public class VarCompiler {
     }
 
     public static VarCompiler instance(Var var) {
-        if(var instanceof VarVector){
+        if (var instanceof VarVector) {
             return new VarVectorCompiler(var);
         }
         return new VarCompiler(var);
     }
 
-    public String getDataDeclaration(){
+    public String getDataDeclaration() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getName()).append(" : ").append( initialization() );
+        sb.append(getName()).append(" : ").append(initialization());
         return sb.toString();
     }
 
     public String getName() {
-        List<String> names = new ArrayList<>();
         Scope scope = var.getScope();
-        while( scope != Scope.NULL ){
-            names.add( scope.getId() );
-            scope = scope.getParent();
-        }
-        StringBuilder sb = new StringBuilder();
-        Collections.reverse( names );
-        names.forEach(scopeName->{sb.append(scopeName).append("_");});
-        return sb.append(var.getId()).toString();
+        String varId = var.getId();
+        String scopeId = scope.getId();
+        if (scope.isGlobalScope())
+            return varId;
+        String varName = scopeId.replace("->", "_") + "_" + varId;
+        return varName;
     }
 
     public String initialization() {

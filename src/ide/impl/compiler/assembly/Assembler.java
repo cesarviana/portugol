@@ -14,4 +14,10 @@ public interface Assembler {
     void setSimbolTable(SimbolTable simbolTable);
 
     void setCode(String code);
+
+    void command(String command, String lexeme);
+
+    void addText(String s);
+
+    String popIdOrValue();
 }
