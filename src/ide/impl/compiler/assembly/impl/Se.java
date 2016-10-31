@@ -1,16 +1,22 @@
 package ide.impl.compiler.assembly.impl;
 
 import ide.impl.compiler.assembly.Assembler;
-import ide.impl.compiler.assembly.RelExpBuilder;
+import ide.impl.compiler.assembly.ControlStrucuture;
 
 /**
  * Created by cassiano on 30/10/16.
  */
-public class RelExpAsmBuilderImpl implements RelExpBuilder {
-    private String scopeBne;
+public class Se implements ControlStrucuture {
+    private String jumpFalseScope;
     private String leftOperand, rightOperand;
     private boolean watching = false;
     private String operator = "";
+    private boolean senao;
+    private String scope;
+
+    public Se(String scope){
+        this.scope = scope;
+    }
 
     @Override
     public void build(Assembler assembler) {
@@ -21,7 +27,7 @@ public class RelExpAsmBuilderImpl implements RelExpBuilder {
         assembler.addText("STO 1001");
         assembler.addText("LD 1000");
         assembler.addText("SUB 1001");
-        assembler.addText(getBranchInstruction() + " " + scopeBne);
+        assembler.addText(getBranchInstruction() + " " + jumpFalseScope);
 
         assembler.popIdOrValue();
         assembler.popIdOrValue();
@@ -68,7 +74,7 @@ public class RelExpAsmBuilderImpl implements RelExpBuilder {
 
     @Override
     public String useBranch() {
-        return scopeBne;
+        return jumpFalseScope;
     }
 
     @Override
@@ -79,6 +85,16 @@ public class RelExpAsmBuilderImpl implements RelExpBuilder {
     @Override
     public void setFalseBranch(String scope) {
         if (!watching) return;
-        this.scopeBne = "FIM_" + scope.toUpperCase().replace("->", "_");
+        this.jumpFalseScope = "FIM_" + renameScopeToAssemblyBranch(scope);
+    }
+
+    public void convertToSenao() {
+        this.senao = true;
+        if(!watching) return;
+        this.jumpFalseScope = renameScopeToAssemblyBranch(scope);
+    }
+
+    private String renameScopeToAssemblyBranch(String scope) {
+        return scope.toUpperCase().replace("->", "_");
     }
 }

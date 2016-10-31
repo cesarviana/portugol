@@ -1,7 +1,7 @@
 package ide.impl.compiler.assembly;
 
 
-public interface RelExpBuilder {
+public interface ControlStrucuture {
     void build(Assembler assembler);
 
     void addOperand(String operand);

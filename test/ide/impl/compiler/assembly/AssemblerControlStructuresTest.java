@@ -216,13 +216,14 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
 
     }
 
+    @Test
     public void testSenao(){
         String code = "" +
                 "programa {" +
                 "   funcao inicio(){" +
                 "       inteiro x = 5" +
                 "       inteiro y = 5" +
-                "       se( x != y ){" +
+                "       se( x == y ){" +
                 "           escreva(1)" +
                 "       } senao {" +
                 "           escreva(2)" +
@@ -245,10 +246,17 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("STO 1001");
         add("LD 1000");
         add("SUB 1001");
-        add("BEQ INICIO_SENAO0");  // se igual, então falso, vai pro fim
-        add("LDI 1");               // escreva (entra se verdadeiro)
+        add("BNE INICIO_SENAO0");
+        add("LDI 1");
         add("STO $out_port");
+        add("JMP FIM_INICIO_SE0");
+        add("INICIO_SENAO0:");
+        add("LDI 2");
+        add("STO $out_port");
+        add("FIM_INICIO_SE0");
         add("HLT 0");
+
+        generateAssemblyAndAssert(code);
     }
 }
 

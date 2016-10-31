@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Stack;
 
-import ide.impl.compiler.assembly.RelExpBuilder;
+import ide.impl.compiler.assembly.ControlStrucuture;
 import lombok.Data;
 
 @Data
@@ -44,14 +44,14 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private boolean varToVector;
     private final Set<String> vectors;
     private boolean negative = false;
-    private Stack<RelExpBuilder> relExps;
+    private Stack<ControlStrucuture> controlStrucutures;
 
     public AssemblerImpl() {
         assembly = new Assembly();
         states = new LinkedList<>();
         idsOrValues = new LinkedList<>();
         vectors = new HashSet<>();
-        relExps = new Stack<>();
+        controlStrucutures = new Stack<>();
     }
 
     @Override
@@ -233,38 +233,46 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 915:
                 setRelationalOperatorOnRelationalExpression(token.getLexeme());
                 break;
+            case 916:
+                convertSeToSenao();
+                break;
         }
     }
 
     private void areOpeningSeScope(String scopeName) {
-        RelExpBuilder relExp = new RelExpAsmBuilderImpl();
+        ControlStrucuture relExp = new Se(scopeName);
         relExp.startWatching();
-        relExp.setFalseBranch(scopeName);
-        relExps.push(relExp);
+        controlStrucutures.push(relExp);
     }
 
     private void possibleGotRelationalOperand(Token token) {
-        if (relExps.empty()) return;
+        if (controlStrucutures.empty()) return;
         String operand = token.getLexeme();
-        RelExpBuilder currentRelExp = relExps.peek();
+        ControlStrucuture currentRelExp = controlStrucutures.peek();
         currentRelExp.addOperand(operand);
     }
 
     private void areClosingSeScope() {
-        RelExpBuilder currentRelExp = relExps.peek();
-        addText(currentRelExp.useBranch() + ":");
-        relExps.pop();
+        ControlStrucuture currentStructure = controlStrucutures.peek();
+        addText(currentStructure.useBranch() + ":");
+        controlStrucutures.pop();
     }
 
     private void areRightAfterExpInsideSe() {
-        RelExpBuilder currentRelExp = relExps.peek();
+        ControlStrucuture currentRelExp = controlStrucutures.peek();
         currentRelExp.build(this);
         currentRelExp.stopWatching();
     }
 
-    public void setRelationalOperatorOnRelationalExpression(String operator) {
-        RelExpBuilder currentRelExp = relExps.peek();
+    private void setRelationalOperatorOnRelationalExpression(String operator) {
+        ControlStrucuture currentRelExp = controlStrucutures.peek();
         currentRelExp.setOperator(operator);
+    }
+
+    private void convertSeToSenao(){
+        ControlStrucuture se = controlStrucutures.peek();
+        if(se instanceof Se)
+            ((Se)se).convertToSenao();
     }
 
     private void consumesExpressionToAssemblyVectorAsLastOperand(Token token) {
