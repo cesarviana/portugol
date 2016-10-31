@@ -11,7 +11,7 @@ import util.TestUtil;
 
 @SuppressWarnings("ALL")
 public class AssemblerControlStructuresTest extends AssemblerTest {
-    
+
     @Test
     public void testSe(){
 

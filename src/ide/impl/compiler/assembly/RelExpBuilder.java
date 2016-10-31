@@ -13,4 +13,6 @@ public interface RelExpBuilder {
     void stopWatching();
 
     String useBranchIfNotEqual();
+
+    void setRelationalOperation(String relationalOperation);
 }

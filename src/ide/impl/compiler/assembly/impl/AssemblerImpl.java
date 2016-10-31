@@ -220,6 +220,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 scope = Scope.instance(scope).addChild(token.getLexeme()).getId();
                 areOpeningSeScope(scope);
                 break;
+            case 9101:
+                setRelationalOperationOnExpBuilder(token.getLexem());
+                break;
             case 912:
                 possibleGotRelationalOperand(token);
                 break;
@@ -238,6 +241,11 @@ public class AssemblerImpl extends Semantico implements Assembler {
         relExp.startWatching();
         relExp.setBranchIfNotEqual(scopeName);
         relExps.push(relExp);
+    }
+
+    private void setRelationalOperationOnExpBuilder(String relationalOperation){
+        RelExpBuilder currentRelExp = relExps.peek();
+        currentRelExp.setRelationalOperation(relationalOperation);
     }
 
     private void possibleGotRelationalOperand(Token token) {
