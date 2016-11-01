@@ -15,7 +15,9 @@ public interface Assembler {
 
     void setCode(String code);
 
-    void command(String command, String lexeme);
+    String command(String command, String lexeme);
+
+    String createCommand(String command, String lexeme);
 
     void addText(String s);
 

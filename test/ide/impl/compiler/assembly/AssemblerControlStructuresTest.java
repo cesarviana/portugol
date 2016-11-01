@@ -182,5 +182,86 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         generateAssemblyAndAssert(code);
     }
 
+    @Test
+    public void testDiferente(){
+        String code = " programa {" +
+                "   funcao inicio(){" +
+                "       inteiro x = 5" +
+                "       inteiro y = 5" +
+                "       se( x != y ){" +
+                "           escreva(1)" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("inicio_x : 0");
+        add("inicio_y : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO inicio_x");
+        add("LDI 5");
+        add("STO inicio_y");
+
+        add("LD inicio_x");
+        add("STO 1000");
+        add("LD inicio_y");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BEQ FIM_INICIO_SE0");  // se igual, então falso, vai pro fim
+        add("LDI 1");               // escreva (entra se verdadeiro)
+        add("STO $out_port");
+        add("HLT 0");
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testSenao(){
+        String code = "" +
+                "programa {" +
+                "   funcao inicio(){" +
+                "       inteiro x = 5" +
+                "       inteiro y = 5" +
+                "       se( x == y ){" +
+                "           escreva(1)" +
+                "       } senao {" +
+                "           escreva(2)" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("inicio_x : 0");
+        add("inicio_y : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO inicio_x");
+        add("LDI 5");
+        add("STO inicio_y");
+
+        add("LD inicio_x");
+        add("STO 1000");
+        add("LD inicio_y");
+        add("STO 1001");                   // ---|
+        add("LD 1000");                    //    |   1ª parte
+        add("SUB 1001");                   //    |
+
+        add("BNE INICIO_INICIO_SENAO0");   // ---|
+
+        add("LDI 1");
+        add("STO $out_port");
+        add("JMP FIM_INICIO_SE0");
+
+        add("INICIO_SENAO0:");
+        add("LDI 2");
+        add("STO $out_port");
+
+        add("FIM_INICIO_SE0");
+
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
 }
 

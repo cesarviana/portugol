@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Stack;
 
-import ide.impl.compiler.assembly.RelExpBuilder;
+import ide.impl.compiler.assembly.ControlStructure;
 import lombok.Data;
 
 @Data
@@ -30,6 +30,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public static final String SUBTRACTING = "subtracting";
     public static final String DECLARING = "declaring";
     public static final String VAR_NAME_SCOPE_SEPARATOR = "_";
+    public static final int CLOSING_SE_SCOPE = 914;
+    public static final int CLOSING_SENAO_SCOPE = 917;
 
     private SimbolTable simbolTable;
     private Assembly assembly;
@@ -44,14 +46,16 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private boolean varToVector;
     private final Set<String> vectors;
     private boolean negative = false;
-    private Stack<RelExpBuilder> relExps;
+    private Stack<ControlStructure> controlStructures;
+    private ControlStructure lastClosedSeScope;
+    private boolean closedSeScope;
 
     public AssemblerImpl() {
         assembly = new Assembly();
         states = new LinkedList<>();
         idsOrValues = new LinkedList<>();
         vectors = new HashSet<>();
-        relExps = new Stack<>();
+        controlStructures = new Stack<>();
     }
 
     @Override
@@ -220,9 +224,6 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 scope = Scope.instance(scope).addChild(token.getLexeme()).getId();
                 areOpeningSeScope(scope);
                 break;
-            case 9101:
-                setRelationalOperationOnExpBuilder(token.getLexem());
-                break;
             case 912:
                 possibleGotRelationalOperand(token);
                 break;
@@ -233,38 +234,64 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 areClosingSeScope();
                 scope = simbolTable.getScope(scope).getParent().getId();
                 break;
+            case 915:
+                setRelationalOperatorOnRelationalExpression(token.getLexeme());
+                break;
+            case 916:
+                areOpeningSenaoScopeSoConvertSeToSenao();
+                break;
+            case 917:
+                buildSenao();
         }
+        addSeTextIfClosedSeScopeAndNotComingSenao(action,token.getLexeme());
     }
 
     private void areOpeningSeScope(String scopeName) {
-        RelExpBuilder relExp = new RelExpAsmBuilderImpl();
-        relExp.startWatching();
-        relExp.setBranchIfNotEqual(scopeName);
-        relExps.push(relExp);
-    }
-
-    private void setRelationalOperationOnExpBuilder(String relationalOperation){
-        RelExpBuilder currentRelExp = relExps.peek();
-        currentRelExp.setRelationalOperation(relationalOperation);
+        ControlStructure relExp = new Se(scopeName);
+        controlStructures.push(relExp);
     }
 
     private void possibleGotRelationalOperand(Token token) {
-        if (relExps.empty()) return;
+        if (controlStructures.empty()) return;
         String operand = token.getLexeme();
-        RelExpBuilder currentRelExp = relExps.peek();
+        ControlStructure currentRelExp = controlStructures.peek();
         currentRelExp.addOperand(operand);
     }
 
     private void areClosingSeScope() {
-        RelExpBuilder currentRelExp = relExps.peek();
-        addText(currentRelExp.useBranchIfNotEqual() + ":");
-        relExps.pop();
+        lastClosedSeScope = controlStructures.pop();
+        closedSeScope = true;
+    }
+
+    private void addSeTextIfClosedSeScopeAndNotComingSenao(int action, String lexeme){
+        if(action== CLOSING_SE_SCOPE || action == CLOSING_SENAO_SCOPE)
+            return;
+        boolean notComingSenao = !"SENAO".equalsIgnoreCase(lexeme);
+        if(closedSeScope && notComingSenao){
+            lastClosedSeScope.build(this);
+            lastClosedSeScope = null;
+            closedSeScope = false;
+        }
+    }
+
+    private void buildSenao(){
+
     }
 
     private void areRightAfterExpInsideSe() {
-        RelExpBuilder currentRelExp = relExps.peek();
-        currentRelExp.build(this);
-        currentRelExp.stopWatching();
+//        ControlStructure currentRelExp = controlStructures.peek();
+//        currentRelExp.build(this);
+//        currentRelExp.endDeclaringExpression();
+    }
+
+    private void setRelationalOperatorOnRelationalExpression(String operator) {
+        ControlStructure currentRelExp = controlStructures.peek();
+        currentRelExp.setOperator(operator);
+    }
+
+    private void areOpeningSenaoScopeSoConvertSeToSenao(){
+        ((Se) lastClosedSeScope).convertToSenao();
+        closedSeScope = false;
     }
 
     private void consumesExpressionToAssemblyVectorAsLastOperand(Token token) {
@@ -374,12 +401,20 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     @Override
-    public void command(String command, String lexeme) {
+    public String command(String command, String lexeme) {
+        String text = createCommand(command, lexeme);
+        return text;
+    }
+
+    @Override
+    public String createCommand(String command, String lexeme) {
         boolean inteiro = isInt(lexeme);
         command = inteiro ? command + "I" : command;
         if (!inteiro)
             lexeme = getVarName(lexeme);
-        addText(command + " " + lexeme);
+        String text = command + " " + lexeme;
+        addText(text);
+        return text;
     }
 
     private boolean isInt(String lexeme) {
@@ -388,11 +423,15 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
     @Override
     public void addText(String s) {
-        assembly.addText(s);
+        if(controlStructures.isEmpty())
+            assembly.addText(s);
+        else
+            controlStructures.peek().addText(s);
     }
 
     @Override
     public String popIdOrValue() {
         return idsOrValues.pop();
     }
+
 }
