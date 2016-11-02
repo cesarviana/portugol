@@ -8,7 +8,7 @@ import ide.impl.actions.SaveFileAction;
 import ide.impl.compiler.Compiler;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.assembly.Assembler;
-import ide.impl.compiler.assembly.Assembly;
+import ide.impl.compiler.assembly.impl.Assembly;
 import ide.impl.files.IdeFiles;
 import ide.impl.files.PortugolFile;
 import ide.impl.files.PortugolFilesListenerAdapter;

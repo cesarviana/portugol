@@ -1,6 +1,5 @@
 package ide.impl.compiler.assembly.impl;
 
-import ide.impl.compiler.assembly.Assembler;
 import ide.impl.compiler.assembly.ControlStructure;
 
 /**
@@ -10,17 +9,17 @@ public class Se extends ControlStructure {
 
     private boolean senao;
     private String seScopeStr;
-    private AssemblyPart seText, senaoText;
+    private Assembly seText, senaoText;
 
     public Se(String seScopeStr){
         super();
         this.seScopeStr = renameScopeToBranch(seScopeStr);
-        seText = new AssemblyPart();
-        senaoText = new AssemblyPart();
+        seText = new Assembly();
+        senaoText = new Assembly();
     }
 
     @Override
-    public AssemblyPart build() {
+    public Assembly build() {
         createExpression();
         if(senao){
             branchToSenao();
@@ -38,35 +37,35 @@ public class Se extends ControlStructure {
     }
 
     private void createExpression() {
-        addText( expression.toString() );
+        addLine( getExpression().toString() );
     }
 
     private void branchToSenao() {
-        addText( expression.getBranchCommand() + " " + senao() );
+        addLine( getExpression().getBranchCommand() + " " + senao() );
     }
 
     private void branchToFimSe() {
-        addText( expression.getBranchCommand() + " " + fimSe() );
+        addLine( getExpression().getBranchCommand() + " " + fimSe() );
     }
 
     private void addSeCode() {
-        addText( seText.toString() );
+        addLine( seText.toString() );
     }
 
     private void jumpToFimSe() {
-        addText("JMP " + fimSe());
+        addLine("JMP " + fimSe());
     }
 
     private void addSenaoBranch() {
-        addText(senao() + ":");
+        addLine(senao() + ":");
     }
 
     private void addSenaoCode() {
-        addText( senaoText.toString() );
+        addLine( senaoText.toString() );
     }
 
     private void addFimSe() {
-        addText(fimSe());
+        addLine(fimSe());
     }
 
     private String fimSe() {
@@ -82,11 +81,11 @@ public class Se extends ControlStructure {
     }
 
     @Override
-    public void addText(String s) {
+    public void addLine(String s) {
         if(senao)
-            senaoText.addText(s);
+            senaoText.addLine(s);
         else
-            seText.addText(s);
+            seText.addLine(s);
     }
 
 }

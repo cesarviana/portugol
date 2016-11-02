@@ -2,7 +2,7 @@ package view.impl;
 
 import ide.impl.actions.SaveAsmAction;
 import ide.impl.compiler.CompilerException;
-import ide.impl.compiler.assembly.Assembly;
+import ide.impl.compiler.assembly.impl.Assembly;
 import ide.impl.files.PortugolFile;
 
 import java.awt.BorderLayout;

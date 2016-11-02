@@ -1,6 +1,6 @@
 package ide.impl;
 
-import ide.impl.compiler.assembly.Assembly;
+import ide.impl.compiler.assembly.impl.Assembly;
 import ide.impl.files.PortugolFile;
 
 public class PortugolAssemblyFile extends PortugolFile {

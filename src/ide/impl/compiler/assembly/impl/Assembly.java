@@ -1,29 +1,27 @@
 package ide.impl.compiler.assembly.impl;
 
-import ide.impl.compiler.assembly.Assembler;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssemblyPart {
+public class Assembly {
 
     private final List<String> lines;
     private StringBuilder sb;
 
-    public AssemblyPart() {
+    public Assembly() {
         this.lines = new ArrayList<>();
         this.sb = new StringBuilder();
     }
 
-    public void addText(String line){
+    public void addLine(String line){
         lines.add(line);
     }
 
-    private void add(String str) {
+    protected void add(String str) {
         sb.append(str).append("\n");
     }
 
-    public AssemblyPart build(){
+    public Assembly build(){
         return this;
     }
 
@@ -31,6 +29,10 @@ public class AssemblyPart {
     public String toString() {
         lines.forEach(this::add);
         return removeLastBreak(sb);
+    }
+
+    protected List<String> getLines() {
+        return lines;
     }
 
     private String removeLastBreak(StringBuilder text) {

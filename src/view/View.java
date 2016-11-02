@@ -1,14 +1,12 @@
 package view;
 
 import ide.impl.actions.SaveAsmAction;
-import ide.impl.compiler.assembly.Assembly;
+import ide.impl.compiler.assembly.impl.Assembly;
 import ide.impl.files.PortugolFile;
-
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.table.TableModel;
-
 import view.impl.ViewImpl;
+
+import javax.swing.*;
+import javax.swing.table.TableModel;
 
 public interface View {
 

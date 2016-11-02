@@ -1,12 +1,11 @@
 package ide.impl.files;
 
-import ide.impl.compiler.assembly.Assembly;
+import ide.impl.compiler.assembly.impl.Assembly;
+import lombok.Data;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Data;
 
 @Data
 public class IdeFiles {

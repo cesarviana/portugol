@@ -1,13 +1,13 @@
 package ide.impl.compiler.assembly;
 
-import ide.impl.compiler.*;
 import ide.impl.compiler.Compiler;
-
+import ide.impl.compiler.SimbolTable;
+import ide.impl.compiler.assembly.impl.Assembly;
 import org.junit.Before;
 import org.junit.Test;
-
 import util.TestUtil;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("ALL")
 public class AssemblerTest {

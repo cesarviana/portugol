@@ -58,7 +58,7 @@ public class SemanticoPortugol extends Semantico {
 			Scope scopeSwitch = table.getScope(scope).getParent();
 			onCaseClosePreviousCaseScopeAndOpenNew(caso, scopeSwitch);
 			break;
-		case 10:// close scope
+		case 10:// close actualScope
 			closeCurrentScope();
 			break;
 		case 11: // Enter function on "{"

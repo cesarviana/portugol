@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of={"id", "scope"})
+@EqualsAndHashCode(of={"id", "actualScope"})
 public class Var {
 	private final String type, id;
 	private String value;

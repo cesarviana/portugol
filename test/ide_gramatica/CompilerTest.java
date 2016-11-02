@@ -346,7 +346,7 @@ public class CompilerTest {
 				"	cadeia a"+
 				"}";
 		compile(code);
-		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=programa |param=false";
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |actualScope=programa |param=false";
 		String result = simbolTable.getRegistryByExample(VarRegistry.instance("a", "programa")).toString();
 		assertEquals(expectedA, result);
 	}
@@ -363,7 +363,7 @@ public class CompilerTest {
 				"	}"+
 				"}";
 		compile(code);
-		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio->se0 |param=false";
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |actualScope=inicio->se0 |param=false";
 		String result = simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio->se0")).toString();
 		assertEquals(expectedA, result);
 	}
@@ -377,7 +377,7 @@ public class CompilerTest {
 				"	}"+
 				"}";
 		compile(code);
-		String expectedA = "name=a |type=cadeia |initialized=false |used=false |scope=inicio |param=true";
+		String expectedA = "name=a |type=cadeia |initialized=false |used=false |actualScope=inicio |param=true";
 		assertEquals(expectedA, simbolTable.getRegistryByExample(VarRegistry.instance("a", "inicio")).toString());
 	}
 	
@@ -391,7 +391,7 @@ public class CompilerTest {
 				"}";
 		compile(code);
 		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
-		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=false |scope=programa |param=false";
+		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=false |actualScope=programa |param=false";
 		assertEquals(expectedInicio, simbolTable.getRegistryByExample(registroScopeInicio).toString());
 	}
 	
@@ -406,7 +406,7 @@ public class CompilerTest {
 				"}";
 		compile(code);
 		FuncitonRegistry registroScopeInicio = FuncitonRegistry.instance("inicio");
-		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=true |scope=programa |param=false";
+		String expectedInicio = "name=inicio |type=cadeia |initialized=false |used=true |actualScope=programa |param=false";
 		String result = simbolTable.getRegistryByExample(registroScopeInicio).toString();
 		assertEquals(expectedInicio, result);
 	}

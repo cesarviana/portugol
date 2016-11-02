@@ -1,6 +1,6 @@
 package ide.impl.compiler.assembly.impl;
 
-public class Expression extends AssemblyPart {
+public class Expression extends Assembly {
 
     private String operator = "";
     private String leftOperand, rightOperand;
