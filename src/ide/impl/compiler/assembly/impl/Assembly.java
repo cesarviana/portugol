@@ -36,7 +36,9 @@ public class Assembly {
     }
 
     private String removeLastBreak(StringBuilder text) {
-        return text.toString().substring(0, text.length()-1);
+        if(text.length() > 1)
+            return text.toString().substring(0, text.length()-1);
+        return "";
     }
 
     public void addAssembly(Assembly assembly) {

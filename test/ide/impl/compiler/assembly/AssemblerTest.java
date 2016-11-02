@@ -17,7 +17,10 @@ public class AssemblerTest {
     private StringBuilder sb = new StringBuilder();
 
     public StringBuilder add(String s) {
-        return sb.append(s).append("\n");
+        sb.append(s);
+        if(!s.contains("HLT"))
+            return sb.append("\n");
+        return sb;
     }
 
     @Before
@@ -29,22 +32,11 @@ public class AssemblerTest {
     }
 
     @Test
-    public void testEmptyTable() {
-        Assembly assembly = assembler.assembly();
-        add(".data");
-        add(".text");
-        add("HLT 0");
-        assemblyOk(assembly);
-    }
-
-    @Test
     public void testOneInt() {
         String code = " programa { inteiro a } ";
-
         add(".data");
         add("a : 0");
         add(".text");
-        add("_PRINCIPAL:");
         add("HLT 0");
         generateAssemblyAndAssert( code );
     }
@@ -79,7 +71,6 @@ public class AssemblerTest {
         add(".data");
         add("a : 0,0,0,0,0");
         add(".text");
-        add("_PRINCIPAL:");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -174,7 +165,6 @@ public class AssemblerTest {
         add(".data");
         add("a : 0");
         add(".text");
-        add("_PRINCIPAL:");
         add("LDI 5");
         add("STO a");
         add("HLT 0");
@@ -192,7 +182,6 @@ public class AssemblerTest {
         add("a : 0");
         add("c : 0");
         add(".text");
-        add("_PRINCIPAL:");
         add("LDI 5");
         add("STO a");
         add("LD a");
@@ -549,7 +538,6 @@ public class AssemblerTest {
         add(".data");
         add("a : 0");
         add(".text");
-        add("_PRINCIPAL:");
         add("LDI -3");
         add("STO a");
         add("HLT 0");
