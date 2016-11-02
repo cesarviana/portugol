@@ -49,6 +49,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     private Stack<ControlStructure> controlStructures;
     private ControlStructure lastClosedSeScope;
     private boolean closedSeScope;
+    private Expression expression;
 
     public AssemblerImpl() {
         assembly = new Assembly();
@@ -56,6 +57,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
         idsOrValues = new LinkedList<>();
         vectors = new HashSet<>();
         controlStructures = new Stack<>();
+        expression = new Expression();
     }
 
     @Override
@@ -227,15 +229,15 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case 912:
                 possibleGotRelationalOperand(token);
                 break;
+            case 915:
+                setRelationalOperatorOnRelationalExpression(token.getLexeme());
+                break;
             case 913:
-                areRightAfterExpInsideSe();
+                areAfterExpInsideSe();
                 break;
             case 914:
                 areClosingSeScope();
                 scope = simbolTable.getScope(scope).getParent().getId();
-                break;
-            case 915:
-                setRelationalOperatorOnRelationalExpression(token.getLexeme());
                 break;
             case 916:
                 areOpeningSenaoScopeSoConvertSeToSenao();
@@ -246,16 +248,15 @@ public class AssemblerImpl extends Semantico implements Assembler {
         addSeTextIfClosedSeScopeAndNotComingSenao(action,token.getLexeme());
     }
 
-    private void areOpeningSeScope(String scopeName) {
-        ControlStructure relExp = new Se(scopeName);
-        controlStructures.push(relExp);
+    private void areOpeningSeScope(String seScopeName) {
+        ControlStructure se = new Se(seScopeName);
+        controlStructures.push(se);
+        expression = new Expression();
     }
 
     private void possibleGotRelationalOperand(Token token) {
         if (controlStructures.empty()) return;
-        String operand = token.getLexeme();
-        ControlStructure currentRelExp = controlStructures.peek();
-        currentRelExp.addOperand(operand);
+        expression.addOperand(getVarNameOrInt(token.getLexeme()));
     }
 
     private void areClosingSeScope() {
@@ -278,10 +279,9 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
     }
 
-    private void areRightAfterExpInsideSe() {
-//        ControlStructure currentRelExp = controlStructures.peek();
-//        currentRelExp.build(this);
-//        currentRelExp.endDeclaringExpression();
+    private void areAfterExpInsideSe() {
+        ControlStructure currentRelExp = controlStructures.peek();
+        currentRelExp.setExpression(expression);
     }
 
     private void setRelationalOperatorOnRelationalExpression(String operator) {
@@ -398,6 +398,12 @@ public class AssemblerImpl extends Semantico implements Assembler {
             addText("LDV " + getVarName(id));
             return;
         }
+    }
+
+    public String getVarNameOrInt(String lexeme){
+        if(!isInt(lexeme))
+            return getVarName(lexeme);
+        return lexeme;
     }
 
     @Override

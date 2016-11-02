@@ -11,13 +11,12 @@ public class Se extends ControlStructure {
     private boolean senao;
     private String seScopeStr;
     private AssemblyPart seText, senaoText;
-    private Expression expression;
 
     public Se(String seScopeStr){
+        super();
         this.seScopeStr = renameScopeToBranch(seScopeStr);
         seText = new AssemblyPart();
         senaoText = new AssemblyPart();
-        expression = new Expression();
     }
 
     @Override
@@ -90,7 +89,4 @@ public class Se extends ControlStructure {
             seText.addText(s);
     }
 
-    public void setExpression(Expression expression) {
-        this.expression = expression;
-    }
 }
