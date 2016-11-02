@@ -3,9 +3,7 @@ package ide.impl.compiler.assembly.impl;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 public abstract class GeneralAssembler {
 
@@ -20,13 +18,12 @@ public abstract class GeneralAssembler {
     public static final String WRITING_VECTOR = "writing_vector";
     public static final String SUBTRACTING = "subtracting";
     public static final String DECLARING = "declaring";
-    public static final String VAR_NAME_SCOPE_SEPARATOR = "_";
 
     private SimbolTable simbolTable;
     private int vectorPosition = 0;
     private String id;
     private String idThatWillReceiveAssigning;
-    protected static String actualScope;
+    protected static String scope;
     private final LinkedList<String> states;
     private final LinkedList<String> idsOrValues;
     private String indexWhereVectorWillReceiveAssigning;
@@ -35,6 +32,23 @@ public abstract class GeneralAssembler {
     private boolean negative = false;
 
     private Assembly assemblyPart;
+    private final List<GeneralAssembler> childrens;
+    private final List<AssemblerListener> listeners;
+
+    private final AssemblerListener childFinalizedListener = new AssemblerListener() {
+        @Override
+        public void finalizedAssembler(GeneralAssembler assembler) {
+            boolean childFinalized = childrens.contains(assembler);
+            if(childFinalized) {
+                addChildAssembly(assembler);
+                childrens.remove(assembler);
+            }
+        }
+
+        private void addChildAssembly(GeneralAssembler assembler) {
+            getAssemblyPart().addAssembly( assembler.build() );
+        }
+    };
 
     public GeneralAssembler(SimbolTable simbolTable) {
         this.simbolTable = simbolTable;
@@ -42,15 +56,17 @@ public abstract class GeneralAssembler {
         idsOrValues = new LinkedList<>();
         vectors = new HashSet<>();
         assemblyPart = new Assembly();
+        childrens = new ArrayList<>();
+        listeners = new ArrayList<>();
     }
 
     public void executeAction(int action, String lexeme){
         switch (action) {
             case 0:
-                actualScope = lexeme;
-                if (PROGRAMA.equals(lexeme)) {
-                    addText("_PRINCIPAL:");
-                }
+                scope = lexeme;
+                break;
+            case 7:
+                notifyFinalized(this);
                 break;
             case 1:
                 states.push(DECLARING);
@@ -166,7 +182,7 @@ public abstract class GeneralAssembler {
     }
 
     public String getVarName(String id) {
-        Var var = simbolTable.getVar(id, actualScope);
+        Var var = simbolTable.getVar(id, scope);
         return VarCompiler.instance(var).getName();
     }
 
@@ -229,7 +245,6 @@ public abstract class GeneralAssembler {
         if (tokenVetor) return true;
         String varName = getVarName(id);
         return vectors.contains(varName);
-
     }
 
     private void storeAccValueToStack(String lexeme) {
@@ -294,11 +309,33 @@ public abstract class GeneralAssembler {
         return lexeme.matches("-?[0-9]+");
     }
 
-    public String popIdOrValue() {
-        return idsOrValues.pop();
+    public SimbolTable getSimbolTable() {
+        return simbolTable;
+    }
+
+    public Assembly getAssemblyPart() {
+        return assemblyPart;
     }
 
     public void addText(String s){
-        assemblyPart.addLine(s);
+        getAssemblyPart().addLine(s);
     }
+
+    public Assembly build(){
+        return getAssemblyPart();
+    }
+
+    public void addListener(AssemblerListener assembler){
+        this.listeners.add(assembler);
+    }
+
+    protected void notifyFinalized(GeneralAssembler assembler) {
+        this.listeners.forEach(l->l.finalizedAssembler(assembler));
+    }
+
+    public void addChild(GeneralAssembler child) {
+        this.childrens.add(child);
+        child.addListener( childFinalizedListener );
+    }
+
 }

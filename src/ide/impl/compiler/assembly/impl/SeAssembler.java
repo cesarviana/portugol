@@ -9,9 +9,11 @@ public class SeAssembler extends ControlStrucutresAssembler {
     public static final int CLOSING_SE_SCOPE = 914;
     public static final int CLOSING_SENAO_SCOPE = 917;
     private boolean closedSeScope;
+    private Se se;
 
-    public SeAssembler(SimbolTable simbolTable) {
+    public SeAssembler(SimbolTable simbolTable, String lexeme) {
         super(simbolTable);
+        se = new Se(lexeme);
     }
 
     public void executeAction(int action, String lexeme) {
@@ -46,6 +48,7 @@ public class SeAssembler extends ControlStrucutresAssembler {
 //            lastClosedSeScope = null;
 //            closedSeScope = false;
 //        }
+        notifyFinalized(this);
     }
 
     private void buildSenao(){
@@ -62,5 +65,8 @@ public class SeAssembler extends ControlStrucutresAssembler {
         System.err.println("Implementar conversão do se pra senão");
     }
 
-
+    @Override
+    public Assembly getAssemblyPart() {
+        return se.build();
+    }
 }

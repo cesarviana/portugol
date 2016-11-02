@@ -17,7 +17,7 @@ public class Assembly {
         lines.add(line);
     }
 
-    protected void add(String str) {
+    private void add(String str) {
         sb.append(str).append("\n");
     }
 
@@ -37,5 +37,9 @@ public class Assembly {
 
     private String removeLastBreak(StringBuilder text) {
         return text.toString().substring(0, text.length()-1);
+    }
+
+    public void addAssembly(Assembly assembly) {
+        assembly.getLines().forEach( this::addLine );
     }
 }
