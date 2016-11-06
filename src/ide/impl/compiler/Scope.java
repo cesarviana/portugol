@@ -65,6 +65,8 @@ public class Scope {
 	}
 
 	private String changeChildScopeNameWhenRepeated(String childScope) {
+		if("programa".equals(this.getId()))
+			return childScope;
 		int ocurrency = 0;
 		String ineditedChildScopeName = "";
 		do {

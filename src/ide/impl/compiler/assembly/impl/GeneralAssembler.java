@@ -1,5 +1,6 @@
 package ide.impl.compiler.assembly.impl;
 
+import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
 
@@ -7,7 +8,6 @@ import java.util.*;
 
 public abstract class GeneralAssembler {
 
-    public static final String PROGRAMA = "programa";
     public static final String READING = "reading";
     public static final String READING_VECTOR = "reading_vector";
     public static final String ADDING = "adding";
@@ -24,6 +24,7 @@ public abstract class GeneralAssembler {
     private String id;
     private String idThatWillReceiveAssigning;
     protected static String scope;
+    protected static Stack<Scope> scopes = new Stack<>();
     private final LinkedList<String> states;
     private final LinkedList<String> idsOrValues;
     private String indexWhereVectorWillReceiveAssigning;
@@ -64,8 +65,12 @@ public abstract class GeneralAssembler {
         switch (action) {
             case 0:
                 scope = lexeme;
+                if(!scopes.empty())
+                    scopes.peek().addChild( lexeme );
+                scopes.push(Scope.instance(lexeme));
                 break;
             case 7:
+                scopes.pop();
                 notifyFinalized(this);
                 break;
             case 1:
@@ -182,7 +187,8 @@ public abstract class GeneralAssembler {
     }
 
     public String getVarName(String id) {
-        Var var = simbolTable.getVar(id, scope);
+        String currentScopeId = scopes.peek().getId();
+        Var var = simbolTable.getVar(id, currentScopeId);
         return VarCompiler.instance(var).getName();
     }
 
