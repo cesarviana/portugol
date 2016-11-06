@@ -4,10 +4,6 @@ import gals.SemanticError;
 import gals.Semantico;
 import gals.Token;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class SemanticoPortugol extends Semantico {
 
 	private final SimbolTable table;
@@ -51,8 +47,11 @@ public class SemanticoPortugol extends Semantico {
 				setVarUsed(id);
 			break;
 		case 0:
-			String lexeme = token.getLexeme();
-			onOpenControlStructureChangeScopeAndClearType(lexeme);
+			scope = token.getLexeme();
+			break;
+		case 9:
+			String controlStructure = token.getLexeme();
+			onOpenControlStructureChangeScopeAndClearType(controlStructure);
 			break;
 		case 92:
 			String caso = token.getLexeme();
@@ -113,9 +112,6 @@ public class SemanticoPortugol extends Semantico {
 		case 99:
 			String idFunctionToUse = token.getLexeme();
 			table.setFunctionUsed(idFunctionToUse);
-			break;
-		case 8:
-			table.convertToVector(id, scope);
 			break;
 		default:
 			break;
@@ -183,20 +179,12 @@ public class SemanticoPortugol extends Semantico {
 		return scope = table.getScope(scope).getParent().getId();
 	}
 
-	private void onOpenControlStructureChangeScopeAndClearType(String lexeme) {
-		if(controlStrucutre(lexeme)){
-			Scope parentScope = table.getScope(scope);
-			Scope controlStructureScope = parentScope.addChild(lexeme);
-			scope = controlStructureScope.getId();
-			table.addScope(controlStructureScope);
-			type = "";
-		} else {
-			scope = lexeme;
-		}
-	}
-
-	private boolean controlStrucutre(String lexeme){
-		return Arrays.asList("faca","enquanto","se","para","escolha").contains(lexeme);
+	private void onOpenControlStructureChangeScopeAndClearType(String controlStructureScopeName) {
+		Scope parentScope = table.getScope(scope);
+		Scope controlStructureScope = parentScope.addChild(controlStructureScopeName);
+		scope = controlStructureScope.getId();
+		table.addScope(controlStructureScope);
+		type = "";
 	}
 
 	private void handleException(Exception e, int action, Token token) throws SemanticError {

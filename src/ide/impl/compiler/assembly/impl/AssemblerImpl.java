@@ -58,7 +58,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     public void executeAction(int action, Token token) throws SemanticError {
         String lexeme = token.getLexeme();
         switch (action) {
-            case 0:
+            case 8:
                 addNewAssembler(lexeme);
                 break;
             case 7:
