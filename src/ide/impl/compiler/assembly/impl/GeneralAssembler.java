@@ -71,7 +71,7 @@ public abstract class GeneralAssembler {
 
     public void executeAction(int action, String lexeme){
         switch (action) {
-            case 0:
+            case 8:
                 scope = lexeme;
                 if(!scopes.empty())
                     scopes.peek().addChild( lexeme );

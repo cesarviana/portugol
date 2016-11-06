@@ -11,7 +11,7 @@ public class FuncaoAssembler extends GeneralAssembler {
     @Override
     public void executeAction(int action, String lexeme) {
         super.executeAction(action, lexeme);
-        if(action==0 && scope==null){
+        if(action==8 && scope==null){
             scope = "_" + lexeme.toUpperCase();
             scope = scope.equals("_INICIO") ? "_PRINCIPAL" : scope;
         }
