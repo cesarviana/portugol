@@ -172,6 +172,11 @@ public class SimbolTable {
 		return indice >= 0? registries.get(indice) : Registry.NULL;
 	}
 
+	public void convertToVector(String id, String scope) {
+		Var var = getVar(id, scope);
+		var = VarVector.instance(var);
+	}
+
 	public String getVarValueIfHasVar(String lexeme, String scope) {
 		if(hasVar(lexeme, scope))
 			return getVar(lexeme, scope).getValue();

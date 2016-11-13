@@ -57,7 +57,7 @@ public class Scope {
 
 	public Scope addChild(String childScopeId) {
 		childScopeId = changeChildScopeNameWhenRepeated(childScopeId);
-		String nameParentPlusChildName = id + "->" + childScopeId;
+		String nameParentPlusChildName = "programa".equalsIgnoreCase(id) ? childScopeId : id + "->" + childScopeId;
 		Scope newChildScope = Scope.instance(nameParentPlusChildName);
 		newChildScope.setParent(this);
 		childs.put(childScopeId, newChildScope);

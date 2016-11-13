@@ -19,7 +19,7 @@ public class Se extends ControlStructure {
     }
 
     @Override
-    public Assembly build() {
+    public void build() {
         createExpression();
         if(senao){
             branchToSenao();
@@ -33,23 +33,25 @@ public class Se extends ControlStructure {
             addSenaoCode();
         }
         addFimSe();
-        return this;
     }
 
     private void createExpression() {
-        addLine( getExpression().toString() );
+        getExpression().build();
+        getLines().addAll( getExpression().getLines() );
     }
 
     private void branchToSenao() {
-        addLine( getExpression().getBranchCommand() + " " + senao() );
+        String branchToSenao = getExpression().getBranchCommand() + " " + senao();
+        getLines().add(branchToSenao);
     }
 
     private void branchToFimSe() {
-        addLine( getExpression().getBranchCommand() + " " + fimSe() );
+        String branchFimSe = getExpression().getBranchCommand() + " " + fimSe();
+        getLines().add( branchFimSe );
     }
 
     private void addSeCode() {
-        addLine( seText.toString() );
+        getLines().addAll( seText.getLines() );
     }
 
     private void jumpToFimSe() {
@@ -61,19 +63,21 @@ public class Se extends ControlStructure {
     }
 
     private void addSenaoCode() {
-        addLine( senaoText.toString() );
+        getLines().addAll( senaoText.getLines() );
     }
 
     private void addFimSe() {
-        addLine(fimSe());
+        getLines().add(fimSe() + ":");
     }
 
     private String fimSe() {
-        return "FIM_" + seScopeStr;
+        return "FIM_" +  getAssemblyScope();
     }
 
     private String senao(){
-        return "CRIAR_SENAO";
+        String scope = getAssemblyScope();
+        String num = scope.substring(scope.length() - 1, scope.length());
+        return scope.substring(0, scope.length()-1) + "NAO" + num;
     }
 
     public void convertToSenao() {
@@ -82,6 +86,10 @@ public class Se extends ControlStructure {
 
     @Override
     public void addLine(String s) {
+        if(!getExpression().isClosed()){
+            getExpression().addLine( s );
+            return;
+        }
         if(senao)
             senaoText.addLine(s);
         else

@@ -4,9 +4,6 @@ import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.assembly.ControlStructure;
 
 public abstract class ControlStrucutresAssembler extends GeneralAssembler {
-    private boolean closedSeScope;
-    private Expression expression;
-    private ControlStructure lastClosedSeScope;
 
     public ControlStrucutresAssembler(SimbolTable simbolTable){
         super(simbolTable);
@@ -20,20 +17,32 @@ public abstract class ControlStrucutresAssembler extends GeneralAssembler {
                 break;
             case 912:
                 possibleGotRelationalOperand(lexeme);
+                clearStackToAvoidExcedents();// the right should be convert the Expression from Assembly to a Assembler, thus it would have its own stack
                 break;
+            case 913:
+                getExpression().close();
         }
     }
 
+    private void clearStackToAvoidExcedents() {
+        if(!getExpression().isClosed())
+            idsOrValues.pop();
+    }
+
     protected void setRelationalOperatorOnRelationalExpression(String operator) {
-        expression.setOperator(operator);
+        getExpression().setOperator(operator);
     }
 
     private void possibleGotRelationalOperand(String lexeme) {
-        getExpression().addOperand(getVarNameOrInt(lexeme));
+        String varNameOrInt = getVarNameOrInt(lexeme);
+        Expression expression = getExpression();
+        expression.addOperand(varNameOrInt);
     }
 
     public Expression getExpression() {
-        return expression;
+        return getControlStructure().getExpression();
     }
+
+    public abstract ControlStructure getControlStructure();
 
 }

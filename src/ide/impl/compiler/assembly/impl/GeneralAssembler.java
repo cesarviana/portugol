@@ -3,6 +3,7 @@ package ide.impl.compiler.assembly.impl;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -19,14 +20,15 @@ public abstract class GeneralAssembler {
     public static final String SUBTRACTING = "subtracting";
     public static final String DECLARING = "declaring";
 
-    private SimbolTable simbolTable;
+    private static SimbolTable simbolTable;
     private int vectorPosition = 0;
     private String id;
     private String idThatWillReceiveAssigning;
     protected static String scope;
+    private String assemblyScope;
     protected static Stack<Scope> scopes = new Stack<>();
     private final LinkedList<String> states;
-    private final LinkedList<String> idsOrValues;
+    protected final LinkedList<String> idsOrValues;
     private String indexWhereVectorWillReceiveAssigning;
     private boolean varToVector;
     private final Set<String> vectors;
@@ -53,10 +55,13 @@ public abstract class GeneralAssembler {
             }
         }
 
-        private void addChildAssembly(GeneralAssembler assembler) {
-            getAssemblyPart().addAssembly( assembler.build() );
+        private void addChildAssembly(GeneralAssembler childAssembler) {
+            Assembly thisPart = getAssemblyPart();
+            Assembly childPart = childAssembler.build();
+            thisPart.addAssembly( childPart );
         }
     };
+
 
     public GeneralAssembler(SimbolTable simbolTable) {
         this.simbolTable = simbolTable;
@@ -73,9 +78,13 @@ public abstract class GeneralAssembler {
         switch (action) {
             case 8:
                 scope = lexeme;
-                if(!scopes.empty())
-                    scopes.peek().addChild( lexeme );
-                scopes.push(Scope.instance(lexeme));
+                if(!scopes.empty()){
+                    Scope newChild = getCurrentScope().addChild( lexeme );
+                    scopes.push( newChild );
+                } else {
+                    scopes.push(Scope.instance(lexeme));
+                }
+                this.assemblyScope = getCurrentScope().getId();
                 break;
             case 7:
                 notifyFinalized(this);
@@ -90,13 +99,13 @@ public abstract class GeneralAssembler {
                 if (states.isEmpty())
                     return;
                 if (states.peek() == READING) {
-                    addText("LD $in_port");
-                    addText("STO " + getVarName(lexeme));
+                    addLine("LD $in_port");
+                    addLine("STO " + getVarName(lexeme));
                 } else if (states.peek() == READING_VECTOR) {
-                    addText("LDI " + vectorPosition);
-                    addText("STO $indr");
-                    addText("LD $in_port");
-                    addText("STOV " + getVarName(id));
+                    addLine("LDI " + vectorPosition);
+                    addLine("STO $indr");
+                    addLine("LD $in_port");
+                    addLine("STOV " + getVarName(id));
                 }
                 states.pop();
                 id = "";
@@ -105,14 +114,14 @@ public abstract class GeneralAssembler {
             case 302:
                 if (states.peek() == WRITING) {
                     command("LD", lexeme);
-                    addText("STO $out_port");
+                    addLine("STO $out_port");
                 } else if (states.peek() == WRITING_VECTOR) {
-                    addText("LDI " + vectorPosition);
-                    addText("STO $indr");
-                    addText("LDV " + getVarName(id));
-                    addText("STO $out_port");
+                    addLine("LDI " + vectorPosition);
+                    addLine("STO $indr");
+                    addLine("LDV " + getVarName(id));
+                    addLine("STO $out_port");
                 }
-                states.pop();
+                states.pollLast();
                 id = "";
                 vectorPosition = 0;
                 break;
@@ -181,8 +190,8 @@ public abstract class GeneralAssembler {
                 boolean operation = states.contains(ADDING) || states.contains(SUBTRACTING);
                 if (states.contains(ASSIGNING) && !operation) {   // we are right left of =
                     // x = vet[0]
-                    addText("LDI " + index);
-                    addText("STO $indr");
+                    addLine("LDI " + index);
+                    addLine("STO $indr");
                 } else {                            // we are left of =
                     // vet[0]...
                     indexWhereVectorWillReceiveAssigning = index;
@@ -193,10 +202,16 @@ public abstract class GeneralAssembler {
         }
     }
 
-    public String getVarName(String id) {
-        String currentScopeId = scopes.peek().getId();
+    public static String getVarName(String id) {
+        String currentScopeId = getCurrentScope().getId();
         Var var = simbolTable.getVar(id, currentScopeId);
         return VarCompiler.instance(var).getName();
+    }
+
+    public static Scope getCurrentScope() {
+        if(scopes.isEmpty())
+            return Scope.NULL;
+        return scopes.peek();
     }
 
     private void consumesExpressionToAssemblyVectorAsLastOperand(String token) {
@@ -206,18 +221,18 @@ public abstract class GeneralAssembler {
             switch (state) {
                 case ASSIGNING:
                     command("LD", idOrValue);
-                    addText("STO 1000");
+                    addLine("STO 1000");
                     break;
                 case ADDING:
                     command("LD", indexWhereVectorWillReceiveAssigning);
-                    addText("STO $indr");
-                    addText("LDV " + getVarName(idOrValue));
-                    addText("STO 1001");
-                    addText("LD 1000");
-                    addText("ADD 1001");
+                    addLine("STO $indr");
+                    addLine("LDV " + getVarName(idOrValue));
+                    addLine("STO 1001");
+                    addLine("LD 1000");
+                    addLine("ADD 1001");
             }
         } while (!states.isEmpty());
-        addText("STO " + getVarName(idThatWillReceiveAssigning));
+        addLine("STO " + getVarName(idThatWillReceiveAssigning));
     }
 
     private void storeExpression(String lexeme) {
@@ -228,7 +243,7 @@ public abstract class GeneralAssembler {
             storeVectorValue();
             states.poll();
         } else {
-            addText("STO " + getVarName(idThatWillReceiveAssigning));
+            addLine("STO " + getVarName(idThatWillReceiveAssigning));
         }
     }
 
@@ -261,25 +276,25 @@ public abstract class GeneralAssembler {
     }
 
     private void storeAccValueToStack(String lexeme) {
-        addText("STO 1001");
+        addLine("STO 1001");
     }
 
     private void loadVectorIndexFromStack() {
-        addText("LD 1000");
-        addText("STO $indr");
+        addLine("LD 1000");
+        addLine("STO $indr");
     }
 
     private void storeVectorValue() {
-        addText("LD 1001");
-        addText("STOV " + getVarName(idThatWillReceiveAssigning));
+        addLine("LD 1001");
+        addLine("STOV " + getVarName(idThatWillReceiveAssigning));
         varToVector = false;
     }
 
     private void storeVectorIndexToStackIfIsAssigningVector(String lexeme) {
         varToVector = "]".equals(lexeme);
         if (varToVector) {
-            addText("LDI " + indexWhereVectorWillReceiveAssigning);
-            addText("STO 1000");
+            addLine("LDI " + indexWhereVectorWillReceiveAssigning);
+            addLine("STO 1000");
         }
     }
 
@@ -292,7 +307,7 @@ public abstract class GeneralAssembler {
     public void ldToAcc(String lexeme) {
         boolean assigningFromVector = "]".equals(lexeme);
         if (assigningFromVector) {
-            addText("LDV " + getVarName(id));
+            addLine("LDV " + getVarName(id));
             return;
         }
     }
@@ -303,22 +318,19 @@ public abstract class GeneralAssembler {
         return lexeme;
     }
 
-    public String command(String command, String lexeme) {
-        String text = createCommand(command, lexeme);
-        return text;
-    }
-
-    public String createCommand(String command, String lexeme) {
-        boolean inteiro = isInt(lexeme);
-        command = inteiro ? command + "I" : command;
-        if (!inteiro)
+    public void command(String command, String lexeme) {
+        if(!isInt(lexeme))
             lexeme = getVarName(lexeme);
-        String text = command + " " + lexeme;
-        addText(text);
-        return text;
+        String text = createCommand(command, lexeme);
+        addLine(text);
     }
 
-    private boolean isInt(String lexeme) {
+    public static String createCommand(String command, String lexeme) {
+        command = isInt(lexeme) ? command + "I" : command;
+        return command + " " + lexeme;
+    }
+
+    private static boolean isInt(String lexeme) {
         return lexeme.matches("-?[0-9]+");
     }
 
@@ -330,11 +342,13 @@ public abstract class GeneralAssembler {
         return assemblyPart;
     }
 
-    public void addText(String s){
+    public void addLine(String s){
         getAssemblyPart().addLine(s);
     }
 
     public Assembly build(){
+        getAssemblyPart().setAssemblyScope( this.assemblyScope );
+        getAssemblyPart().build();
         return getAssemblyPart();
     }
 
@@ -351,4 +365,8 @@ public abstract class GeneralAssembler {
         child.addListener( childFinalizedListener );
     }
 
+    @Override
+    public String toString() {
+        return this.assemblyScope;
+    }
 }

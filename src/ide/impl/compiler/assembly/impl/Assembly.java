@@ -1,12 +1,20 @@
 package ide.impl.compiler.assembly.impl;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Assembly {
 
     private final List<String> lines;
     private StringBuilder sb;
+
+    @Getter @Setter
+    private String assemblyScope;
 
     public Assembly() {
         this.lines = new ArrayList<>();
@@ -21,8 +29,15 @@ public class Assembly {
         sb.append(str).append("\n");
     }
 
-    public Assembly build(){
-        return this;
+    public void build(){
+    }
+
+    public void addAssembly(Assembly assembly) {
+        List<String> otherAssemblyLines = assembly.getLines();
+        Iterator<String> i = otherAssemblyLines.iterator();
+        while (i.hasNext()){
+            addLine( i.next() );
+        }
     }
 
     @Override
@@ -41,7 +56,8 @@ public class Assembly {
         return "";
     }
 
-    public void addAssembly(Assembly assembly) {
-        assembly.getLines().forEach( this::addLine );
+    public String getAssemblyScope(){
+        return this.assemblyScope.toUpperCase().replace("->","_");
     }
+
 }

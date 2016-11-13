@@ -19,7 +19,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
         @Override
         public void finalizedAssembler(GeneralAssembler assembler) {
             GeneralAssembler assemblerFromPop = assemblers.pop();
-            System.out.println("Finalizou assembler " + assemblerFromPop + " - " + assembler);
+            System.out.println("Finalizou assembler " + assemblerFromPop );
         }
     };
 
