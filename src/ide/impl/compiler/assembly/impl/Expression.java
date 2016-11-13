@@ -14,6 +14,24 @@ public class Expression extends Assembly {
 
     public String getBranchCommand() {
         switch (operator){
+            case "!=":
+                return "BNE";
+            case "==":
+                return "BEQ";
+            case ">":
+                return "BGT";
+            case ">=":
+                return "BGE";
+            case "<":
+                return "BLT";
+            case "<=":
+                return "BLE";
+        }
+        return "";
+    }
+
+    public String getInvertedBranchCommand() {
+        switch (operator){
             case "==":
                 return "BNE";
             case "!=":
@@ -59,6 +77,10 @@ public class Expression extends Assembly {
 
     public void close() {
         this.closed = true;
+    }
+
+    public void open() {
+        this.closed = false;
     }
 
 }

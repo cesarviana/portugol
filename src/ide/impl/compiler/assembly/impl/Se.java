@@ -41,12 +41,12 @@ public class Se extends ControlStructure {
     }
 
     private void branchToSenao() {
-        String branchToSenao = getExpression().getBranchCommand() + " " + senao();
+        String branchToSenao = getExpression().getInvertedBranchCommand() + " " + senao();
         getLines().add(branchToSenao);
     }
 
     private void branchToFimSe() {
-        String branchFimSe = getExpression().getBranchCommand() + " " + fimSe();
+        String branchFimSe = getExpression().getInvertedBranchCommand() + " " + fimSe();
         getLines().add( branchFimSe );
     }
 

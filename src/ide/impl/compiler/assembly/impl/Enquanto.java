@@ -30,7 +30,7 @@ public class Enquanto extends ControlStructure {
     }
 
     private void jumpToEnd() {
-        getLines().add(getExpression().getBranchCommand() + " " + fimEnquanto());
+        getLines().add(getExpression().getInvertedBranchCommand() + " " + fimEnquanto());
     }
 
     private void addEnquantoCode() {
