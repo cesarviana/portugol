@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = String
+Input = Stream
 Parser = SLR
 #RegularDefinitions
   
@@ -246,9 +246,9 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <CASO> ::= CASO #92 <PARAMETRO_ESCOLHA_CASO> ":" | CASO #92 <PARAMETRO_ESCOLHA_CASO> ":" <LISTA_ELEMENTOS_FUNCAO>; 
 
 <ENQUANTO> ::= 
-	   ENQUANTO #8 #9 "(" <PARAMETRO_ENQUANTO> ")" <ELEMENTO_FUNCAO> #10
-	|  ENQUANTO #8 #9 "(" <PARAMETRO_ENQUANTO> ")" "{" "}" #10
-	|  ENQUANTO #8 #9 "(" <PARAMETRO_ENQUANTO> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10;
+	   ENQUANTO #8 #9 "(" <PARAMETRO_ENQUANTO> ")" <ELEMENTO_FUNCAO> #10 #7
+	|  ENQUANTO #8 #9 "(" <PARAMETRO_ENQUANTO> ")" "{" "}" #10 #7
+	|  ENQUANTO #8 #9 "(" <PARAMETRO_ENQUANTO> ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 #7;
 
 <PARAMETRO_ENQUANTO> ::= <exp> | <CHAMADA_FUNCAO>;
 

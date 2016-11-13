@@ -96,6 +96,8 @@ public class AssemblerImpl extends Semantico implements Assembler {
                 return new SeAssembler(simbolTable, lexeme);
             case "programa":
                 return new ProgramaAssembler(simbolTable);
+            case "enquanto":
+                return new EnquantoAssembler(simbolTable);
             default:
                 return new FuncaoAssembler(simbolTable);
         }
