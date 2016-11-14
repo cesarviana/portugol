@@ -257,7 +257,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("LDI 2");
         add("STO $out_port");
 
-        add("FIM_FUNCAOTESTE_SE0");
+        add("FIM_FUNCAOTESTE_SE0:");
 
         add("HLT 0");
 
