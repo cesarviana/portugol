@@ -245,11 +245,11 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("LD funcaoteste_x");
         add("STO 1000");
         add("LD funcaoteste_y");
-        add("STO 1001");                   // ---|
-        add("LD 1000");                    //    |   1ª parte
-        add("SUB 1001");                   //    |
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
 
-        add("BNE INICIO_FUNCAOTESTE_SENAO0");   // ---|
+        add("BNE INICIO_FUNCAOTESTE_SENAO0");
 
         add("LDI 1");
         add("STO $out_port");
@@ -266,6 +266,62 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         generateAssemblyAndAssert(code);
     }
 
+    @Test
+    public void testSenaoSeAninhado(){
+        String code = "" +
+                "programa {" +
+                "   funcao funcaoteste(){" +
+                "       inteiro x = 5" +
+                "       inteiro y = 5" +
+                "       se( x == y ){" +
+                "           escreva(1)" +
+                "       } senao {" +
+                "           se(10 < 2) {" +
+                "               escreva(3)" +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("funcaoteste_x : 0");
+        add("funcaoteste_y : 0");
+        add(".text");
+        add("_FUNCAOTESTE:");
+        add("LDI 5");
+        add("STO funcaoteste_x");
+        add("LDI 5");
+        add("STO funcaoteste_y");
+
+        add("LD funcaoteste_x");
+        add("STO 1000");
+        add("LD funcaoteste_y");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+
+        add("BNE INICIO_FUNCAOTESTE_SENAO0");
+
+        add("LDI 1");
+        add("STO $out_port");
+        add("JMP FIM_FUNCAOTESTE_SE0");
+
+        add("INICIO_FUNCAOTESTE_SENAO0:");
+            add("LDI 10");
+            add("STO 1000");
+            add("LDI 2");
+            add("STO 1001");
+            add("LD 1000");
+            add("SUB 1001");
+            add("BGE FIM_FUNCAOTESTE_SENAO0_SE0");
+                add("LDI 3");
+                add("STO $out_port");
+            add("FIM_FUNCAOTESTE_SENAO0_SE0:");
+        add("FIM_FUNCAOTESTE_SE0:");
+
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
 
     @Test
     public void testEnquanto(){

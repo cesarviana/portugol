@@ -2,11 +2,13 @@ package ide.impl.compiler.assembly.impl;
 
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.assembly.ControlStructure;
+import lombok.Getter;
 
 public class SeAssembler extends ControlStrucutresAssembler {
 
     private boolean closedSeScope;
     private Se se;
+    @Getter
     private boolean convetedToSenao;
 
     public SeAssembler(SimbolTable simbolTable, String lexeme) {

@@ -3,6 +3,10 @@ package ide.impl.compiler.assembly.impl;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
+import ide.impl.compiler.assembly.Assembler;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -34,6 +38,8 @@ public abstract class GeneralAssembler {
     private boolean negative = false;
 
     private Assembly assemblyPart;
+    @Getter @Setter
+    private GeneralAssembler parent;
     private final List<GeneralAssembler> childrens;
     private final List<AssemblerListener> listeners;
 
@@ -350,9 +356,25 @@ public abstract class GeneralAssembler {
     }
 
     public Assembly build(){
-        getAssemblyPart().setAssemblyScope( this.assemblyScope );
+        getAssemblyPart().setAssemblyScope(getAssemblyScope());
         getAssemblyPart().build();
         return getAssemblyPart();
+    }
+
+    private String getAssemblyScope() {
+        if(parent instanceof SeAssembler){
+            SeAssembler seAssembler = (SeAssembler) parent;
+            if(seAssembler.isConvetedToSenao()) {
+
+                String parts[] = this.assemblyScope.split("->");
+                String lastPart = parts[ parts.length - 2 ];
+
+                String scope = seAssembler.toString();
+                String num = scope.substring(scope.length() - 1, scope.length());
+                return scope.substring(0, scope.length() - 1) + "NAO" + num + "->" + lastPart;
+            }
+        }
+        return this.assemblyScope;
     }
 
     public void addListener(AssemblerListener assembler){
@@ -366,11 +388,12 @@ public abstract class GeneralAssembler {
     public void addChild(GeneralAssembler child) {
         this.childrens.add(child);
         child.addListener( childFinalizedListener );
+        child.setParent(this);
     }
 
     @Override
     public String toString() {
-        return this.assemblyScope;
+        return getAssemblyScope();
     }
 
     public static void clearScopeStack() {
