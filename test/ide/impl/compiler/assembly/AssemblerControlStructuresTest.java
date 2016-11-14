@@ -24,7 +24,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
                 "		inteiro y = 4"+
                 "		se(x == y){"+
                 "			escreva(1)"+
-                "		}"+
+                "		}" +
                 "	}"+
                 "}";
 
@@ -282,7 +282,18 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("_PRINCIPAL:");
         add("LDI 5");
         add("STO x");
-        add("INICIO_TESTE_ENQUANTO");
+        add("INICIO_TESTE_ENQUANTO:");
+        add("LD x");
+        add("STO 1000");
+        add("LDI 5");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BGE FIMFACA1");
+        add("LD x");
+        add("ADDI 1");
+        add("JMP INICIO_TESTE_ENQUANTO");
+        add("FIMFACA1");
         add("HLT 0");
 
         generateAssemblyAndAssert(code);

@@ -527,7 +527,7 @@ public class AssemblerTest {
 		add(".text");
 		add("_PRINCIPAL:");
 		add("HLT 0");
-		
+		generateAssemblyAndAssert(code);
 	}
 
 	@Test

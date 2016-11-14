@@ -18,8 +18,10 @@ public class SeAssembler extends ControlStrucutresAssembler {
         super.executeAction(action, lexeme);
         switch (action){
             case 7:
-                areClosingSeScope();
-                break;
+                if(!closedSeScope) {
+                    areClosingSeScope();
+                    return;
+                }
             case 916:
                 areOpeningSenaoScopeSoConvertSeToSenao();
                 break;
@@ -39,7 +41,7 @@ public class SeAssembler extends ControlStrucutresAssembler {
     }
 
     private void buildSeIfClosedSeScopeAndNotComingSenao(int action, String lexeme){
-        if(action==8 || action==7 || convetedToSenao)
+        if(convetedToSenao)
             return;
         boolean notComingSenao = !"SENAO".equalsIgnoreCase(lexeme);
         if(closedSeScope && notComingSenao){
