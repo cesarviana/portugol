@@ -362,10 +362,7 @@ public abstract class GeneralAssembler {
     }
 
     protected void finalizeAndNotify(GeneralAssembler assembler) {
-        if(!this.finalized){
-            this.finalized = true;
-            this.listeners.forEach(l->l.finalizedAssembler(assembler));
-        }
+        this.listeners.forEach(l->l.finalizedAssembler(assembler));
     }
 
     public void addChild(GeneralAssembler child) {
