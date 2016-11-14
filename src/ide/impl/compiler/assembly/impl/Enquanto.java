@@ -30,7 +30,7 @@ public class Enquanto extends ControlStructure {
     }
 
     private void jumpToEnd() {
-        getLines().add(getExpression().getInvertedBranchCommand() + " " + fimEnquanto());
+        getLines().add(getExpression().getInvertedBranchCommand() + " " + fim());
     }
 
     private void addEnquantoCode() {
@@ -41,16 +41,8 @@ public class Enquanto extends ControlStructure {
         getLines().add("JMP " + inicioEnquanto());
     }
 
-    private void addEnd() {
-        getLines().add(fimEnquanto());
-    }
-
     private String inicioEnquanto() {
         return "INICIO_" + getAssemblyScope();
-    }
-
-    private String fimEnquanto() {
-        return "FIM_" + getAssemblyScope();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Se extends ControlStructure {
             addSenaoBranch();
             addSenaoCode();
         }
-        addFimSe();
+        addEnd();
     }
 
     private void createExpression() {
@@ -46,7 +46,7 @@ public class Se extends ControlStructure {
     }
 
     private void branchToFimSe() {
-        String branchFimSe = getExpression().getInvertedBranchCommand() + " " + fimSe();
+        String branchFimSe = getExpression().getInvertedBranchCommand() + " " + fim();
         getLines().add( branchFimSe );
     }
 
@@ -55,7 +55,7 @@ public class Se extends ControlStructure {
     }
 
     private void jumpToFimSe() {
-        getLines().add( "JMP " + fimSe());
+        getLines().add( "JMP " + fim());
     }
 
     private void addSenaoBranch() {
@@ -64,14 +64,6 @@ public class Se extends ControlStructure {
 
     private void addSenaoCode() {
         getLines().addAll( senaoText.getLines() );
-    }
-
-    private void addFimSe() {
-        getLines().add(fimSe() + ":");
-    }
-
-    private String fimSe() {
-        return "FIM_" +  getAssemblyScope();
     }
 
     private String senao(){

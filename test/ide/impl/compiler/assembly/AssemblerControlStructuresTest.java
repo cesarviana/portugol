@@ -279,23 +279,24 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
                 "   }" +
                 "}";
         add(".data");
-        add("x : 0");
+        add("teste_x : 0");
         add(".text");
-        add("_PRINCIPAL:");
+        add("_TESTE:");
         add("LDI 5");
-        add("STO x");
-        add("INICIO_TESTE_ENQUANTO:");
-        add("LD x");
+        add("STO teste_x");
+        add("INICIO_TESTE_ENQUANTO0:");
+        add("LD teste_x");
         add("STO 1000");
         add("LDI 5");
         add("STO 1001");
         add("LD 1000");
         add("SUB 1001");
-        add("BGE FIMFACA1");
-        add("LD x");
+        add("BGE FIM_TESTE_ENQUANTO0");
+        add("LD teste_x");
         add("ADDI 1");
-        add("JMP INICIO_TESTE_ENQUANTO");
-        add("FIMFACA1");
+        add("STO teste_x");
+        add("JMP INICIO_TESTE_ENQUANTO0");
+        add("FIM_TESTE_ENQUANTO0:");
         add("HLT 0");
 
         generateAssemblyAndAssert(code);

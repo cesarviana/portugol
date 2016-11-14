@@ -253,7 +253,7 @@ public abstract class GeneralAssembler {
     private void consumeExpressionToAssembly(String lexeme) {
         do {
             String state = states.pollLast();
-            String idOrValue = idsOrValues.pollLast();
+            String idOrValue = idsOrValues.isEmpty() ? lexeme : idsOrValues.pollLast();
             switch (state) {
                 case ASSIGNING:
                     boolean loadingVector = isLoadingVector(lexeme, idOrValue);

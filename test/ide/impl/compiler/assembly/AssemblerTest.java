@@ -519,13 +519,25 @@ public class AssemblerTest {
 	public void testAtribuiVariavelPraVetor() throws Exception {
 		String code = "programa {" +
 						"funcao inicio(){ " +
-							" inteiro a " +
+							" inteiro a = 1" +
 							" inteiro vet[5] = a " +
 						"}"+
 					"}";
 		add(".data");
+        add("inicio_a : 0");
+        add("inicio_vet : 0,0,0,0,0");
 		add(".text");
 		add("_PRINCIPAL:");
+        add("LDI 1");
+        add("STO inicio_a");
+        add("LDI 5");
+        add("STO 1000");
+        add("LD inicio_a");
+        add("STO 1001");
+        add("LD 1000");
+        add("STO $indr");
+        add("LD 1001");
+        add("STOV inicio_vet");
 		add("HLT 0");
 		generateAssemblyAndAssert(code);
 	}

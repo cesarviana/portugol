@@ -17,4 +17,12 @@ public abstract class ControlStructure extends Assembly {
     public Expression getExpression() {
         return expression;
     }
+
+    public String fim() {
+        return "FIM_" +  getAssemblyScope();
+    }
+
+    public void addEnd() {
+        getLines().add(fim() + ":");
+    }
 }
