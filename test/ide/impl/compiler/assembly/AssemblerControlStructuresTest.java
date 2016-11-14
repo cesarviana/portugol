@@ -129,7 +129,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         generateAssemblyAndAssert(code);
 
     }
-    
+
     @Test
     public void testSeAninhado(){
         String code = ""+
@@ -263,5 +263,31 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
 
         generateAssemblyAndAssert(code);
     }
+
+
+    @Test
+    public void testEnquanto(){
+        String code = "" +
+                "programa {" +
+                "   funcao teste(){" +
+                "       inteiro x = 5" +
+                "       enquanto( x < 5 ){" +
+                "           x = x + 1" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("x : 0");
+        add(".text");
+        add("_PRINCIPAL:");
+        add("LDI 5");
+        add("STO x");
+        add("INICIO_TESTE_ENQUANTO");
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
+
+
 }
 

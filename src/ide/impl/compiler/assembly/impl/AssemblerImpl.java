@@ -45,6 +45,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
     }
 
     private void addCode() {
+        GeneralAssembler.clearScopeStack();
         Lexico lexico = new Lexico(code);
         Sintatico sintatico = new Sintatico();
         try {

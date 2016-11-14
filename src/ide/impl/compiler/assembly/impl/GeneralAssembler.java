@@ -37,8 +37,6 @@ public abstract class GeneralAssembler {
     private final List<GeneralAssembler> childrens;
     private final List<AssemblerListener> listeners;
 
-    protected boolean finalized;
-
     private static final AssemblerListener scopesRemoverFromStack = new AssemblerListener() {
         @Override
         public void finalizedAssembler(GeneralAssembler assembler) {
@@ -373,5 +371,9 @@ public abstract class GeneralAssembler {
     @Override
     public String toString() {
         return this.assemblyScope;
+    }
+
+    public static void clearScopeStack() {
+        scopes.clear();
     }
 }
