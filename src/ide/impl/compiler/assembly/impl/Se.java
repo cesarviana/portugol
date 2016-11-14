@@ -64,9 +64,14 @@ public class Se extends ControlStructure {
     }
 
     private String senao(){
+        String withNao = getScopeNameAsSenao();
+        return "INICIO_" + withNao;
+    }
+
+    private String getScopeNameAsSenao() {
         String scope = getAssemblyScope();
         String num = scope.substring(scope.length() - 1, scope.length());
-        return "INICIO_"+scope.substring(0, scope.length()-1) + "NAO" + num;
+        return scope.substring(0, scope.length() - 1) + "NAO" + num;
     }
 
     public void convertToSenao() {
@@ -84,5 +89,7 @@ public class Se extends ControlStructure {
         else
             seText.addLine(s);
     }
+
+
 
 }
