@@ -16,7 +16,7 @@ public class FacaEnquantoAssembler extends ControlStrucutresAssembler {
     @Override
     public void executeAction(int action, String lexeme) {
         if (!iniciouEnquantoExpression)
-            blockExpressionToAvoidGetWrongOperandsWhileItsInsideFacaScopeDoYouWannaAFuchShortNameIKnowItsCoolIsntThereSomeWayICanPutAMemeHereSorry();
+            blockExpressionToAvoidGetWrongOperandsWhileItsInsideFacaScope();
         switch (action) {
             case 18:
                 iniciouEnquantoExpression = true;
@@ -31,7 +31,7 @@ public class FacaEnquantoAssembler extends ControlStrucutresAssembler {
         getExpression().open();
     }
 
-    private void blockExpressionToAvoidGetWrongOperandsWhileItsInsideFacaScopeDoYouWannaAFuchShortNameIKnowItsCoolIsntThereSomeWayICanPutAMemeHereSorry() {
+    private void blockExpressionToAvoidGetWrongOperandsWhileItsInsideFacaScope() {
         if (!getExpression().isClosed()) {
             getExpression().close();
         }

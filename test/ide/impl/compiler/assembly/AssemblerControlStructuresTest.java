@@ -263,5 +263,87 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
 
         generateAssemblyAndAssert(code);
     }
+
+    @Test
+    public void testEnquanto(){
+        String code = ""+
+                "programa {"+
+                "   funcao teste(){" +
+                "       inteiro a = 0" +
+                "       enquanto(a < 10){" +
+                "           escreva(a)" +
+                "       }" +
+                "   }" +
+                "}";
+
+        add(".data");
+        add("teste_a : 0");
+        add(".text");
+
+        add("_TESTE:");
+        add("LDI 0");
+        add("STO teste_a");
+
+        add("INICIO_TESTE_ENQUANTO0:");
+        add("LD teste_a");
+        add("STO 1000");
+        add("LDI 10");
+        add("STO 1001");
+
+        add("LD 1000");
+        add("SUB 1001");
+        add("BGE FIM_TESTE_ENQUANTO0");
+
+        add("LD teste_a");
+        add("STO $out_port");
+
+        add("JMP INICIO_TESTE_ENQUANTO0");
+        add("FIM_TESTE_ENQUANTO0");
+
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+
+    }
+
+    @Test
+    public void testFacaEnquanto(){
+        String code = ""+
+                "programa {"+
+                "   funcao teste(){" +
+                "       inteiro a = 0" +
+                "       faca{" +
+                "           escreva(5)" +
+                "       }enquanto(a < 10)" +
+                "   }" +
+                "}";
+
+        add(".data");
+        add("teste_a : 0");
+        add(".text");
+
+        add("_TESTE:");
+        add("LDI 0");
+        add("STO teste_a");
+
+        add("INICIO_TESTE_FACA0:");
+
+        add("LDI 5");
+        add("STO $out_port");
+
+        add("LD teste_a");
+        add("STO 1000");
+        add("LDI 10");
+        add("STO 1001");
+
+        add("LD 1000");
+        add("SUB 1001");
+        add("BLT INICIO_TESTE_FACA0");
+
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+
+    }
 }
 
