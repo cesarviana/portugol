@@ -376,4 +376,8 @@ public abstract class GeneralAssembler {
     public static void clearScopeStack() {
         scopes.clear();
     }
+
+    protected String nextLexeme() {
+        return AssemblerImpl.getStep2().getLexeme();
+    }
 }

@@ -4,6 +4,7 @@ import gals.*;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.assembly.Assembler;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.Stack;
 
@@ -46,13 +47,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
     private void addCode() {
         clearStaticControls();
-        Lexico lexico = new Lexico(code);
-        Sintatico sintatico = new Sintatico();
-        try {
-            sintatico.parse(lexico, this);
-        } catch (LexicalError | SemanticError | SyntaticError error) {
-            System.err.println(error.getMessage());
-        }
+        parse();
         executeLastStep();
     }
 
@@ -62,8 +57,19 @@ public class AssemblerImpl extends Semantico implements Assembler {
         step2 = null;
     }
 
-    private class Step {
+    private void parse() {
+        Lexico lexico = new Lexico(code);
+        Sintatico sintatico = new Sintatico();
+        try {
+            sintatico.parse(lexico, this);
+        } catch (LexicalError | SemanticError | SyntaticError error) {
+            System.err.println(error.getMessage());
+        }
+    }
+
+    public class Step {
         private int action;
+        @Getter
         private String lexeme;
         public Step(int action, String lexeme) {
             this.action = action;
@@ -71,6 +77,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
         }
     }
 
+    @Getter
     private static Step step1, step2;
 
     @Override
@@ -126,7 +133,6 @@ public class AssemblerImpl extends Semantico implements Assembler {
             currentAssembler.addChild( newAssembler );
 
     }
-
 
     private void finalizeBuildProgramAssembly() {
         GeneralAssembler program = assemblers.peek();

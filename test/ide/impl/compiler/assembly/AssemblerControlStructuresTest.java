@@ -184,12 +184,13 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
 
     @Test
     public void testDiferente(){
-        String code = " programa {" +
+        String code = "" +
+                "programa {" +
                 "   funcao inicio(){" +
-                "       inteiro x = 5" +
-                "       inteiro y = 5" +
-                "       se( x != y ){" +
-                "           escreva(1)" +
+                "       inteiro x = 5 " +
+                "       inteiro y = 5 " +
+                "       se( x != y ){ " +
+                "           escreva(1) " +
                 "       }" +
                 "   }" +
                 "}";
@@ -212,6 +213,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("BEQ FIM_INICIO_SE0");  // se igual, então falso, vai pro fim
         add("LDI 1");               // escreva (entra se verdadeiro)
         add("STO $out_port");
+        add("FIM_INICIO_SE0");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
