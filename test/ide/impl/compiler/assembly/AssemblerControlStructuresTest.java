@@ -24,7 +24,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
                 "		inteiro y = 4"+
                 "		se(x == y){"+
                 "			escreva(1)"+
-                "		}"+
+                "		}" +
                 "	}"+
                 "}";
 
@@ -129,7 +129,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         generateAssemblyAndAssert(code);
 
     }
-    
+
     @Test
     public void testSeAninhado(){
         String code = ""+
@@ -184,12 +184,13 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
 
     @Test
     public void testDiferente(){
-        String code = " programa {" +
+        String code = "" +
+                "programa {" +
                 "   funcao inicio(){" +
-                "       inteiro x = 5" +
-                "       inteiro y = 5" +
-                "       se( x != y ){" +
-                "           escreva(1)" +
+                "       inteiro x = 5 " +
+                "       inteiro y = 5 " +
+                "       se( x != y ){ " +
+                "           escreva(1) " +
                 "       }" +
                 "   }" +
                 "}";
@@ -212,6 +213,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("BEQ FIM_INICIO_SE0");  // se igual, então falso, vai pro fim
         add("LDI 1");               // escreva (entra se verdadeiro)
         add("STO $out_port");
+        add("FIM_INICIO_SE0:");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }
@@ -257,7 +259,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("LDI 2");
         add("STO $out_port");
 
-        add("FIM_FUNCAOTESTE_SE0");
+        add("FIM_FUNCAOTESTE_SE0:");
 
         add("HLT 0");
 
@@ -298,7 +300,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("STO $out_port");
 
         add("JMP INICIO_TESTE_ENQUANTO0");
-        add("FIM_TESTE_ENQUANTO0");
+        add("FIM_TESTE_ENQUANTO0:");
 
         add("HLT 0");
 
@@ -345,5 +347,41 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         generateAssemblyAndAssert(code);
 
     }
+
+    @Test
+    public void testEnquanto2(){
+        String code = "" +
+                "programa {" +
+                "   funcao teste(){" +
+                "       inteiro x = 5" +
+                "       enquanto( x < 5 ){" +
+                "           x = x + 1" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("teste_x : 0");
+        add(".text");
+        add("_TESTE:");
+        add("LDI 5");
+        add("STO teste_x");
+        add("INICIO_TESTE_ENQUANTO0:");
+        add("LD teste_x");
+        add("STO 1000");
+        add("LDI 5");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BGE FIM_TESTE_ENQUANTO0");
+        add("LD teste_x");
+        add("ADDI 1");
+        add("STO teste_x");
+        add("JMP INICIO_TESTE_ENQUANTO0");
+        add("FIM_TESTE_ENQUANTO0:");
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
+
 }
 

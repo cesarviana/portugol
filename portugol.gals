@@ -46,6 +46,14 @@ COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
 "++":"++"
 "--":"--"
 
+// operações relacionais
+"!=":"!="
+"<=":<=
+"<":<
+">=":>=
+">":>
+"==":==
+
 // reservadas
 PROGRAMA: programa
 FUNCAO: funcao
@@ -93,14 +101,6 @@ ID: [a-zA-Z][a-zA-Z0-9_]*
 "^": \^
 "<<": "<<"
 ">>": ">>"
-
-// operações relacionais
-"<=":<=
-"<":<
-">=":>=
-">":>
-"==":==
-"!=":!=
 
 // tipos
 VALOR_INTEIRO: [0-9]+
@@ -236,9 +236,9 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <ESTRUTURA_CONTROLE> ::= <SE> | <ESCOLHA_CASO> | <ENQUANTO> | <FACA_ENQUANTO> | <PARA>;
 <SE> ::= <SE_SIMPLES> | <SENAO>;
 <SE_SIMPLES> ::=
-	  SE #8 #9 #910 "(" <exp> #913 ")" <ELEMENTO_FUNCAO> #10 #914
- 	| SE #8 #9 #910 "(" <exp> #913 ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 #914
-	| SE #8 #9 #910 "(" <exp> #913 ")" "{" "}" #10 #914;
+	  SE #8 #9 #910 "(" <exp> #913 ")" <ELEMENTO_FUNCAO> #10 #7
+ 	| SE #8 #9 #910 "(" <exp> #913 ")" "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 #7
+	| SE #8 #9 #910 "(" <exp> #913 ")" "{" "}" #10 #7;
 <SENAO> ::= SENAO #9 #916 <ELEMENTO_FUNCAO> #917 #10 |  SENAO #9 #916 "{" <LISTA_ELEMENTOS_FUNCAO> "}" #10 #917 |  SENAO #9 #916 "{" "}" #917 #10;
 <ESCOLHA_CASO> ::= ESCOLHA #8 #9 "(" <PARAMETRO_ESCOLHA_CASO> ")" "{" <LISTA_CASOS> "}" #10;
 <PARAMETRO_ESCOLHA_CASO> ::= ID #2 | <VARIAVEL_VETOR_COM_TAMANHO> | VALOR_INTEIRO | VALOR_CARACTER | <CHAMADA_FUNCAO>;
@@ -255,7 +255,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <FACA_ENQUANTO> ::=
 	  FACA #8 #9 "{" "}" ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7
 	| FACA #8 #9 <ELEMENTO_FUNCAO> ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7
-	| FACA #8 #9 "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 ;
+	| FACA #8 #9 "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7 ;
 <PARA> ::=
 	  PARA #8 #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{" "}" #10
 	| PARA #8 #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" <ELEMENTO_FUNCAO> #10

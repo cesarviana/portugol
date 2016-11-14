@@ -3,7 +3,6 @@ package ide.impl.compiler.assembly.impl;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
-import lombok.Getter;
 
 import java.util.*;
 
@@ -87,7 +86,7 @@ public abstract class GeneralAssembler {
                 this.assemblyScope = getCurrentScope().getId();
                 break;
             case 7:
-                notifyFinalized(this);
+                notifyFinalizedAction(action,lexeme);
                 break;
             case 1:
                 states.push(DECLARING);
@@ -202,6 +201,10 @@ public abstract class GeneralAssembler {
         }
     }
 
+    protected void notifyFinalizedAction(int action, String lexeme) {
+        finalizeAndNotify(this);
+    }
+
     public static String getVarName(String id) {
         String currentScopeId = getCurrentScope().getId();
         Var var = simbolTable.getVar(id, currentScopeId);
@@ -250,7 +253,7 @@ public abstract class GeneralAssembler {
     private void consumeExpressionToAssembly(String lexeme) {
         do {
             String state = states.pollLast();
-            String idOrValue = idsOrValues.pollLast();
+            String idOrValue = idsOrValues.isEmpty() ? lexeme : idsOrValues.pollLast();
             switch (state) {
                 case ASSIGNING:
                     boolean loadingVector = isLoadingVector(lexeme, idOrValue);
@@ -356,7 +359,7 @@ public abstract class GeneralAssembler {
         this.listeners.add(assembler);
     }
 
-    protected void notifyFinalized(GeneralAssembler assembler) {
+    protected void finalizeAndNotify(GeneralAssembler assembler) {
         this.listeners.forEach(l->l.finalizedAssembler(assembler));
     }
 
@@ -368,5 +371,13 @@ public abstract class GeneralAssembler {
     @Override
     public String toString() {
         return this.assemblyScope;
+    }
+
+    public static void clearScopeStack() {
+        scopes.clear();
+    }
+
+    protected String nextLexeme() {
+        return AssemblerImpl.getStep2().getLexeme();
     }
 }

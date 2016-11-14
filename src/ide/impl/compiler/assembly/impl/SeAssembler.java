@@ -7,6 +7,7 @@ public class SeAssembler extends ControlStrucutresAssembler {
 
     private boolean closedSeScope;
     private Se se;
+    private boolean convetedToSenao;
 
     public SeAssembler(SimbolTable simbolTable, String lexeme) {
         super(simbolTable);
@@ -16,37 +17,44 @@ public class SeAssembler extends ControlStrucutresAssembler {
     public void executeAction(int action, String lexeme) {
         super.executeAction(action, lexeme);
         switch (action){
-            case 914:
-                areClosingSeScope();
-                break;
+            case 7:
+                 areClosingSeScope();
+                 break;
             case 916:
                 areOpeningSenaoScopeSoConvertSeToSenao();
                 break;
             case 917:
                 areClosingSenaoScopeSoFinalize();
         }
-        buildSeIfClosedSeScopeAndNotComingSenao(action,lexeme);
+        notifyFinalizedAction(action, lexeme);
     }
 
     private void areClosingSeScope() {
         closedSeScope = true;
     }
 
-    private void buildSeIfClosedSeScopeAndNotComingSenao(int action, String lexeme){
-        if(action==8 || action ==914)
+    @Override
+    protected void notifyFinalizedAction(int action,String lexeme) {
+        buildSeIfClosedSeScopeAndNotComingSenao();
+    }
+
+    private void buildSeIfClosedSeScopeAndNotComingSenao(){
+        if(!closedSeScope || convetedToSenao)
             return;
-        boolean notComingSenao = !"SENAO".equalsIgnoreCase(lexeme);
-        if(closedSeScope && notComingSenao){
-            notifyFinalized(this);
+        String nextLexeme = nextLexeme();
+        boolean notComingSenao = !"SENAO".equalsIgnoreCase(nextLexeme);
+        if(notComingSenao){
+            finalizeAndNotify(this);
         }
     }
 
     private void areClosingSenaoScopeSoFinalize(){
-        notifyFinalized(this);
+        finalizeAndNotify(this);
     }
 
     private void areOpeningSenaoScopeSoConvertSeToSenao(){
         se.convertToSenao();
+        convetedToSenao = true;
     }
 
     @Override

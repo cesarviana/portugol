@@ -2,9 +2,6 @@ package ide.impl.compiler.assembly.impl;
 
 import ide.impl.compiler.assembly.ControlStructure;
 
-/**
- * Created by cassiano on 30/10/16.
- */
 public class Se extends ControlStructure {
 
     private boolean senao;
@@ -32,7 +29,7 @@ public class Se extends ControlStructure {
             addSenaoBranch();
             addSenaoCode();
         }
-        addFimSe();
+        addEnd();
     }
 
     private void createExpression() {
@@ -46,7 +43,7 @@ public class Se extends ControlStructure {
     }
 
     private void branchToFimSe() {
-        String branchFimSe = getExpression().getInvertedBranchCommand() + " " + fimSe();
+        String branchFimSe = getExpression().getInvertedBranchCommand() + " " + fim();
         getLines().add( branchFimSe );
     }
 
@@ -55,29 +52,21 @@ public class Se extends ControlStructure {
     }
 
     private void jumpToFimSe() {
-        addLine("JMP " + fimSe());
+        getLines().add( "JMP " + fim());
     }
 
     private void addSenaoBranch() {
-        addLine(senao() + ":");
+        getLines().add(senao() + ":");
     }
 
     private void addSenaoCode() {
         getLines().addAll( senaoText.getLines() );
     }
 
-    private void addFimSe() {
-        getLines().add(fimSe() + ":");
-    }
-
-    private String fimSe() {
-        return "FIM_" +  getAssemblyScope();
-    }
-
     private String senao(){
         String scope = getAssemblyScope();
         String num = scope.substring(scope.length() - 1, scope.length());
-        return scope.substring(0, scope.length()-1) + "NAO" + num;
+        return "INICIO_"+scope.substring(0, scope.length()-1) + "NAO" + num;
     }
 
     public void convertToSenao() {
