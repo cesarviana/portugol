@@ -55,11 +55,11 @@ public class Se extends ControlStructure {
     }
 
     private void jumpToFimSe() {
-        addLine("JMP " + fimSe());
+        getLines().add( "JMP " + fimSe());
     }
 
     private void addSenaoBranch() {
-        addLine(senao() + ":");
+        getLines().add(senao() + ":");
     }
 
     private void addSenaoCode() {
@@ -77,7 +77,7 @@ public class Se extends ControlStructure {
     private String senao(){
         String scope = getAssemblyScope();
         String num = scope.substring(scope.length() - 1, scope.length());
-        return scope.substring(0, scope.length()-1) + "NAO" + num;
+        return "INICIO_"+scope.substring(0, scope.length()-1) + "NAO" + num;
     }
 
     public void convertToSenao() {

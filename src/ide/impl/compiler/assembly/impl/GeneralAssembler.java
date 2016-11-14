@@ -3,7 +3,6 @@ package ide.impl.compiler.assembly.impl;
 import ide.impl.compiler.Scope;
 import ide.impl.compiler.SimbolTable;
 import ide.impl.compiler.Var;
-import lombok.Getter;
 
 import java.util.*;
 
@@ -37,6 +36,8 @@ public abstract class GeneralAssembler {
     private Assembly assemblyPart;
     private final List<GeneralAssembler> childrens;
     private final List<AssemblerListener> listeners;
+
+    protected boolean finalized;
 
     private static final AssemblerListener scopesRemoverFromStack = new AssemblerListener() {
         @Override
@@ -87,7 +88,7 @@ public abstract class GeneralAssembler {
                 this.assemblyScope = getCurrentScope().getId();
                 break;
             case 7:
-                notifyFinalized(this);
+                notifyFinalizedAction(action,lexeme);
                 break;
             case 1:
                 states.push(DECLARING);
@@ -200,6 +201,10 @@ public abstract class GeneralAssembler {
                 vectors.add(getVarName(id));
                 break;
         }
+    }
+
+    protected void notifyFinalizedAction(int action, String lexeme) {
+        finalizeAndNotify(this);
     }
 
     public static String getVarName(String id) {
@@ -356,7 +361,7 @@ public abstract class GeneralAssembler {
         this.listeners.add(assembler);
     }
 
-    protected void notifyFinalized(GeneralAssembler assembler) {
+    protected void finalizeAndNotify(GeneralAssembler assembler) {
         this.listeners.forEach(l->l.finalizedAssembler(assembler));
     }
 

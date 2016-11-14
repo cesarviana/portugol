@@ -19,7 +19,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
         @Override
         public void finalizedAssembler(GeneralAssembler assembler) {
             GeneralAssembler assemblerFromPop = assemblers.pop();
-            System.out.println("Finalizou assembler " + assemblerFromPop );
+            System.out.println("Finalizou assembler " + assemblerFromPop);
         }
     };
 
@@ -56,6 +56,7 @@ public class AssemblerImpl extends Semantico implements Assembler {
 
     @Override
     public void executeAction(int action, Token token) throws SemanticError {
+        System.out.println(action);
         String lexeme = token.getLexeme();
         switch (action) {
             case 8:

@@ -7,6 +7,7 @@ public class SeAssembler extends ControlStrucutresAssembler {
 
     private boolean closedSeScope;
     private Se se;
+    private boolean convetedToSenao;
 
     public SeAssembler(SimbolTable simbolTable, String lexeme) {
         super(simbolTable);
@@ -16,7 +17,7 @@ public class SeAssembler extends ControlStrucutresAssembler {
     public void executeAction(int action, String lexeme) {
         super.executeAction(action, lexeme);
         switch (action){
-            case 914:
+            case 7:
                 areClosingSeScope();
                 break;
             case 916:
@@ -25,28 +26,34 @@ public class SeAssembler extends ControlStrucutresAssembler {
             case 917:
                 areClosingSenaoScopeSoFinalize();
         }
-        buildSeIfClosedSeScopeAndNotComingSenao(action,lexeme);
+        notifyFinalizedAction(action, lexeme);
     }
 
     private void areClosingSeScope() {
         closedSeScope = true;
     }
 
+    @Override
+    protected void notifyFinalizedAction(int action,String lexeme) {
+        buildSeIfClosedSeScopeAndNotComingSenao(action, lexeme);
+    }
+
     private void buildSeIfClosedSeScopeAndNotComingSenao(int action, String lexeme){
-        if(action==8 || action ==914)
+        if(action==8 || action==7 || convetedToSenao)
             return;
         boolean notComingSenao = !"SENAO".equalsIgnoreCase(lexeme);
         if(closedSeScope && notComingSenao){
-            notifyFinalized(this);
+            finalizeAndNotify(this);
         }
     }
 
     private void areClosingSenaoScopeSoFinalize(){
-        notifyFinalized(this);
+        finalizeAndNotify(this);
     }
 
     private void areOpeningSenaoScopeSoConvertSeToSenao(){
         se.convertToSenao();
+        convetedToSenao = true;
     }
 
     @Override
