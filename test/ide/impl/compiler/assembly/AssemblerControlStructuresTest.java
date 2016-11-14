@@ -213,7 +213,7 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("BEQ FIM_INICIO_SE0");  // se igual, então falso, vai pro fim
         add("LDI 1");               // escreva (entra se verdadeiro)
         add("STO $out_port");
-        add("FIM_INICIO_SE0");
+        add("FIM_INICIO_SE0:");
         add("HLT 0");
         generateAssemblyAndAssert(code);
     }

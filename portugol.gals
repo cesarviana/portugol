@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = Stream
+Input = String
 Parser = SLR
 #RegularDefinitions
   
@@ -45,6 +45,14 @@ COMENTARIO_VARIAS_LINHAS: "/*"([^"*"]|[\r\n]|("*"+([^"*"/]|[\r\n])))*"*"+/
 // unitarios
 "++":"++"
 "--":"--"
+
+// operações relacionais
+"!=":"!="
+"<=":<=
+"<":<
+">=":>=
+">":>
+"==":==
 
 // reservadas
 PROGRAMA: programa
@@ -93,14 +101,6 @@ ID: [a-zA-Z][a-zA-Z0-9_]*
 "^": \^
 "<<": "<<"
 ">>": ">>"
-
-// operações relacionais
-"<=":<=
-"<":<
-">=":>=
-">":>
-"==":==
-"!=":!=
 
 // tipos
 VALOR_INTEIRO: [0-9]+
