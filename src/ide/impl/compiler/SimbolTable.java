@@ -100,7 +100,7 @@ public class SimbolTable {
 	public Var getVar(String id, String scope) {
 		Scope scopeToSearch = getScope(scope);
 		do {
-			if (scopeToSearch.getVars().containsKey(id))
+			if ( scopeToSearch.getVars().containsKey(id))
 				return scopeToSearch.getVar(id);
 			scopeToSearch = scopeToSearch.getParent();
 		} while (scopeToSearch != Scope.NULL);

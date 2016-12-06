@@ -324,6 +324,76 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
     }
 
     @Test
+    public void testSenaoSeAninhadoSenaoAninhado(){
+        String code = "" +
+                "programa {" +
+                "   funcao funcaoteste(){" +
+                "       inteiro x = 5" +
+                "       inteiro y = 5" +
+                "       se( x == y ){" +
+                "           escreva(1)" +
+                "       } senao {" +
+                "           inteiro a = 2 " +
+                "           inteiro b = 2 " +
+                "           se(a < b) {" +
+                "               escreva(3) " +
+                "           } senao {" +
+                "               escreva(4) " +
+                "           }" +
+                "       }" +
+                "   }" +
+                "}";
+        add(".data");
+        add("funcaoteste_x : 0");
+        add("funcaoteste_y : 0");
+        add("funcaoteste_senao0_a : 0");
+        add("funcaoteste_senao0_b : 0");
+        add(".text");
+        add("_FUNCAOTESTE:");
+        add("LDI 5");
+        add("STO funcaoteste_x");
+        add("LDI 5");
+        add("STO funcaoteste_y");
+
+        add("LD funcaoteste_x");
+        add("STO 1000");
+        add("LD funcaoteste_y");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+
+        add("BNE INICIO_FUNCAOTESTE_SENAO0");
+
+        add("LDI 1");
+        add("STO $out_port");
+        add("JMP FIM_FUNCAOTESTE_SE0");
+
+        add("INICIO_FUNCAOTESTE_SENAO0:");
+        add("LDI 2");
+        add("STO funcaoteste_senao0_a");
+        add("LDI 2");
+        add("STO funcaoteste_senao0_b");
+        add("LD funcaoteste_senao0_a");
+        add("STO 1000");
+        add("LDI funcaoteste_senao0_b");
+        add("STO 1001");
+        add("LD 1000");
+        add("SUB 1001");
+        add("BGE INICIO_FUNCAOTESTE_SENAO0_SENAO0");
+        add("LDI 3");
+        add("STO $out_port");
+        add("INICIO_FUNCAOTESTE_SENAO0_SENAO0:");
+        add("LDI 4");
+        add("STO $out_port");
+        add("FIM_FUNCAOTESTE_SENAO0_SE0:");
+        add("FIM_FUNCAOTESTE_SE0:");
+
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
     public void testEnquanto(){
         String code = ""+
                 "programa {"+
@@ -435,6 +505,44 @@ public class AssemblerControlStructuresTest extends AssemblerTest {
         add("STO teste_x");
         add("JMP INICIO_TESTE_ENQUANTO0");
         add("FIM_TESTE_ENQUANTO0:");
+        add("HLT 0");
+
+        generateAssemblyAndAssert(code);
+    }
+
+    @Test
+    public void testChamadaFuncao(){
+        String code = ""+
+                "programa {"+
+                "   funcao dobro( inteiro valor ){" +
+                "       retorne valor + valor " +
+                "   }" +
+                "" +
+                "   funcao inicio(){" +
+                "       inteiro a = 2 " +
+                "       escreva( dobro( a ) )" +
+                "   }" +
+                "}";
+
+        add(".data");
+        add("dobro_valor : 0");
+        add("inicio_a : 0");
+        add(".text");
+        add("JMP _PRINCIPAL");
+        add("_DOBRO:");
+        add("LD dobro_valor");
+        add("ADD dobro_valor");
+        add("RETURN 0");
+
+        add("_PRINCIPAL:");
+
+        add("LD inicio_a");
+
+        add("STO dobro_valor");
+
+        add("CALL _DOBRO");
+
+        add("STO $out_port");
         add("HLT 0");
 
         generateAssemblyAndAssert(code);

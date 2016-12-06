@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = Stream
+Input = String
 Parser = SLR
 #RegularDefinitions
   
@@ -255,7 +255,7 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <FACA_ENQUANTO> ::=
 	  FACA #8 #9 "{" "}" ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7
 	| FACA #8 #9 <ELEMENTO_FUNCAO> ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7
-	| FACA #8 #9 "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7 ;
+	| FACA #8 #9 "{" <LISTA_ELEMENTOS_FUNCAO> "}" ENQUANTO #18 "(" <PARAMETRO_ENQUANTO> ")" #10 #7;
 <PARA> ::=
 	  PARA #8 #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" "{" "}" #10
 	| PARA #8 #9 "(" <PARA_PARTE_1> ";"#3 <PARA_PARTE_2> ";" <PARA_PARTE_3> ")" <ELEMENTO_FUNCAO> #10
@@ -264,7 +264,13 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <PARA_PARTE_2> ::= <exp> | <CHAMADA_FUNCAO>;
 <PARA_PARTE_3> ::= <exp> | <VARIAVEL_COM_ATRIBUICAO> | î;
 
-<CHAMADA_FUNCAO> ::= ID #99 "("<LISTA_ARGUMENTOS>")" | LEIA #300 "(" <exp> #301 ")" | ESCREVA #400  "("<LISTA_ARGUMENTOS>")";
+<CHAMADA_FUNCAO> ::= 
+			ID #99 "("<CHAMADA_FUNCAO>")" | 
+			ID #99 "("<LISTA_ARGUMENTOS>")" | 
+			LEIA #300 "(" <exp> #301 ")" | 
+			ESCREVA #400  "("<LISTA_ARGUMENTOS>")" |
+			ESCREVA  #400 "("<CHAMADA_FUNCAO>")"
+;
 <LISTA_ARGUMENTOS> ::= <ARGUMENTO> "," <LISTA_ARGUMENTOS> | <ARGUMENTO> #302 | î;
 <ARGUMENTO> ::= <exp>;
 
