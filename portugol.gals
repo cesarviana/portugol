@@ -265,8 +265,8 @@ VALOR_CADEIA:\"([^\"](\\\")*)*\"
 <PARA_PARTE_3> ::= <exp> | <VARIAVEL_COM_ATRIBUICAO> | î;
 
 <CHAMADA_FUNCAO> ::= 
-			ID #99 "("<CHAMADA_FUNCAO>")" | 
-			ID #99 "("<LISTA_ARGUMENTOS>")" | 
+			ID #99 #8 "("<CHAMADA_FUNCAO>")" #7 | 
+			ID #99 #8 "("<LISTA_ARGUMENTOS>")" #7 | 
 			LEIA #300 "(" <exp> #301 ")" | 
 			ESCREVA #400  "("<LISTA_ARGUMENTOS>")" |
 			ESCREVA  #400 "("<CHAMADA_FUNCAO>")"

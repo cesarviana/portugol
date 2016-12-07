@@ -3,6 +3,7 @@ package ide.impl.compiler;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
@@ -32,6 +33,10 @@ public class Function extends Scope {
 
 	public int getParamPosition(Var var) {
 		return getVars().values().stream().filter(v -> v.isParam()).collect(Collectors.toList()).indexOf(var) + 1;
+	}
+
+	public List<Var> getParams(){
+		return getVars().values().stream().filter(v->v.isParam()).collect(Collectors.toList());
 	}
 
 	public void use() {

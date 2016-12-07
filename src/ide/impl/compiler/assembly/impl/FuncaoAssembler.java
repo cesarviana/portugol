@@ -22,6 +22,10 @@ public class FuncaoAssembler extends GeneralAssembler {
         Assembly assembly = new Assembly();
         assembly.addLine(scope + ":");
         assembly.addAssembly( getAssemblyPart() );
+
+        if( ! scope.equals("_PRINCIPAL") )
+            assembly.addLine( "RETURN 0 ");
+
         return assembly;
     }
 }

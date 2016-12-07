@@ -25,8 +25,16 @@ public class ProgramaAssembler extends GeneralAssembler {
     public Assembly build() {
         addData();
         assembly.addLine(".text");
+        addJumpInicio();
         assembly.addAssembly( getAssemblyPart() );
         assembly.addLine("HLT 0");
         return assembly;
+    }
+
+    private void addJumpInicio() {
+        if( getCurrentScope().getChilds().containsKey("inicio") ){
+            assembly.addLine("JMP _PRINCIPAL");
+        }
+
     }
 }

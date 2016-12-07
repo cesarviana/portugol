@@ -151,7 +151,10 @@ public class AssemblerImpl extends Semantico implements Assembler {
             case "faca":
                 return new FacaEnquantoAssembler(simbolTable);
             default:
-                return new FuncaoAssembler(simbolTable);
+                if( GeneralAssembler.getCurrentScope().isGlobalScope() )
+                    return new FuncaoAssembler(simbolTable);
+                else
+                    return new ChamadaFuncaoAssembler( simbolTable );
         }
     }
 
